@@ -33,9 +33,8 @@ export interface UserProfile {
   dayProgress: Record<OnboardingDay, DayProgress>;
 
   // Privacy Settings
-  safeMode: boolean; // Hide learning activity from manager
   roleCategory?: 'DESK' | 'FRONTLINE' | 'REMOTE' | 'HYBRID';
-  role: 'MANAGER' | 'EMPLOYEE';
+  role: 'EMPLOYEE';
 }
 
 export interface DayProgress {
@@ -406,33 +405,7 @@ export interface PeerPracticeInsight {
   roleCategory: 'DESK' | 'FRONTLINE' | 'REMOTE' | 'HYBRID';
 }
 
-// ----------------------------------------------------------------------------
-// MANAGER HUB
-// ----------------------------------------------------------------------------
-export interface TeamMember {
-  id: string;
-  name: string;
-  title: string;
-  avatar?: string;
-  skillScores: Record<string, number>; // Skill -> 0-100
-  burnoutScore: number; // 0-100
-  burnoutSignals: BurnoutSignal[];
-  safeMode: boolean; // If true, hide from detailed view
-}
 
-export interface BurnoutSignal {
-  type: 'LATE_NIGHT_LOGIN' | 'ERROR_RATE' | 'OVERTIME' | 'CONTEXT_SWITCHING';
-  severity: 'LOW' | 'MEDIUM' | 'HIGH';
-  metric: string;
-  detectedAt: string;
-}
-
-export interface SkillHeatmapCell {
-  skillName: string;
-  teamAverage: number;
-  distribution: number[]; // Histogram buckets
-  trend: 'UP' | 'DOWN' | 'STABLE';
-}
 
 // ----------------------------------------------------------------------------
 // QUICK ACTIONS
@@ -612,7 +585,6 @@ export interface SafetyWellbeingItem {
 }
 
 export interface PrivacySettings {
-  safeMode: boolean;
   learningVisibility: 'VISIBLE' | 'TEAM_ONLY' | 'PRIVATE';
   behaviorTracking: boolean;
   dataRetentionAcknowledged: boolean;
@@ -990,16 +962,27 @@ export interface UserContext {
   };
 }
 
+export type SkillStatus = 'ACTIVE' | 'MASTERED' | 'DORMANT' | 'DECAYING';
+
 export interface SkillNode {
   id: string;
   name: string;
+  group: 'CORE' | 'TECHNICAL' | 'SOFT' | 'DOMAIN';
   proficiency: number; // 1-5
-  status: 'ACTIVE' | 'DECAYING' | 'DORMANT' | 'MASTERED';
+  status: SkillStatus;
   decayPercentage: number;
   lastUsedDate: string;
-  marketDemand: 'LOW' | 'MEDIUM' | 'HIGH';
+  marketDemand: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   verificationSource: 'SELF' | 'PEER' | 'MANAGER' | 'CERTIFICATION';
 }
+
+export interface SkillLink {
+  source: string | SkillNode;
+  target: string | SkillNode;
+  strength: number;
+}
+
+export type CognitiveLoadLevel = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 
 export interface CognitiveLoadState {
   meetingDensity: number; // 0-100%
@@ -1007,7 +990,7 @@ export interface CognitiveLoadState {
   errorClusterCount: number;
   taskSwitchFrequency: number;
   focusTimeAvailable: number; // minutes
-  overallLoad: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  overallLoad: CognitiveLoadLevel;
   lastAssessed: string;
   deferralRecommended: boolean;
   deferredItemCount: number;
@@ -1047,19 +1030,40 @@ export interface TrustCalibration {
   domainRisk: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 }
 
+export type KnowledgeStatus = 'FRESH' | 'AGING' | 'STALE' | 'RETIRED' | 'PENDING_REVIEW';
+
+export interface KnowledgeObject {
+  id: string;
+  title: string;
+  summary?: string;
+  source: string;
+  sourceType: 'OFFICIAL' | 'PEER' | 'EXTERNAL' | 'AI_GENERATED';
+  status: KnowledgeStatus;
+  freshnessScore: number;
+  createdBy: string;
+  validatedBy?: string;
+  accessCount: number;
+  expiryDate?: string;
+  tags: string[];
+}
+
+export type EscalationType = 'PEER' | 'MENTOR' | 'MANAGER' | 'HR_SME' | 'LEGAL' | 'SAFETY';
+
+export interface EscalationPath {
+  level: number;
+  type: EscalationType;
+  label: string;
+  description: string;
+  triggerConditions: string[];
+  contactMethod: 'CHAT' | 'EMAIL' | 'MEETING' | 'TICKET';
+  estimatedResponseTime: string;
+}
+
 export interface EscalationSuggestion {
   issueType: string;
   severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
-  recommendedPath: {
-    level: number;
-    type: 'PEER' | 'MENTOR' | 'MANAGER' | 'HR_SME' | 'LEGAL' | 'SAFETY';
-    label: string;
-    description: string;
-    triggerConditions: string[];
-    contactMethod: 'CHAT' | 'EMAIL' | 'MEETING' | 'TICKET';
-    estimatedResponseTime: string;
-  };
-  alternativePaths: any[];
+  recommendedPath: EscalationPath;
+  alternativePaths: EscalationPath[];
   reasoning: string;
   aiLimitation: string;
 }
@@ -1073,3 +1077,40 @@ export interface SkillReinforcementSuggestion {
   estimatedMinutes: number;
 }
 
+export type BehaviorCategory = 'COMMUNICATION' | 'DOCUMENTATION' | 'SAFETY' | 'EFFICIENCY' | 'COLLABORATION' | 'QUALITY';
+
+export interface BehaviorNudge {
+  id: string;
+  category: BehaviorCategory;
+  title: string;
+  description: string;
+  microAction: string;
+  estimatedSeconds: number;
+  completedCount: number;
+  reinforcementMessage?: string;
+}
+
+// ============================================================================
+// ORGANIZATIONAL SHOCK & EVENT MONITORING
+// ============================================================================
+
+export type OrgShockSeverity = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+
+export interface OrgShockGuidance {
+  id: string;
+  title: string;
+  description: string;
+  actionUrl?: string;
+}
+
+export interface OrgShockEvent {
+  id: string;
+  type: 'REORG' | 'NEW_LEADERSHIP' | 'MERGER' | 'CULTURE_SHIFT' | 'SYSTEM_OUTAGE' | 'POLICY_CHANGE';
+  severity: OrgShockSeverity;
+  title: string;
+  description: string;
+  affectedAreas: string[];
+  guidanceItems: OrgShockGuidance[];
+  timestamp: string;
+  reducedNoiseMode?: boolean;
+}

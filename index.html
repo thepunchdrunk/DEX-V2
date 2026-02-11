@@ -4,7 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DEX</title>
+  <title>DEX — Digital Employee Experience</title>
+  <meta name="description" content="DEX is an intelligent employee experience platform that provides personalized onboarding, skills tracking, and career growth tools." />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -25,7 +26,7 @@
             }
           },
           fontFamily: {
-            sans: ['"Myriad Pro"', '"Myriad"', '"Liberation Sans"', '"Nimbus Sans L"', '"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
+            sans: ['Inter', '"Myriad Pro"', '"Myriad"', '"Liberation Sans"', '"Nimbus Sans L"', '"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
           }
         }
       }
@@ -33,27 +34,9 @@
   </script>
   <style>
     body {
-      font-family: 'Myriad Pro', 'Myriad', sans-serif;
+      font-family: 'Inter', 'Myriad Pro', 'Myriad', sans-serif;
       background-color: #FFFFFF;
       color: #000000;
-    }
-
-    /* Custom scrollbar for webkit - Light Mode */
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: #E0E0E0;
-      border-radius: 3px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: #BDBDBD;
     }
   </style>
   <script type="importmap">
@@ -73,6 +56,7 @@
 </head>
 
 <body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
   <div id="root"></div>
   <script type="module" src="/index.tsx"></script>
 </body>

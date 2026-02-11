@@ -17,6 +17,8 @@ import {
     Send,
     Clock,
     Star,
+    Sparkles,
+    Shield,
 } from 'lucide-react';
 import {
     RoleBasedScenario,
@@ -152,49 +154,54 @@ const Day2Culture: React.FC<Day2CultureProps> = ({ roleCategory = 'DESK', onComp
     const canCompleteDay = completedModules.length >= 5; // Need at least 5 modules
 
     const renderScenariosPhase = () => (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
+        <div className="space-y-8 animate-fade-in">
+            <div className="flex items-center justify-between mb-2">
                 <div>
-                    <h3 className="text-xl font-semibold text-black">Culture Scenarios</h3>
-                    <p className="text-[#616161] text-sm mt-1">
-                        Navigate real situations you might encounter in your role.
-                    </p>
+                    <h3 className="text-xl font-black text-neutral-900 tracking-tight">Cultural Simulations</h3>
+                    <p className="text-xs text-neutral-400 font-medium mt-1">Navigate institutional gravity through real-world scenarios.</p>
                 </div>
-                <span className="text-sm text-[#616161]">
-                    {currentScenarioIndex + 1} of {scenarios.length}
-                </span>
+                <div className="flex items-center gap-2 px-3 py-1 bg-neutral-50 rounded-full border border-neutral-100">
+                    <span className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest leading-none pt-0.5">
+                        {currentScenarioIndex + 1} / {scenarios.length} SIMULATIONS
+                    </span>
+                </div>
             </div>
 
-            {/* Progress */}
-            <div className="h-1 bg-[#E0E0E0] rounded-full overflow-hidden">
+            {/* Tactical Progress Bar */}
+            <div className="h-1.5 bg-neutral-50 rounded-full overflow-hidden mb-8" role="progressbar" aria-valuenow={currentScenarioIndex + 1} aria-valuemin={1} aria-valuemax={scenarios.length} aria-label="Cultural simulation progress">
                 <div
-                    className="h-full bg-[#E60000] transition-all"
+                    className="h-full bg-brand-red transition-all duration-700 ease-out shadow-sm"
                     style={{ width: `${((currentScenarioIndex + (showFeedback ? 1 : 0)) / scenarios.length) * 100}%` }}
                 />
             </div>
 
             {currentScenario && (
-                <div className="bg-[#FAFAFA] rounded-2xl border border-[#E0E0E0] p-6">
-                    {/* Scenario Header */}
-                    <div className="flex items-center gap-3 mb-4">
+                <div className="bg-white rounded-[32px] border border-neutral-100 shadow-xl shadow-neutral-100/30 p-8 md:p-10 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                        <MessageSquare className="w-24 h-24 text-brand-red" />
+                    </div>
+
+                    {/* Scenario Metadata */}
+                    <div className="flex items-center gap-4 mb-8">
                         <span className={`
-                            px-2 py-1 rounded text-xs font-medium
-                            ${currentScenario.difficulty === 'EASY' ? 'bg-[#E8F5E9] text-[#4CAF50]' : ''}
-                            ${currentScenario.difficulty === 'MEDIUM' ? 'bg-[#FFF3E0] text-[#E65100]' : ''}
-                            ${currentScenario.difficulty === 'HARD' ? 'bg-[#FFEBEE] text-[#D32F2F]' : ''}
+                            px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-[0.1em]
+                            ${currentScenario.difficulty === 'EASY' ? 'bg-emerald-50 text-emerald-600' : ''}
+                            ${currentScenario.difficulty === 'MEDIUM' ? 'bg-amber-50 text-amber-600' : ''}
+                            ${currentScenario.difficulty === 'HARD' ? 'bg-brand-red/10 text-brand-red' : ''}
                         `}>
-                            {currentScenario.difficulty}
+                            {currentScenario.difficulty} Complexity
                         </span>
-                        <span className="text-sm text-[#9E9E9E]">
+                        <div className="h-4 w-px bg-neutral-100" />
+                        <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">
                             {currentScenario.culturalDimension.replace(/_/g, ' ')}
                         </span>
                     </div>
 
-                    <h4 className="text-lg font-medium text-black mb-2">{currentScenario.title}</h4>
-                    <p className="text-[#616161] mb-6">{currentScenario.description}</p>
+                    <h4 className="text-2xl font-black text-neutral-900 mb-4 tracking-tight leading-tight">{currentScenario.title}</h4>
+                    <p className="text-sm text-neutral-500 mb-10 leading-relaxed max-w-2xl">{currentScenario.description}</p>
 
-                    {/* Choices */}
-                    <div className="space-y-3">
+                    {/* Decision Matrix */}
+                    <div className="grid grid-cols-1 gap-4" role="radiogroup" aria-label="Cultural Decision Matrix">
                         {currentScenario.choices.map((choice) => {
                             const isSelected = selectedChoice === choice.id;
                             const showResult = showFeedback && isSelected;
@@ -204,55 +211,78 @@ const Day2Culture: React.FC<Day2CultureProps> = ({ roleCategory = 'DESK', onComp
                                     key={choice.id}
                                     onClick={() => !showFeedback && handleChoiceSelect(choice.id)}
                                     disabled={showFeedback}
+                                    role="radio"
+                                    aria-checked={isSelected}
+                                    aria-label={`${choice.text}${showResult ? `, Feedback: ${choice.feedback}` : ''}`}
                                     className={`
-                                        w-full p-4 rounded-xl border text-left transition-all
-                                        ${!showFeedback ? 'hover:border-[#E60000]/50 hover:bg-[#F5F5F5]' : ''}
-                                        ${isSelected && choice.isRecommended ? 'border-[#4CAF50] bg-[#E8F5E9]' : ''}
-                                        ${isSelected && !choice.isRecommended ? 'border-[#E65100] bg-[#FFF3E0]' : ''}
-                                        ${!isSelected && showFeedback ? 'opacity-50' : ''}
-                                        ${!showFeedback ? 'border-[#E0E0E0]' : ''}
+                                        group w-full p-6 rounded-2xl border text-left transition-all relative overflow-hidden
+                                        ${!showFeedback ? 'bg-white border-neutral-100 hover:border-brand-red/30 hover:shadow-lg hover:-translate-y-0.5' : ''}
+                                        ${isSelected && choice.isRecommended ? 'border-emerald-200 bg-emerald-50/30' : ''}
+                                        ${isSelected && !choice.isRecommended ? 'border-amber-200 bg-amber-50/30' : ''}
+                                        ${!isSelected && showFeedback ? 'opacity-40 grayscale-[0.5]' : ''}
+                                        ${!showFeedback ? 'active:scale-[0.99]' : ''}
                                     `}
                                 >
-                                    <div className="flex items-start gap-3">
+                                    <div className="flex items-start gap-5 relative z-10">
                                         <div className={`
-                                            w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5
-                                            ${isSelected ? 'border-[#E60000] bg-[#E60000]' : 'border-[#BDBDBD]'}
-                                        `}>
-                                            {isSelected && <Check className="w-4 h-4 text-white" />}
+                                            w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-1 transition-all
+                                            ${isSelected
+                                                ? (choice.isRecommended ? 'border-emerald-500 bg-emerald-500' : 'border-amber-500 bg-amber-500')
+                                                : 'border-neutral-200 group-hover:border-brand-red guest-hover:scale-110'}
+                                        `} aria-hidden="true">
+                                            {isSelected && <Check className="w-4 h-4 text-white stroke-[3px]" />}
                                         </div>
-                                        <div>
-                                            <p className="text-black">{choice.text}</p>
+                                        <div className="flex-1">
+                                            <p className={`text-sm font-bold leading-relaxed ${isSelected ? 'text-neutral-900' : 'text-neutral-600 group-hover:text-neutral-900'}`}>
+                                                {choice.text}
+                                            </p>
+
                                             {showResult && (
                                                 <div className={`
-                                                    mt-3 p-3 rounded-lg flex items-start gap-2
-                                                    ${choice.isRecommended ? 'bg-[#C8E6C9]' : 'bg-[#FFE0B2]'}
-                                                `}>
-                                                    {choice.isRecommended ? (
-                                                        <ThumbsUp className="w-5 h-5 text-[#4CAF50] flex-shrink-0" />
-                                                    ) : (
-                                                        <Lightbulb className="w-5 h-5 text-[#E65100] flex-shrink-0" />
-                                                    )}
-                                                    <p className={`text-sm ${choice.isRecommended ? 'text-[#2E7D32]' : 'text-[#E65100]'}`}>
-                                                        {choice.feedback}
-                                                    </p>
+                                                    mt-5 p-5 rounded-2xl flex items-start gap-4 animate-slide-up
+                                                    ${choice.isRecommended ? 'bg-white border border-emerald-100 shadow-sm' : 'bg-white border border-amber-100 shadow-sm'}
+                                                `} role="status">
+                                                    <div className={`
+                                                        w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0
+                                                        ${choice.isRecommended ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}
+                                                    `} aria-hidden="true">
+                                                        {choice.isRecommended ? <ThumbsUp className="w-5 h-5" /> : <Lightbulb className="w-5 h-5" />}
+                                                    </div>
+                                                    <div>
+                                                        <p className={`text-[10px] font-black uppercase tracking-widest mb-1 ${choice.isRecommended ? 'text-emerald-600' : 'text-amber-600'}`}>
+                                                            {choice.isRecommended ? 'Optimal Protocol' : 'Alternative Insight'}
+                                                        </p>
+                                                        <p className="text-xs text-neutral-600 font-medium leading-relaxed">
+                                                            {choice.feedback}
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             )}
                                         </div>
                                     </div>
+
+                                    {/* Subtle background glow for selected state */}
+                                    {isSelected && (
+                                        <div className={`absolute inset-0 opacity-10 ${choice.isRecommended ? 'bg-emerald-400' : 'bg-amber-400'}`} aria-hidden="true" />
+                                    )}
                                 </button>
                             );
                         })}
                     </div>
 
-                    {/* Next Button */}
+                    {/* Advancment Trigger */}
                     {showFeedback && (
-                        <button
-                            onClick={handleNextScenario}
-                            className="mt-6 w-full py-3 bg-[#E60000] hover:bg-[#CC0000] text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-2"
-                        >
-                            {currentScenarioIndex < scenarios.length - 1 ? 'Next Scenario' : 'Continue to Communication'}
-                            <ChevronRight className="w-5 h-5" />
-                        </button>
+                        <div className="mt-10 pt-10 border-t border-neutral-100 flex justify-end">
+                            <button
+                                onClick={handleNextScenario}
+                                className="btn-primary group flex items-center gap-4 py-4 px-10"
+                            >
+                                <span className="text-xs uppercase font-black tracking-widest">
+                                    {currentScenarioIndex < scenarios.length - 1 ? 'Execute Next Simulation' : 'Transition to Protocols'}
+                                </span>
+                                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            </button>
+                        </div>
                     )}
                 </div>
             )}
@@ -260,52 +290,55 @@ const Day2Culture: React.FC<Day2CultureProps> = ({ roleCategory = 'DESK', onComp
     );
 
     const renderCommunicationPhase = () => (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h3 className="text-xl font-semibold text-black flex items-center gap-2">
-                        <MessageSquare className="w-6 h-6 text-[#E60000]" />
-                        Communication Norms
-                    </h3>
-                    <p className="text-[#616161] text-sm mt-1">
-                        How we communicate at this company — and when to use each channel.
-                    </p>
-                </div>
+        <div className="space-y-8 animate-fade-in">
+            <div className="mb-8">
+                <h3 className="text-xl font-black text-neutral-900 tracking-tight">Communication Protocols</h3>
+                <p className="text-sm text-neutral-500 mt-2 leading-relaxed">
+                    Institutional velocity is powered by high-fidelity communication. Master our operational channels and response expectations.
+                </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4" role="list" aria-label="Communication Architecture">
                 {COMMUNICATION_NORMS.map(norm => (
-                    <div key={norm.id} className="bg-[#FAFAFA] rounded-xl border border-[#E0E0E0] p-5">
-                        <div className="flex items-center gap-3 mb-3">
+                    <div key={norm.id} role="listitem" className="bg-white rounded-2xl border border-neutral-100 shadow-sm p-6 group hover:border-brand-red/20 transition-all">
+                        <div className="flex items-center gap-4 mb-5">
                             <div className={`
-                                w-10 h-10 rounded-lg flex items-center justify-center
-                                ${norm.channel === 'CHAT' ? 'bg-purple-100 text-purple-600' : ''}
-                                ${norm.channel === 'EMAIL' ? 'bg-blue-100 text-blue-600' : ''}
-                                ${norm.channel === 'TICKET' ? 'bg-green-100 text-green-600' : ''}
-                                ${norm.channel === 'MEETING' ? 'bg-amber-100 text-amber-600' : ''}
-                            `}>
-                                {norm.channel === 'CHAT' && '💬'}
-                                {norm.channel === 'EMAIL' && '📧'}
-                                {norm.channel === 'TICKET' && '🎫'}
-                                {norm.channel === 'MEETING' && '📅'}
+                                w-12 h-12 rounded-xl flex items-center justify-center text-xl transition-transform group-hover:scale-110
+                                ${norm.channel === 'CHAT' ? 'bg-purple-50 text-purple-600' : ''}
+                                ${norm.channel === 'EMAIL' ? 'bg-blue-50 text-blue-600' : ''}
+                                ${norm.channel === 'TICKET' ? 'bg-emerald-50 text-emerald-600' : ''}
+                                ${norm.channel === 'MEETING' ? 'bg-amber-50 text-amber-600' : ''}
+                            `} aria-hidden="true">
+                                {norm.channel === 'CHAT' && <MessageSquare className="w-6 h-6" />}
+                                {norm.channel === 'EMAIL' && <Send className="w-6 h-6" />}
+                                {norm.channel === 'TICKET' && <Check className="w-6 h-6" />}
+                                {norm.channel === 'MEETING' && <Calendar className="w-6 h-6" />}
                             </div>
                             <div>
-                                <h4 className="font-medium text-black">{norm.channel}</h4>
-                                <p className="text-xs text-[#9E9E9E]">Response: {norm.expectedResponseTime}</p>
+                                <h4 className="font-bold text-neutral-900">{norm.channel} Architecture</h4>
+                                <div className="flex items-center gap-2 mt-0.5">
+                                    <Clock className="w-3 h-3 text-neutral-400" aria-hidden="true" />
+                                    <p className="text-[10px] text-neutral-400 font-black uppercase tracking-widest" aria-label={`Expected response time: ${norm.expectedResponseTime}`}>{norm.expectedResponseTime} Response</p>
+                                </div>
                             </div>
                         </div>
-                        <p className="text-sm text-[#616161] mb-3">{norm.useCase}</p>
-                        <div className="text-xs text-[#9E9E9E] mb-2">
-                            <strong>Urgency signal:</strong> {norm.urgencySignal}
-                        </div>
-                        <div className="grid grid-cols-2 gap-2 text-xs">
-                            <div className="p-2 bg-[#E8F5E9] rounded-lg">
-                                <p className="text-[#4CAF50] font-medium mb-1">✓ Good</p>
-                                <p className="text-[#2E7D32]/70 line-clamp-2">{norm.examples.good}</p>
+
+                        <p className="text-xs text-neutral-500 mb-6 leading-relaxed font-medium">
+                            {norm.useCase}
+                        </p>
+
+                        <div className="space-y-3">
+                            <div className="p-4 bg-emerald-50/50 rounded-xl border border-emerald-100/50" role="status" aria-label="Recommended Signal">
+                                <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
+                                    <ThumbsUp className="w-3 h-3" aria-hidden="true" /> Recommended Signal
+                                </p>
+                                <p className="text-[11px] text-neutral-600 font-medium leading-relaxed italic">"{norm.examples.good}"</p>
                             </div>
-                            <div className="p-2 bg-[#FFEBEE] rounded-lg">
-                                <p className="text-[#D32F2F] font-medium mb-1">✗ Avoid</p>
-                                <p className="text-[#C62828]/70 line-clamp-2">{norm.examples.bad}</p>
+                            <div className="p-4 bg-red-50/50 rounded-xl border border-red-100/50" role="status" aria-label="Antipattern">
+                                <p className="text-[9px] font-black text-brand-red uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
+                                    <ThumbsDown className="w-3 h-3" aria-hidden="true" /> Antipattern
+                                </p>
+                                <p className="text-[11px] text-neutral-600 font-medium leading-relaxed italic">"{norm.examples.bad}"</p>
                             </div>
                         </div>
                     </div>
@@ -314,34 +347,38 @@ const Day2Culture: React.FC<Day2CultureProps> = ({ roleCategory = 'DESK', onComp
 
             <button
                 onClick={() => handleCompleteModule('COMMUNICATION', 'MEETINGS')}
-                className="w-full py-3 bg-[#E60000] hover:bg-[#CC0000] text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-2"
+                className="btn-primary w-full py-6 mt-6 flex items-center justify-center gap-4 group"
             >
-                Continue to Meeting Culture <ChevronRight className="w-5 h-5" />
+                <span className="text-xs uppercase font-black tracking-widest">Acknowledge Communication Protocols</span>
+                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
         </div>
     );
 
     const renderMeetingsPhase = () => (
-        <div className="space-y-6">
-            <div>
-                <h3 className="text-xl font-semibold text-black flex items-center gap-2">
-                    <Calendar className="w-6 h-6 text-[#E60000]" />
-                    Meeting Culture
-                </h3>
-                <p className="text-[#616161] text-sm mt-1">
-                    Our meetings are productive because we follow these unwritten rules.
+        <div className="space-y-8 animate-fade-in">
+            <div className="mb-8">
+                <h3 className="text-xl font-black text-neutral-900 tracking-tight">Meeting Governance</h3>
+                <p className="text-sm text-neutral-500 mt-2 leading-relaxed">
+                    We maintain meeting hygiene to protect our collective focus. Follow these fundamental rules of engagement.
                 </p>
             </div>
 
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 gap-4" role="list" aria-label="Meeting Governance Rules">
                 {MEETING_CULTURE_RULES.map((rule, index) => (
-                    <div key={rule.id} className="bg-[#FAFAFA] rounded-xl border border-[#E0E0E0] p-5 flex items-start gap-4">
-                        <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-[#E60000] font-bold flex-shrink-0">
-                            {index + 1}
+                    <div key={rule.id} role="listitem" className="bg-white rounded-[24px] border border-neutral-100 shadow-sm p-6 flex items-center gap-6 group hover:border-brand-red/20 transition-all">
+                        <div className="w-14 h-14 rounded-2xl bg-neutral-900 text-white flex items-center justify-center text-lg font-black italic shadow-lg shadow-neutral-900/10 group-hover:bg-brand-red transition-colors" aria-hidden="true">
+                            {(index + 1).toString().padStart(2, '0')}
                         </div>
-                        <div>
-                            <h4 className="font-medium text-black mb-1">{rule.title}</h4>
-                            <p className="text-sm text-[#616161]">{rule.description}</p>
+                        <div className="flex-1">
+                            <h4 className="text-sm font-bold text-neutral-900 flex items-center gap-3">
+                                {rule.title}
+                                <span className="h-1 w-1 bg-brand-red rounded-full" aria-hidden="true" />
+                            </h4>
+                            <p className="text-xs text-neutral-500 font-medium mt-1 leading-relaxed">{rule.description}</p>
+                        </div>
+                        <div className="w-10 h-10 rounded-full border border-neutral-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true">
+                            <Star className="w-4 h-4 text-brand-red" />
                         </div>
                     </div>
                 ))}
@@ -349,61 +386,72 @@ const Day2Culture: React.FC<Day2CultureProps> = ({ roleCategory = 'DESK', onComp
 
             <button
                 onClick={() => handleCompleteModule('MEETINGS', 'DECISIONS')}
-                className="w-full py-3 bg-[#E60000] hover:bg-[#CC0000] text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-2"
+                className="btn-primary w-full py-6 mt-6 flex items-center justify-center gap-4 group"
             >
-                Continue to Decision Boundaries <ChevronRight className="w-5 h-5" />
+                <span className="text-xs uppercase font-black tracking-widest">Sync Meeting Hygiene Protocols</span>
+                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
         </div>
     );
 
     const renderDecisionsPhase = () => (
-        <div className="space-y-6">
-            <div>
-                <h3 className="text-xl font-semibold text-black flex items-center gap-2">
-                    <Scale className="w-6 h-6 text-[#E60000]" />
-                    Decision-Making Boundaries
-                </h3>
-                <p className="text-[#616161] text-sm mt-1">
-                    Understanding when you can act independently vs. when to escalate.
+        <div className="space-y-8 animate-fade-in">
+            <div className="mb-8">
+                <h3 className="text-xl font-black text-neutral-900 tracking-tight">Autonomy & Escalation Boundaries</h3>
+                <p className="text-sm text-neutral-500 mt-2 leading-relaxed">
+                    Understand your decision-making perimeter and when to synchronize with institutional leadership.
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6" role="list" aria-label="Decision Boundaries">
                 {DECISION_BOUNDARIES.map((boundary) => (
-                    <div key={boundary.id} className={`
-                        bg-white rounded-xl border p-5
-                        ${boundary.scope === 'INDEPENDENT' ? 'border-[#4CAF50]/30' : ''}
-                        ${boundary.scope === 'MANAGER_APPROVAL' ? 'border-blue-300' : ''}
-                        ${boundary.scope === 'CROSS_TEAM' ? 'border-[#E65100]/30' : ''}
-                        ${boundary.scope === 'EXECUTIVE' ? 'border-[#D32F2F]/30' : ''}
+                    <div key={boundary.id} role="listitem" className={`
+                        relative bg-white rounded-[32px] border p-8 transition-all group overflow-hidden
+                        ${boundary.scope === 'INDEPENDENT' ? 'border-emerald-100 hover:border-emerald-300' : ''}
+                        ${boundary.scope === 'MANAGER_APPROVAL' ? 'border-blue-100 hover:border-blue-300' : ''}
+                        ${boundary.scope === 'CROSS_TEAM' ? 'border-amber-100 hover:border-amber-300' : ''}
+                        ${boundary.scope === 'EXECUTIVE' ? 'border-red-100 hover:border-red-300' : ''}
                     `}>
-                        <div className="flex items-center gap-2 mb-3">
+                        <div className="flex items-center gap-4 mb-6">
                             <div className={`
-                                w-8 h-8 rounded-lg flex items-center justify-center
-                                ${boundary.scope === 'INDEPENDENT' ? 'bg-[#E8F5E9] text-[#4CAF50]' : ''}
-                                ${boundary.scope === 'MANAGER_APPROVAL' ? 'bg-blue-100 text-blue-600' : ''}
-                                ${boundary.scope === 'CROSS_TEAM' ? 'bg-[#FFF3E0] text-[#E65100]' : ''}
-                                ${boundary.scope === 'EXECUTIVE' ? 'bg-[#FFEBEE] text-[#D32F2F]' : ''}
-                            `}>
-                                {boundary.scope === 'INDEPENDENT' && '✓'}
-                                {boundary.scope === 'MANAGER_APPROVAL' && '👤'}
-                                {boundary.scope === 'CROSS_TEAM' && '👥'}
-                                {boundary.scope === 'EXECUTIVE' && '⬆️'}
+                                w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm
+                                ${boundary.scope === 'INDEPENDENT' ? 'bg-emerald-50 text-emerald-600' : ''}
+                                ${boundary.scope === 'MANAGER_APPROVAL' ? 'bg-blue-50 text-blue-600' : ''}
+                                ${boundary.scope === 'CROSS_TEAM' ? 'bg-amber-50 text-amber-600' : ''}
+                                ${boundary.scope === 'EXECUTIVE' ? 'bg-brand-red/10 text-brand-red' : ''}
+                            `} aria-hidden="true">
+                                {boundary.scope === 'INDEPENDENT' && <Sparkles className="w-6 h-6" />}
+                                {boundary.scope === 'MANAGER_APPROVAL' && <Users className="w-6 h-6" />}
+                                {boundary.scope === 'CROSS_TEAM' && <Users className="w-6 h-6" />}
+                                {boundary.scope === 'EXECUTIVE' && <Shield className="w-6 h-6" />}
                             </div>
-                            <h4 className="font-medium text-black">{boundary.title}</h4>
+                            <div>
+                                <h4 className="text-sm font-black text-neutral-900 uppercase tracking-tight">{boundary.title}</h4>
+                                <p className={`text-[10px] font-black uppercase tracking-[0.1em] mt-0.5 ${boundary.scope === 'EXECUTIVE' ? 'text-brand-red' : 'text-neutral-400'
+                                    }`}>
+                                    {boundary.scope.replace(/_/g, ' ')} PERIMETER
+                                </p>
+                            </div>
                         </div>
-                        <ul className="text-sm text-[#616161] space-y-1">
+
+                        <ul className="space-y-3 mb-8" aria-label={`Examples of ${boundary.title}`}>
                             {boundary.examples.map((ex, i) => (
-                                <li key={i} className="flex items-start gap-2">
-                                    <span className="text-[#BDBDBD]">•</span>
-                                    <span>{ex}</span>
+                                <li key={i} className="flex items-start gap-3">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-neutral-200 mt-1.5" aria-hidden="true" />
+                                    <span className="text-xs text-neutral-600 font-medium leading-relaxed">{ex}</span>
                                 </li>
                             ))}
                         </ul>
+
                         {boundary.escalationPath && (
-                            <p className="mt-3 text-xs text-[#9E9E9E]">
-                                <strong>How:</strong> {boundary.escalationPath}
-                            </p>
+                            <div className="pt-6 border-t border-neutral-50 flex items-center gap-3">
+                                <div className="p-2 bg-neutral-50 rounded-lg" aria-hidden="true">
+                                    <ChevronRight className="w-3 h-3 text-neutral-400 rotate-90" />
+                                </div>
+                                <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-widest leading-relaxed">
+                                    <span className="text-neutral-900">Escalation Path:</span> {boundary.escalationPath}
+                                </p>
+                            </div>
                         )}
                     </div>
                 ))}
@@ -411,42 +459,58 @@ const Day2Culture: React.FC<Day2CultureProps> = ({ roleCategory = 'DESK', onComp
 
             <button
                 onClick={() => handleCompleteModule('DECISIONS', 'ETHICS')}
-                className="w-full py-3 bg-[#E60000] hover:bg-[#CC0000] text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-2"
+                className="btn-primary w-full py-6 mt-6 flex items-center justify-center gap-4 group"
             >
-                Continue to Ethics & Inclusion <ChevronRight className="w-5 h-5" />
+                <span className="text-xs uppercase font-black tracking-widest">Internalize Decision Matrix</span>
+                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
         </div>
     );
 
     const renderEthicsPhase = () => (
-        <div className="space-y-6">
-            <div>
-                <h3 className="text-xl font-semibold text-black flex items-center gap-2">
-                    <Heart className="w-6 h-6 text-[#E60000]" />
-                    Ethics, Inclusion & Conduct
-                </h3>
-                <p className="text-[#616161] text-sm mt-1">
-                    Building a respectful and ethical workplace together.
+        <div className="space-y-12 animate-fade-in">
+            <div className="mb-8">
+                <h3 className="text-xl font-black text-neutral-900 tracking-tight">Institutional Integrity Matrix</h3>
+                <p className="text-sm text-neutral-500 mt-2 leading-relaxed">
+                    We are governed by radical transparency and mutual respect. Familiarize yourself with our ethics and inclusion framework.
                 </p>
             </div>
 
             {ETHICS_MODULES.map((module) => (
-                <div key={module.id} className="bg-[#FAFAFA] rounded-xl border border-[#E0E0E0] p-6">
-                    <h4 className="font-medium text-black mb-2">{module.title}</h4>
-                    <p className="text-sm text-[#616161] mb-4">{module.description}</p>
+                <div key={module.id} className="space-y-6" role="region" aria-label={`${module.title} category`}>
+                    <div className="flex items-center gap-4">
+                        <div className="h-0.5 flex-1 bg-neutral-50" aria-hidden="true" />
+                        <h4 className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] px-4">{module.title}</h4>
+                        <div className="h-0.5 flex-1 bg-neutral-50" aria-hidden="true" />
+                    </div>
 
-                    <div className="space-y-4">
+                    <div className="grid grid-cols-1 gap-4" role="list">
                         {module.scenarios.map((scenario) => (
-                            <div key={scenario.id} className="bg-white rounded-lg p-4 border border-[#E0E0E0]">
-                                <p className="text-sm text-black mb-2">
-                                    <strong>Situation:</strong> {scenario.situation}
-                                </p>
-                                <p className="text-sm text-[#4CAF50] mb-2">
-                                    <strong>What to do:</strong> {scenario.correctAction}
-                                </p>
-                                <p className="text-xs text-[#9E9E9E]">
-                                    <strong>Report via:</strong> {scenario.reportingPath}
-                                </p>
+                            <div key={scenario.id} role="listitem" className="bg-white rounded-[24px] border border-neutral-100 shadow-sm p-8 group hover:border-brand-red/20 transition-all">
+                                <div className="flex items-start gap-6 mb-8">
+                                    <div className="w-12 h-12 rounded-xl bg-neutral-50 border border-neutral-100 flex items-center justify-center flex-shrink-0 group-hover:bg-brand-red/5 transition-colors" aria-hidden="true">
+                                        <Shield className="w-6 h-6 text-neutral-400 group-hover:text-brand-red transition-colors" />
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest mb-1.5 leading-none">Contextual Situation</p>
+                                        <p className="text-sm font-bold text-neutral-900 leading-relaxed">{scenario.situation}</p>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="bg-emerald-50/50 rounded-2xl p-6 border border-emerald-100/50" role="status" aria-label="Protocol Execution">
+                                        <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                            <Check className="w-3 h-3" aria-hidden="true" /> Protocol Execution
+                                        </p>
+                                        <p className="text-xs text-neutral-600 font-medium leading-relaxed">{scenario.correctAction}</p>
+                                    </div>
+                                    <div className="bg-neutral-50/50 rounded-2xl p-6 border border-neutral-100/50" role="status" aria-label="Reporting Path">
+                                        <p className="text-[9px] font-black text-neutral-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                            <AlertCircle className="w-3 h-3" aria-hidden="true" /> Reporting Path
+                                        </p>
+                                        <p className="text-xs text-neutral-600 font-medium leading-relaxed italic">{scenario.reportingPath}</p>
+                                    </div>
+                                </div>
                             </div>
                         ))}
                     </div>
@@ -455,61 +519,61 @@ const Day2Culture: React.FC<Day2CultureProps> = ({ roleCategory = 'DESK', onComp
 
             <button
                 onClick={() => handleCompleteModule('ETHICS', 'BOT')}
-                className="w-full py-3 bg-[#E60000] hover:bg-[#CC0000] text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-2"
+                className="btn-primary w-full py-6 mt-6 flex items-center justify-center gap-4 group"
             >
-                Continue to Ask Anything <ChevronRight className="w-5 h-5" />
+                <span className="text-xs uppercase font-black tracking-widest">Acknowledge Institutional Conduct</span>
+                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
         </div>
     );
 
     const renderBotPhase = () => (
-        <div className="space-y-6">
-            <div>
-                <h3 className="text-xl font-semibold text-black flex items-center gap-2">
-                    🤖 Unwritten Rules Assistant
-                </h3>
-                <p className="text-[#616161] text-sm mt-1">
-                    Ask me anything about how things work here. I'll give you my best answer with a confidence level.
+        <div className="space-y-8 animate-fade-in">
+            <div className="mb-0">
+                <h3 className="text-xl font-black text-neutral-900 tracking-tight">Neural Culture Assistant</h3>
+                <p className="text-sm text-neutral-500 mt-2 leading-relaxed">
+                    Query the institutional knowledge base regarding unwritten protocols and cultural nuances.
                 </p>
             </div>
 
-            {/* Chat Area */}
-            <div className="bg-[#FAFAFA] rounded-xl border border-[#E0E0E0] h-96 flex flex-col">
-                <div className="flex-1 p-4 overflow-auto space-y-4">
+            <div className="bg-neutral-900 rounded-[40px] border border-neutral-800 shadow-2xl overflow-hidden flex flex-col h-[500px] relative" role="log" aria-live="polite" aria-label="Culture Assistant Chat">
+                {/* Internal UI elements */}
+                <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-brand-red to-transparent opacity-50" aria-hidden="true" />
+
+                {/* Chat History */}
+                <div className="flex-1 p-8 overflow-y-auto space-y-6 no-scrollbar">
                     {botResponses.length === 0 && (
-                        <div className="text-center py-8">
-                            <div className="text-4xl mb-2">🤖</div>
-                            <p className="text-[#616161]">
-                                Try asking something like:<br />
-                                "Can I work from home?" or "What's the dress code?"
-                            </p>
+                        <div className="h-full flex flex-col items-center justify-center text-center p-10 opacity-30 select-none" aria-hidden="true">
+                            <div className="w-20 h-20 rounded-3xl bg-neutral-800 flex items-center justify-center mb-6">
+                                <Sparkles className="w-10 h-10 text-brand-red" />
+                            </div>
+                            <p className="text-xs font-black uppercase tracking-[0.3em] text-white underline underline-offset-8 decoration-brand-red/50">Awaiting Signal</p>
+                            <p className="text-[10px] text-neutral-400 mt-6 max-w-[200px] leading-relaxed">Try: "Institutional dress code" or "Remote work velocity"</p>
                         </div>
                     )}
                     {botResponses.map((response, i) => (
-                        <div key={i} className="space-y-2">
-                            {/* User Question */}
+                        <div key={i} className="animate-slide-up space-y-3">
+                            {/* User Query */}
                             <div className="flex justify-end">
-                                <div className="bg-[#E60000] text-white px-4 py-2 rounded-xl rounded-br-none max-w-xs">
+                                <div className="bg-brand-red text-white px-6 py-3 rounded-2xl rounded-tr-none text-xs font-bold shadow-lg shadow-red-500/20 max-w-[80%]" aria-label="Your question">
                                     {response.question}
                                 </div>
                             </div>
-                            {/* Bot Answer */}
+                            {/* Bot Insight */}
                             <div className="flex justify-start">
-                                <div className="bg-white text-black px-4 py-3 rounded-xl rounded-bl-none max-w-md border border-[#E0E0E0]">
-                                    <p className="mb-2">{response.answer}</p>
-                                    <div className="flex items-center gap-2 text-xs">
-                                        <span className={`
-                                            px-2 py-0.5 rounded
-                                            ${response.confidenceLevel === 'HIGH' ? 'bg-[#E8F5E9] text-[#4CAF50]' : ''}
-                                            ${response.confidenceLevel === 'MEDIUM' ? 'bg-[#FFF3E0] text-[#E65100]' : ''}
-                                            ${response.confidenceLevel === 'LOW' ? 'bg-[#FFEBEE] text-[#D32F2F]' : ''}
+                                <div className="bg-neutral-800 border border-neutral-700 text-neutral-100 px-6 py-4 rounded-2xl rounded-tl-none max-w-[90%] shadow-xl" aria-label="Assistant's answer">
+                                    <p className="text-sm leading-relaxed">{response.answer}</p>
+                                    <div className="flex items-center gap-3 mt-4 pt-4 border-t border-neutral-700">
+                                        <div className={`
+                                            flex items-center gap-1.5 px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest
+                                            ${response.confidenceLevel === 'HIGH' ? 'bg-emerald-500/10 text-emerald-400' : ''}
+                                            ${response.confidenceLevel === 'MEDIUM' ? 'bg-amber-500/10 text-amber-400' : ''}
+                                            ${response.confidenceLevel === 'LOW' ? 'bg-brand-red/10 text-brand-red' : ''}
                                         `}>
-                                            {response.confidenceLevel} confidence
-                                        </span>
+                                            {response.confidenceLevel} Confidence
+                                        </div>
                                         {response.sourceName && (
-                                            <span className="text-[#9E9E9E]">
-                                                Source: {response.sourceName}
-                                            </span>
+                                            <p className="text-[9px] text-neutral-500 font-bold uppercase tracking-widest">Source: {response.sourceName}</p>
                                         )}
                                     </div>
                                 </div>
@@ -517,33 +581,35 @@ const Day2Culture: React.FC<Day2CultureProps> = ({ roleCategory = 'DESK', onComp
                         </div>
                     ))}
                     {isTyping && (
-                        <div className="flex justify-start">
-                            <div className="bg-white text-black px-4 py-2 rounded-xl rounded-bl-none flex items-center gap-1 border border-[#E0E0E0]">
-                                <span className="w-2 h-2 bg-[#9E9E9E] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                                <span className="w-2 h-2 bg-[#9E9E9E] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                                <span className="w-2 h-2 bg-[#9E9E9E] rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                        <div className="flex justify-start" aria-label="Assistant is typing...">
+                            <div className="bg-neutral-800 border border-neutral-700 px-6 py-4 rounded-2xl rounded-tl-none flex items-center gap-1.5">
+                                <div className="w-1.5 h-1.5 bg-brand-red rounded-full animate-pulse" aria-hidden="true" />
+                                <div className="w-1.5 h-1.5 bg-brand-red rounded-full animate-pulse delay-75" aria-hidden="true" />
+                                <div className="w-1.5 h-1.5 bg-brand-red rounded-full animate-pulse delay-150" aria-hidden="true" />
                             </div>
                         </div>
                     )}
                 </div>
 
-                {/* Input */}
-                <div className="p-4 border-t border-[#E0E0E0]">
-                    <div className="flex gap-2">
+                {/* Input Matrix */}
+                <div className="p-6 bg-neutral-900/80 backdrop-blur-xl border-t border-neutral-800">
+                    <div className="relative group">
                         <input
                             type="text"
                             value={botQuestion}
                             onChange={(e) => setBotQuestion(e.target.value)}
                             onKeyPress={(e) => e.key === 'Enter' && handleBotSubmit()}
-                            placeholder="Ask about our culture..."
-                            className="flex-1 px-4 py-2 bg-white border border-[#E0E0E0] rounded-lg text-black placeholder-[#9E9E9E] focus:outline-none focus:border-[#E60000]"
+                            placeholder="Interrogate cultural database..."
+                            aria-label="Interrogate cultural database"
+                            className="w-full pl-6 pr-16 py-4 bg-neutral-800 border border-neutral-700 rounded-2xl text-white placeholder-neutral-500 text-xs font-medium focus:outline-none focus:border-brand-red/50 focus:ring-4 focus:ring-brand-red/5 transition-all"
                         />
                         <button
                             onClick={handleBotSubmit}
                             disabled={!botQuestion.trim() || isTyping}
-                            className="px-4 py-2 bg-[#E60000] hover:bg-[#CC0000] disabled:bg-[#E0E0E0] text-white rounded-lg transition-all"
+                            aria-label="Send Query"
+                            className="absolute right-2 top-2 bottom-2 px-4 bg-brand-red hover:bg-red-500 disabled:bg-neutral-700 text-white rounded-xl transition-all flex items-center justify-center active:scale-95"
                         >
-                            <Send className="w-5 h-5" />
+                            <Send className="w-4 h-4" />
                         </button>
                     </div>
                 </div>
@@ -551,99 +617,97 @@ const Day2Culture: React.FC<Day2CultureProps> = ({ roleCategory = 'DESK', onComp
 
             <button
                 onClick={() => handleCompleteModule('BOT', 'COFFEE')}
-                className="w-full py-3 bg-[#E60000] hover:bg-[#CC0000] text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-2"
+                className="btn-primary w-full py-6 mt-6 flex items-center justify-center gap-4 group"
             >
-                Continue to Coffee Chats <ChevronRight className="w-5 h-5" />
+                <span className="text-xs uppercase font-black tracking-widest">Execute Cultural Synchronization</span>
+                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
         </div>
     );
 
     const renderCoffeePhase = () => (
-        <div className="space-y-6">
-            <div>
-                <h3 className="text-xl font-semibold text-black flex items-center gap-2">
-                    <Coffee className="w-6 h-6 text-[#E60000]" />
-                    Suggested Coffee Chats
-                </h3>
-                <p className="text-[#616161] text-sm mt-1">
-                    Build relationships early. We've identified some great people for you to connect with.
+        <div className="space-y-8 animate-fade-in">
+            <div className="mb-8">
+                <h3 className="text-xl font-black text-neutral-900 tracking-tight">Mentorship & Synergy Hub</h3>
+                <p className="text-sm text-neutral-500 mt-2 leading-relaxed">
+                    Build high-fidelity connections early. We've matched you with key institutional nodes to accelerate your integration.
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6" role="list" aria-label="Planned Coffee Chats">
                 {coffeeChats.map((chat) => (
-                    <div key={chat.id} className="bg-[#FAFAFA] rounded-xl border border-[#E0E0E0] p-5">
-                        <div className="flex items-start gap-4">
-                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#E60000] to-[#FF6666] flex items-center justify-center text-white font-bold">
-                                {chat.personName.split(' ').map(n => n[0]).join('')}
+                    <div key={chat.id} role="listitem" className="bg-white rounded-[32px] border border-neutral-100 shadow-xl shadow-neutral-100/30 p-8 group hover:border-brand-red/20 transition-all overflow-hidden relative">
+                        <div className="flex items-start gap-6 relative z-10">
+                            <div className="relative">
+                                <div className="w-16 h-16 rounded-2xl bg-neutral-900 flex items-center justify-center text-white text-xl font-black shadow-lg shadow-neutral-900/20 group-hover:bg-brand-red transition-colors" aria-hidden="true">
+                                    {chat.personName.split(' ').map(n => n[0]).join('')}
+                                </div>
+                                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 border-2 border-white rounded-full" aria-hidden="true" />
                             </div>
                             <div className="flex-1">
-                                <h4 className="font-medium text-black">{chat.personName}</h4>
-                                <p className="text-sm text-[#616161]">{chat.personTitle}</p>
+                                <h4 className="text-lg font-black text-neutral-900 tracking-tight leading-none mb-1">{chat.personName}</h4>
+                                <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">{chat.personTitle}</p>
+                                <div className="mt-4 p-4 bg-neutral-50 rounded-2xl border border-neutral-100/50">
+                                    <p className="text-[11px] text-neutral-600 font-medium leading-relaxed italic">"{chat.reason}"</p>
+                                </div>
                             </div>
                         </div>
 
-                        <p className="mt-4 text-sm text-[#616161]">{chat.reason}</p>
-
-                        <div className="mt-3 flex flex-wrap gap-1">
-                            {chat.suggestedTopics.map((topic, i) => (
-                                <span key={i} className="text-xs px-2 py-1 bg-[#E0E0E0] text-[#616161] rounded">
-                                    {topic}
-                                </span>
-                            ))}
+                        <div className="mt-8">
+                            <p className="text-[9px] font-black text-neutral-400 uppercase tracking-widest mb-3">Suggested Discussion Verticals</p>
+                            <div className="flex flex-wrap gap-2" role="list" aria-label="Suggested topics">
+                                {chat.suggestedTopics.map((topic, i) => (
+                                    <span key={i} role="listitem" className="text-[10px] px-3 py-1.5 bg-white border border-neutral-100 text-neutral-600 font-bold rounded-lg shadow-sm hover:border-brand-red/30 transition-colors">
+                                        {topic}
+                                    </span>
+                                ))}
+                            </div>
                         </div>
 
-                        <div className="mt-4">
+                        <div className="mt-10">
                             {chat.scheduled ? (
-                                <div className="flex items-center gap-2 text-[#4CAF50] text-sm">
-                                    <Check className="w-4 h-4" />
-                                    <span>Chat scheduled!</span>
+                                <div className="w-full py-4 bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-widest rounded-2xl border border-emerald-100 flex items-center justify-center gap-3" role="status">
+                                    <Check className="w-4 h-4" aria-hidden="true" /> Connection Synchronized
                                 </div>
                             ) : (
                                 <button
                                     onClick={() => handleScheduleCoffee(chat.id)}
-                                    className="w-full py-2 bg-[#E60000] hover:bg-[#CC0000] text-white font-medium rounded-lg transition-all flex items-center justify-center gap-2"
+                                    aria-label={`Initialize Connection with ${chat.personName}`}
+                                    className="w-full py-5 bg-neutral-900 hover:bg-brand-red text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-neutral-900/20 transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
                                 >
-                                    <Coffee className="w-4 h-4" /> Schedule Chat
+                                    <Coffee className="w-4 h-4" aria-hidden="true" /> Initialize Connection
                                 </button>
                             )}
+                        </div>
+
+                        {/* Subtle Background Pattern */}
+                        <div className="absolute top-0 right-0 p-6 opacity-5 pointer-events-none group-hover:opacity-10 transition-opacity" aria-hidden="true">
+                            <Users className="w-24 h-24" />
                         </div>
                     </div>
                 ))}
             </div>
-
-            <button
-                onClick={handleCompleteDay}
-                disabled={!canCompleteDay}
-                className={`
-                    w-full py-3 font-semibold rounded-xl transition-all flex items-center justify-center gap-2
-                    ${canCompleteDay
-                        ? 'bg-[#E60000] hover:bg-[#CC0000] text-white'
-                        : 'bg-[#E0E0E0] text-[#9E9E9E] cursor-not-allowed'}
-                `}
-            >
-                Complete Day 2 — Proceed to Tools & Workflow <ChevronRight className="w-5 h-5" />
-            </button>
         </div>
     );
 
     return (
-        <div className="p-8 max-w-5xl mx-auto">
-            {/* Header */}
-            <div className="mb-8">
-                <p className="text-[#E60000] text-sm font-bold uppercase tracking-wider mb-2">
-                    Day 2 of 5
-                </p>
-                <h1 className="text-3xl font-bold text-black mb-2">
-                    Company Culture
+        <div className="max-w-5xl mx-auto px-6 py-12 animate-fade-in selection:bg-red-100 selection:text-brand-red">
+            {/* Context Header */}
+            <div className="mb-12">
+                <div className="flex items-center gap-3 mb-4">
+                    <span className="text-[10px] font-black text-brand-red bg-red-50 px-3 py-1 rounded-full uppercase tracking-widest">Phase 02 / 05</span>
+                    <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Company Culture Architecture</span>
+                </div>
+                <h1 className="text-4xl font-black text-neutral-900 tracking-tight mb-4 leading-tight">
+                    Mastering the <span className="text-brand-red">Unwritten Protocols</span>
                 </h1>
-                <p className="text-[#616161]">
-                    Master the unwritten rules that make you effective here.
+                <p className="text-sm text-neutral-500 max-w-2xl leading-relaxed">
+                    Institutional excellence is defined by the subtleties of our interactions. Explore the cultural dimensions that make our ecosystem unique and highly effective.
                 </p>
             </div>
 
-            {/* Phase Navigation */}
-            <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
+            {/* Phase Navigation (Unified & Premium) */}
+            <div className="bg-white rounded-3xl border border-neutral-100 shadow-xl shadow-neutral-100/30 p-2 mb-10 flex gap-1 overflow-x-auto no-scrollbar" role="tablist" aria-label="Culture Onboarding Phases">
                 {phases.map((p) => {
                     const isActive = phase === p.id;
                     const isCompleted = completedModules.includes(p.id);
@@ -652,39 +716,71 @@ const Day2Culture: React.FC<Day2CultureProps> = ({ roleCategory = 'DESK', onComp
                         <button
                             key={p.id}
                             onClick={() => setPhase(p.id)}
+                            role="tab"
+                            aria-selected={isActive}
+                            aria-label={`${p.label}${isCompleted ? ', Completed' : ''}`}
                             className={`
-                                px-4 py-2 rounded-xl font-medium text-sm whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer
-                                ${isActive ? 'bg-red-50 border border-[#E60000] text-black' : ''}
-                                ${isCompleted ? 'bg-[#E8F5E9] border border-[#4CAF50]/50 text-[#4CAF50]' : ''}
-                                ${!isActive && !isCompleted ? 'bg-[#F5F5F5] text-[#616161] hover:bg-[#E0E0E0] hover:text-black' : ''}
+                                flex-1 min-w-[140px] px-6 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all flex items-center justify-center gap-3
+                                ${isActive
+                                    ? 'bg-neutral-900 text-white shadow-lg -translate-y-0.5'
+                                    : (isCompleted ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-white text-neutral-400 hover:bg-neutral-50 hover:text-neutral-600')}
                             `}
                         >
-                            {isCompleted ? <Check className="w-4 h-4" /> : <span>{p.icon}</span>}
+                            <span className="text-lg" aria-hidden="true">
+                                {isCompleted ? <Check className="w-4 h-4" /> : p.icon}
+                            </span>
                             {p.label}
                         </button>
                     );
                 })}
             </div>
 
-            {/* Phase Content */}
-            <div className="bg-white backdrop-blur-md rounded-2xl border border-[#E0E0E0] p-6">
-                {phase === 'SCENARIOS' && renderScenariosPhase()}
-                {phase === 'COMMUNICATION' && renderCommunicationPhase()}
-                {phase === 'MEETINGS' && renderMeetingsPhase()}
-                {phase === 'DECISIONS' && renderDecisionsPhase()}
-                {phase === 'ETHICS' && renderEthicsPhase()}
-                {phase === 'BOT' && renderBotPhase()}
-                {phase === 'COFFEE' && renderCoffeePhase()}
-                {phase === 'DONE' && (
-                    <div className="text-center py-12">
-                        <div className="w-20 h-20 rounded-full bg-[#E8F5E9] flex items-center justify-center mx-auto mb-4">
-                            <Check className="w-10 h-10 text-[#4CAF50]" />
+            {/* Focused Cultural Content */}
+            <div className="bg-white rounded-[32px] border border-neutral-100 shadow-sm p-8 md:p-12 mb-10 min-h-[500px] animate-slide-up">
+                <div className="max-w-3xl mx-auto">
+                    {phase === 'SCENARIOS' && renderScenariosPhase()}
+                    {phase === 'COMMUNICATION' && renderCommunicationPhase()}
+                    {phase === 'MEETINGS' && renderMeetingsPhase()}
+                    {phase === 'DECISIONS' && renderDecisionsPhase()}
+                    {phase === 'ETHICS' && renderEthicsPhase()}
+                    {phase === 'BOT' && renderBotPhase()}
+                    {phase === 'COFFEE' && renderCoffeePhase()}
+                    {phase === 'DONE' && (
+                        <div className="text-center py-20 animate-fade-in">
+                            <div className="w-24 h-24 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center mx-auto mb-8 shadow-inner">
+                                <Check className="w-12 h-12 text-emerald-600" />
+                            </div>
+                            <h2 className="text-3xl font-black text-neutral-900 mb-4 tracking-tight">Phase 02 Calibrated</h2>
+                            <p className="text-neutral-500 max-w-sm mx-auto leading-relaxed">
+                                You've successfully integrated the core cultural protocols. Preparing transition to Tools & Workflow...
+                            </p>
                         </div>
-                        <h2 className="text-2xl font-bold text-black mb-2">Day 2 Complete!</h2>
-                        <p className="text-[#616161]">Moving to Day 3: Tools & Workflow...</p>
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
+
+            {/* Advancement Protocol */}
+            {phase !== 'DONE' && (
+                <button
+                    onClick={handleCompleteDay}
+                    disabled={!canCompleteDay}
+                    className={`
+                        w-full py-6 rounded-2xl font-black uppercase tracking-[0.2em] text-xs transition-all flex items-center justify-center gap-4 group
+                        ${canCompleteDay
+                            ? 'bg-brand-red text-white shadow-xl shadow-red-500/30 hover:shadow-red-500/40 hover:-translate-y-1 active:translate-y-0'
+                            : 'bg-neutral-100 text-neutral-300 cursor-not-allowed'}
+                    `}
+                >
+                    {canCompleteDay ? (
+                        <>
+                            Initialize Next Phase: Tools & Workflow
+                            <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        </>
+                    ) : (
+                        <>Complete {5 - completedModules.length} More Modules to Proceed ({completedModules.length}/5)</>
+                    )}
+                </button>
+            )}
         </div>
     );
 };

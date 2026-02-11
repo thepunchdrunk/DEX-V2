@@ -347,7 +347,7 @@ const SkillTree: React.FC<SkillTreeProps> = ({ branches }) => {
 
             {/* Visual View */}
             {viewMode === 'visual' && (
-                <div className="relative bg-gradient-to-br from-gray-50 to-white rounded-2xl border border-[#E0E0E0] overflow-hidden shadow-sm" style={{ height: '450px' }}>
+                <div className="relative bg-gradient-to-br from-gray-50 to-white rounded-2xl border border-[#E0E0E0] overflow-hidden shadow-sm min-h-[300px] md:min-h-[450px]" style={{ aspectRatio: '16/9' }}>
                     {/* Background rings */}
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                         {[1, 2, 3].map((ring) => (

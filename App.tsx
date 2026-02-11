@@ -13,6 +13,7 @@ import OnboardingShell from './components/onboarding/OnboardingShell';
 import RoleDashboard from './components/dashboard/RoleDashboard';
 import RoleSelectionScreen from './components/onboarding/RoleSelectionScreen';
 import ErrorBoundary from './components/ErrorBoundary';
+import { ToastProvider } from './components/core/ToastProvider';
 
 // Import styles
 import './styles/design-system.css';
@@ -92,38 +93,78 @@ const App: React.FC = () => {
     setAppState('ROLE_BASED');
   };
 
+  // Demo: Unlock all days
+  const handleUnlockAll = () => {
+    setUser((prev) => {
+      const newProgress = { ...prev.dayProgress };
+      [1, 2, 3, 4, 5].forEach(day => {
+        if (!newProgress[day as OnboardingDay]) {
+          newProgress[day as OnboardingDay] = {
+            day: day as OnboardingDay,
+            completed: true,
+            completedAt: new Date().toISOString(),
+            tasks: []
+          };
+        } else {
+          newProgress[day as OnboardingDay] = {
+            ...newProgress[day as OnboardingDay],
+            completed: true,
+            completedAt: new Date().toISOString()
+          };
+        }
+      });
+      return {
+        ...prev,
+        onboardingDay: 5 as OnboardingDay,
+        dayProgress: newProgress
+      };
+    });
+  };
+
   // Render Role Selection
   if (appState === 'ROLE_SELECTION') {
     return (
-      <ErrorBoundary>
-        <RoleSelectionScreen onSelectRole={handleRoleSelect} />
-      </ErrorBoundary>
+      <ToastProvider>
+        <ErrorBoundary>
+          <main id="main-content">
+            <RoleSelectionScreen onSelectRole={handleRoleSelect} />
+          </main>
+        </ErrorBoundary>
+      </ToastProvider>
     );
   }
 
   // Render Onboarding Shell
   if (appState === 'ONBOARDING') {
     return (
-      <ErrorBoundary>
-        <OnboardingShell
-          user={user}
-          onDayComplete={handleDayComplete}
-          onGraduate={handleGraduate}
-        />
-      </ErrorBoundary>
+      <ToastProvider>
+        <ErrorBoundary>
+          <main id="main-content">
+            <OnboardingShell
+              user={user}
+              onDayComplete={handleDayComplete}
+              onGraduate={handleGraduate}
+              onUnlockAll={handleUnlockAll}
+            />
+          </main>
+        </ErrorBoundary>
+      </ToastProvider>
     );
   }
 
   // Unified Role-Based Dashboard (Day 6+)
-  // Both Employees and Managers use RoleDashboard, but Managers get an extra "My Team" tab
   return (
-    <ErrorBoundary>
-      <RoleDashboard
-        user={user}
-        isWednesday={isWednesday}
-        onUpdateUser={(updates) => setUser((prev) => ({ ...prev, ...updates }))}
-      />
-    </ErrorBoundary>
+    <ToastProvider>
+      <ErrorBoundary>
+        <main id="main-content">
+          <RoleDashboard
+            user={user}
+            isWednesday={isWednesday}
+            onUpdateUser={(updates) => setUser((prev) => ({ ...prev, ...updates }))}
+          />
+        </main>
+      </ErrorBoundary>
+    </ToastProvider>
   );
 };
 

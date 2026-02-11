@@ -1,6 +1,7 @@
 import React from 'react';
 import { Zap, TrendingUp, Rocket } from 'lucide-react';
-import { TimeHorizon, HORIZON_CONFIG } from '../../types';
+import { TimeHorizon } from '../../types';
+import { HORIZON_CONFIG } from '../../constants';
 
 interface TimeHorizonNavProps {
     activeHorizon: TimeHorizon;

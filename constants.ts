@@ -14,7 +14,6 @@ import {
   MicroSkillCard,
   SimulatorChallenge,
   SkillBranch,
-  TeamMember,
   MarketGapCard,
 } from './types';
 
@@ -42,7 +41,6 @@ export const MOCK_USER: UserProfile = {
     4: { day: 4, completed: false, tasks: [] },
     5: { day: 5, completed: false, tasks: [] },
   },
-  safeMode: false,
   roleCategory: 'DESK',
   role: 'EMPLOYEE',
 };
@@ -414,20 +412,7 @@ export const MOCK_MICRO_SKILL: MicroSkillCard = {
   roleCategories: ['DESK', 'REMOTE', 'HYBRID'],
 };
 
-export const MOCK_MANAGER_ALERT: DailyCard = {
-  id: 'card-mgr-1',
-  slot: 'CONTEXT_ANCHOR',
-  title: 'Team Readiness Alert',
-  description: 'Two team members are failing their Day 1 Digital Setup. Click to view help tickets.',
-  source: 'Manager Hub',
-  sourceType: 'SYSTEM',
-  timestamp: new Date().toISOString(),
-  priority: 'CRITICAL',
-  actionLabel: 'View Readiness',
-  read: false,
-  flagged: false,
-  roleCategories: ['DESK', 'FRONTLINE', 'REMOTE', 'HYBRID'], // visible to all managers
-};
+
 
 export const MOCK_FRONTLINE_SAFETY: DailyCard = {
   id: 'card-front-1',
@@ -459,29 +444,14 @@ export const MOCK_REMOTE_SUCCESS: DailyCard = {
   roleCategories: ['REMOTE'],
 };
 
-export const MOCK_LEADERSHIP_TIP: DailyCard = {
-  id: 'card-lead-1',
-  slot: 'MICRO_SKILL',
-  title: 'Leadership: High-Trust 1:1s',
-  description: 'Protip: Spend the first 10 minutes of every 1:1 on personal check-ins. High-trust teams are 50% more productive.',
-  source: 'People Operations',
-  sourceType: 'INTERNAL',
-  timestamp: new Date().toISOString(),
-  priority: 'MEDIUM',
-  actionLabel: 'View Meeting Guide',
-  read: false,
-  flagged: false,
-  roleCategories: ['MANAGER'], // Specifically for managers
-};
+
 
 export const MOCK_DAILY_CARDS: DailyCard[] = [
   MOCK_CONTEXT_ANCHOR,
   MOCK_DOMAIN_EDGE,
   MOCK_MICRO_SKILL,
-  MOCK_MANAGER_ALERT,
   MOCK_FRONTLINE_SAFETY,
   MOCK_REMOTE_SUCCESS,
-  MOCK_LEADERSHIP_TIP,
 ];
 
 // ----------------------------------------------------------------------------
@@ -660,67 +630,7 @@ export const MOCK_MARKET_GAP: MarketGapCard = {
   detectedAt: new Date().toISOString(),
 };
 
-// ----------------------------------------------------------------------------
-// MANAGER HUB: TEAM DATA
-// ----------------------------------------------------------------------------
-export const MOCK_TEAM: TeamMember[] = [
-  {
-    id: 'tm-1',
-    name: 'Alex Thompson',
-    title: 'Senior QA Engineer',
-    skillScores: { 'Test Automation': 85, Python: 70, Communication: 80 },
-    burnoutScore: 25,
-    burnoutSignals: [],
-    safeMode: false,
-  },
-  {
-    id: 'tm-2',
-    name: 'Jamie Rodriguez',
-    title: 'QA Engineer',
-    skillScores: { 'Test Automation': 65, Python: 80, Communication: 75 },
-    burnoutScore: 45,
-    burnoutSignals: [
-      {
-        type: 'OVERTIME',
-        severity: 'MEDIUM',
-        metric: '12 hours OT last week',
-        detectedAt: new Date().toISOString(),
-      },
-    ],
-    safeMode: false,
-  },
-  {
-    id: 'tm-3',
-    name: 'Sam Chen',
-    title: 'QA Lead',
-    skillScores: { 'Test Automation': 90, Python: 85, Communication: 90 },
-    burnoutScore: 15,
-    burnoutSignals: [],
-    safeMode: true,
-  },
-  {
-    id: 'tm-4',
-    name: 'Casey Miller',
-    title: 'Junior QA',
-    skillScores: { 'Test Automation': 40, Python: 50, Communication: 70 },
-    burnoutScore: 72,
-    burnoutSignals: [
-      {
-        type: 'LATE_NIGHT_LOGIN',
-        severity: 'HIGH',
-        metric: '5 logins after 9pm',
-        detectedAt: new Date().toISOString(),
-      },
-      {
-        type: 'ERROR_RATE',
-        severity: 'MEDIUM',
-        metric: 'Test failures up 30%',
-        detectedAt: new Date().toISOString(),
-      },
-    ],
-    safeMode: false,
-  },
-];
+
 
 // ----------------------------------------------------------------------------
 // THEME COLORS
@@ -766,9 +676,10 @@ import {
   CollaborationNorm,
   PeerCohort,
   ManagerSignoff,
-  Goal,
   EthicsModule,
   Day1Module,
+  EscalationPath,
+  TimeHorizon,
 } from './types';
 
 export const PREBOARDING_ITEMS: PreboardingItem[] = [
@@ -1586,38 +1497,7 @@ export const FIRST_TASK_SIMULATION_QA: FirstTaskSimulation = {
   managerReviewed: false,
 };
 
-export const FIRST_TASK_SIMULATION_MANAGER: FirstTaskSimulation = {
-  id: 'fts-mgr-1',
-  roleCategory: 'DESK',
-  title: 'Approve First Resource Request',
-  description: 'Practice reviewing and approving a team budget request',
-  mode: 'GUIDED',
-  steps: [
-    {
-      id: 'step-1',
-      instruction: 'Open the "Action Queue" in Manager Dashboard',
-      hint: 'Look for the "Pending Approvals" tab',
-      completed: false,
-    },
-    {
-      id: 'step-2',
-      instruction: 'Select the "Team Training Budget" request from Alex Thompson',
-      completed: false,
-    },
-    {
-      id: 'step-3',
-      instruction: 'Review the justification and budget impact',
-      completed: false,
-    },
-    {
-      id: 'step-4',
-      instruction: 'Click "Approve" and add a comment: "Approved for Q1 development."',
-      completed: false,
-    },
-  ],
-  artifactType: 'APPROVAL',
-  managerReviewed: true,
-};
+
 
 export const FIRST_TASK_SIMULATION_FRONTLINE: FirstTaskSimulation = {
   id: 'fts-frontline-1',
@@ -1999,56 +1879,7 @@ export const PEER_COHORT: PeerCohort = {
 // ============================================================================
 // DAY 5: GRADUATION
 // ============================================================================
-export const MOCK_MANAGER_SIGNOFF: ManagerSignoff = {
-  managerId: 'manager-001',
-  managerName: 'Sarah Chen',
-  signedOff: false,
-  firstWeekGoals: [
-    {
-      id: 'goal-1',
-      title: 'Complete First Bug Report',
-      description: 'Log your first real bug in the production Jira board',
-      dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-      status: 'NOT_STARTED',
-      category: 'DELIVERY',
-    },
-    {
-      id: 'goal-2',
-      title: 'Review 2 Pull Requests',
-      description: 'Provide review comments on teammate PRs',
-      dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-      status: 'NOT_STARTED',
-      category: 'DELIVERY',
-    },
-  ],
-  firstMonthGoals: [
-    {
-      id: 'goal-3',
-      title: 'Own a Feature Test',
-      description: 'Take ownership of end-to-end testing for one feature',
-      dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-      status: 'NOT_STARTED',
-      category: 'DELIVERY',
-    },
-    {
-      id: 'goal-4',
-      title: 'Complete Playwright Training',
-      description: 'Finish the internal Playwright automation course',
-      dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-      status: 'NOT_STARTED',
-      category: 'LEARNING',
-    },
-    {
-      id: 'goal-5',
-      title: 'Build 3 Key Relationships',
-      description: 'Have meaningful 1:1s with 3 people from your Critical 5',
-      dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-      status: 'NOT_STARTED',
-      category: 'RELATIONSHIP',
-    },
-  ],
-  welcomeMessage: 'Welcome to the team, Alex! I\'m excited to have you on board. Let\'s meet this week to discuss your goals and how I can support you.',
-};
+
 
 // ============================================================================
 // ADVANCED DASHBOARD FEATURES — MOCK DATA
@@ -2325,3 +2156,72 @@ export const FRIDAY_MICRO_SKILL: MicroSkillCard = {
   tipType: 'BEST_PRACTICE',
 };
 
+// ----------------------------------------------------------------------------
+// ESCALATION & KNOWLEDGE SYSTEM
+// ----------------------------------------------------------------------------
+
+export const ESCALATION_LADDER: EscalationPath[] = [
+  {
+    level: 1,
+    type: 'PEER',
+    label: 'Team Buddy / Peer',
+    description: 'Quick questions about workflow or local environment.',
+    triggerConditions: ['Environment setup issues', 'Documentation typos', 'Quick "where is X" questions'],
+    contactMethod: 'CHAT',
+    estimatedResponseTime: '30 mins',
+  },
+  {
+    level: 2,
+    type: 'MENTOR',
+    label: 'Technical Mentor',
+    description: 'Architecture guidance, code review patterns, and best practices.',
+    triggerConditions: ['Architecture decisions', 'Complex bug debugging', 'Unwritten coding standards'],
+    contactMethod: 'CHAT',
+    estimatedResponseTime: '2 hours',
+  },
+  {
+    level: 3,
+    type: 'MANAGER',
+    label: 'Engineering Manager',
+    description: 'Priority alignment, team conflicts, and career growth.',
+    triggerConditions: ['Priority conflicts', 'Systemic blockers', 'Inter-team dependencies'],
+    contactMethod: 'MEETING',
+    estimatedResponseTime: '24 hours',
+  },
+  {
+    level: 4,
+    type: 'HR_SME',
+    label: 'HR / Subject Matter Expert',
+    description: 'Policy questions, benefits, and workplace conduct.',
+    triggerConditions: ['Policy clarification', 'Benefit questions', 'Conduct issues'],
+    contactMethod: 'EMAIL',
+    estimatedResponseTime: '48 hours',
+  },
+  {
+    level: 5,
+    type: 'LEGAL',
+    label: 'Legal / Compliance',
+    description: 'Data privacy, security incidents, and regulatory compliance.',
+    triggerConditions: ['Security breaches', 'Data privacy concerns', 'Contractual obligations'],
+    contactMethod: 'TICKET',
+    estimatedResponseTime: '3 days',
+  },
+];
+
+export const HORIZON_CONFIG: Record<TimeHorizon, { label: string; description: string; color: string }> = {
+  IMMEDIATE: {
+    label: 'Immediate',
+    description: 'Critical items for your current focus',
+    color: '#3B82F6',
+  },
+  GROWTH: {
+    label: 'Growth',
+    description: 'Skills and knowledge for your next stage',
+    color: '#10B981',
+  },
+  TRAJECTORY: {
+    label: 'Trajectory',
+    description: 'Long-term career goals and market trends',
+    color: '#8B5CF6',
+  },
+};

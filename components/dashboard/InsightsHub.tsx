@@ -8,6 +8,7 @@ import {
     Shield,
     Map,
     ChevronRight,
+    ChevronLeft,
 } from 'lucide-react';
 import { MeetingIntelligence, PeerPractice, EnhancedSimulator, DecisionAssist, FocusGuard, CareerHorizon } from './features';
 
@@ -17,25 +18,75 @@ interface InsightsHubProps {
     className?: string;
 }
 
+const TOOL_CARDS = [
+    {
+        id: 'SIMULATOR' as InsightsTab,
+        icon: Gamepad2,
+        title: 'Simulator',
+        description: 'Practice high-stakes scenarios in a safe environment.',
+        action: 'Launch',
+        accentColor: 'text-brand-red',
+        iconBg: 'bg-brand-red',
+        hoverBorder: 'hover:border-brand-red/30',
+    },
+    {
+        id: 'DECISIONS' as InsightsTab,
+        icon: Target,
+        title: 'Decision Forge',
+        description: 'Frameworks for making complex, high-impact choices.',
+        action: 'Open',
+        accentColor: 'text-purple-600',
+        iconBg: 'bg-gradient-to-br from-indigo-400 to-purple-600',
+        hoverBorder: 'hover:border-purple-300',
+    },
+    {
+        id: 'PEERS' as InsightsTab,
+        icon: Users,
+        title: 'Peer Practices',
+        description: 'Discover what high-performers are doing differently.',
+        action: 'Explore',
+        accentColor: 'text-violet-600',
+        iconBg: 'bg-gradient-to-br from-violet-400 to-purple-600',
+        hoverBorder: 'hover:border-violet-300',
+    },
+    {
+        id: 'CAREER' as InsightsTab,
+        icon: Map,
+        title: 'Career Horizon',
+        description: 'Market trends & career pathing insights.',
+        action: 'View',
+        accentColor: 'text-purple-600',
+        iconBg: 'bg-purple-600',
+        hoverBorder: 'hover:border-purple-300',
+    },
+];
+
 const InsightsHub: React.FC<InsightsHubProps> = ({ className = '' }) => {
-    // State to track which "Active Tool" is open, if any
     const [activeTool, setActiveTool] = useState<InsightsTab | null>(null);
 
     // If a tool is open, show full view with back button
     if (activeTool) {
+        const activeCard = TOOL_CARDS.find(c => c.id === activeTool);
         return (
             <div className={`space-y-6 ${className}`}>
-                <div className="flex items-center gap-3 mb-4">
+                {/* Breadcrumb navigation */}
+                <div className="flex items-center gap-2 mb-4">
                     <button
                         onClick={() => setActiveTool(null)}
-                        className="p-2 rounded-lg hover:bg-gray-100 text-[#616161] hover:text-black transition-colors flex items-center gap-2"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 transition-all text-sm font-medium active:scale-95"
                     >
-                        <ChevronRight className="w-4 h-4 rotate-180" />
-                        <span className="text-sm font-medium">Back to Radar</span>
+                        <ChevronLeft className="w-4 h-4" />
+                        Back to Radar
                     </button>
+                    {activeCard && (
+                        <>
+                            <span className="text-neutral-300">/</span>
+                            <span className="text-sm font-bold text-neutral-900">{activeCard.title}</span>
+                        </>
+                    )}
                 </div>
 
-                <div className="bg-[#FAFAFA] rounded-2xl p-4 md:p-6 border border-[#E0E0E0] min-h-[600px] animate-fade-in-up">
+                <div className="bg-neutral-50 rounded-2xl p-4 md:p-6 border border-neutral-200 min-h-[600px] page-transition">
                     {activeTool === 'MEETINGS' && <MeetingIntelligence />}
                     {activeTool === 'PEERS' && <PeerPractice />}
                     {activeTool === 'SIMULATOR' && <EnhancedSimulator />}
@@ -53,89 +104,43 @@ const InsightsHub: React.FC<InsightsHubProps> = ({ className = '' }) => {
 
             {/* 1. CONTEXT RADAR (Passive Analytics) */}
             <section className="animate-fade-in">
-                <div className="flex items-center gap-2 mb-4">
+                <div className="flex items-center gap-2 mb-5">
                     <h2 className="text-xl font-bold text-black">My Radar</h2>
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-[#E8F5E9] text-[#4CAF50] border border-[#4CAF50]/30">Live Signals</span>
+                    <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 font-medium">Live Signals</span>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <MeetingIntelligence viewMode="WIDGET" className="cursor-pointer" onClick={() => setActiveTool('MEETINGS')} />
-                    <FocusGuard viewMode="WIDGET" className="cursor-pointer" onClick={() => setActiveTool('FOCUS')} />
+                    <MeetingIntelligence viewMode="WIDGET" className="cursor-pointer card-interactive" onClick={() => setActiveTool('MEETINGS')} />
+                    <FocusGuard viewMode="WIDGET" className="cursor-pointer card-interactive" onClick={() => setActiveTool('FOCUS')} />
                 </div>
             </section>
 
             {/* 2. MY TOOLS (Active Tools) */}
-            <section className="animate-fade-in delay-100">
-                <div className="flex items-center gap-2 mb-4">
+            <section className="animate-fade-in" style={{ animationDelay: '100ms' }}>
+                <div className="flex items-center gap-2 mb-5">
                     <h2 className="text-xl font-bold text-black">My Tools</h2>
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-purple-50 text-purple-600 border border-purple-200">On-Demand</span>
+                    <span className="text-xs px-2.5 py-1 rounded-full bg-purple-50 text-purple-600 border border-purple-200 font-medium">On-Demand</span>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {/* Tool Card: Simulator */}
-                    <button
-                        onClick={() => setActiveTool('SIMULATOR')}
-                        className="group flex flex-col p-5 rounded-2xl bg-white border border-[#E0E0E0] hover:border-[#E60000]/50 hover:shadow-md text-left transition-all"
-                    >
-                        <div className="w-10 h-10 rounded-xl bg-[#E60000] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                            <Gamepad2 className="w-5 h-5 text-white" />
-                        </div>
-                        <h3 className="font-bold text-black mb-1">Simulator</h3>
-                        <p className="text-xs text-[#616161] mb-4 flex-1">Practice high-stakes scenarios in a safe environment.</p>
-                        <div className="flex items-center gap-2 text-xs font-mono text-[#E60000]">
-                            <span>LAUNCH_SIM</span>
-                            <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                        </div>
-                    </button>
-
-                    {/* Tool Card: Decision Assist */}
-                    <button
-                        onClick={() => setActiveTool('DECISIONS')}
-                        className="group flex flex-col p-5 rounded-2xl bg-white border border-[#E0E0E0] hover:border-purple-300 hover:shadow-md text-left transition-all"
-                    >
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-400 to-purple-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                            <Target className="w-5 h-5 text-white" />
-                        </div>
-                        <h3 className="font-bold text-black mb-1">Decision Forge</h3>
-                        <p className="text-xs text-[#616161] mb-4 flex-1">Frameworks for making complex, high-impact choices.</p>
-                        <div className="flex items-center gap-2 text-xs font-mono text-purple-600">
-                            <span>OPEN_TOOL</span>
-                            <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                        </div>
-                    </button>
-
-                    {/* Tool Card: Peer Practices */}
-                    <button
-                        onClick={() => setActiveTool('PEERS')}
-                        className="group flex flex-col p-5 rounded-2xl bg-white border border-[#E0E0E0] hover:border-violet-300 hover:shadow-md text-left transition-all"
-                    >
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-400 to-purple-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                            <Users className="w-5 h-5 text-white" />
-                        </div>
-                        <h3 className="font-bold text-black mb-1">Peer Practices</h3>
-                        <p className="text-xs text-[#616161] mb-4 flex-1">Discover what high-performers are doing differently.</p>
-                        <div className="flex items-center gap-2 text-xs font-mono text-violet-600">
-                            <span>VIEW_DATA</span>
-                            <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                        </div>
-                    </button>
-
-                    {/* Tool Card: Career Horizon */}
-                    <button
-                        onClick={() => setActiveTool('CAREER')}
-                        className="group flex flex-col p-5 rounded-2xl bg-white border border-[#E0E0E0] hover:border-purple-300 hover:shadow-md text-left transition-all"
-                    >
-                        <div className="w-10 h-10 rounded-xl bg-purple-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                            <Map className="w-5 h-5 text-white" />
-                        </div>
-                        <h3 className="font-bold text-black mb-1">Career Horizon</h3>
-                        <p className="text-xs text-[#616161] mb-4 flex-1">Market trends & career pathing insights.</p>
-                        <div className="flex items-center gap-2 text-xs font-mono text-purple-600">
-                            <span>EXPLORE</span>
-                            <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                        </div>
-                    </button>
-
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                    {TOOL_CARDS.map((tool, index) => (
+                        <button
+                            key={tool.id}
+                            onClick={() => setActiveTool(tool.id)}
+                            className={`group flex flex-col p-5 rounded-2xl bg-white border border-neutral-200 ${tool.hoverBorder} hover:shadow-md text-left transition-all card-interactive animate-fade-in-up`}
+                            style={{ animationDelay: `${(index + 1) * 80}ms` }}
+                        >
+                            <div className={`w-10 h-10 rounded-xl ${tool.iconBg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                                <tool.icon className="w-5 h-5 text-white" />
+                            </div>
+                            <h3 className="font-bold text-black mb-1">{tool.title}</h3>
+                            <p className="text-xs text-neutral-500 mb-4 flex-1 leading-relaxed">{tool.description}</p>
+                            <div className={`flex items-center gap-2 text-xs font-semibold ${tool.accentColor}`}>
+                                <span className="uppercase tracking-wider">{tool.action}</span>
+                                <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                            </div>
+                        </button>
+                    ))}
                 </div>
             </section>
         </div>

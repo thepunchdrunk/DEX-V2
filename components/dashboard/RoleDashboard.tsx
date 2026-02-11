@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
     Sparkles,
     TreePine,
@@ -13,17 +13,19 @@ import {
     BarChart3,
     Compass,
     TrendingUp,
+    Sun,
+    Moon,
+    CloudSun,
 } from 'lucide-react';
 import { UserProfile, DailyCard, MarketGapCard, SkillBranch } from '../../types';
 import { THEME_COLORS, MOCK_DAILY_CARDS, MOCK_MARKET_GAP, MOCK_SKILL_TREE } from '../../constants';
 import Daily3Feed from './Daily3Feed';
 import SkillTree from '../tree/SkillTree';
 import MagicSearch from '../search/MagicSearch';
-import ManagerHub from './manager/ManagerHub';
 import AnalyticsDashboard from '../analytics/AnalyticsDashboard';
 import InsightsHub from './InsightsHub';
 
-type DashboardView = 'DAILY' | 'SKILLS' | 'INSIGHTS' | 'ANALYTICS' | 'MANAGER' | 'SETTINGS';
+type DashboardView = 'DAILY' | 'SKILLS' | 'INSIGHTS' | 'ANALYTICS' | 'SETTINGS';
 
 interface RoleDashboardProps {
     user: UserProfile;
@@ -40,13 +42,20 @@ const RoleDashboard: React.FC<RoleDashboardProps> = ({ user, isWednesday = false
     );
 
     const navItems: { view: DashboardView; icon: React.ReactNode; label: string }[] = [
-        { view: 'DAILY', icon: <Sparkles className="w-5 h-5" />, label: 'Top 3' },
-        { view: 'SKILLS', icon: <TreePine className="w-5 h-5" />, label: 'Skills' },
-        { view: 'INSIGHTS', icon: <Compass className="w-5 h-5" />, label: 'Trends' },
-        { view: 'ANALYTICS', icon: <TrendingUp className="w-5 h-5" />, label: 'Performance' },
-        ...(user.role === 'MANAGER' ? [{ view: 'MANAGER' as const, icon: <Users className="w-5 h-5" />, label: 'My Team' }] : []),
-        { view: 'SETTINGS', icon: <Settings className="w-5 h-5" />, label: 'Settings' },
+        { view: 'DAILY', icon: <Sparkles className="w-4 h-4" />, label: 'Daily 3' },
+        { view: 'SKILLS', icon: <TreePine className="w-4 h-4" />, label: 'Skill Graph' },
+        { view: 'INSIGHTS', icon: <Compass className="w-4 h-4" />, label: 'Radar' },
+        { view: 'ANALYTICS', icon: <TrendingUp className="w-4 h-4" />, label: 'Growth' },
+        { view: 'SETTINGS', icon: <Settings className="w-4 h-4" />, label: 'Profile' },
     ];
+
+    // Time-aware greeting
+    const greeting = useMemo(() => {
+        const hour = new Date().getHours();
+        if (hour < 12) return { text: 'Good morning', icon: <Sun className="w-5 h-5 text-amber-400" /> };
+        if (hour < 17) return { text: 'Good afternoon', icon: <CloudSun className="w-5 h-5 text-orange-400" /> };
+        return { text: 'Good evening', icon: <Moon className="w-5 h-5 text-indigo-400" /> };
+    }, []);
 
     const handleCardAction = (card: DailyCard) => {
         console.log('Card action:', card);
@@ -66,228 +75,228 @@ const RoleDashboard: React.FC<RoleDashboardProps> = ({ user, isWednesday = false
     };
 
     return (
-        <div
-            className="min-h-screen flex flex-col bg-white"
-        >
-            {/* Top Header */}
-            <header className="sticky top-0 z-50 backdrop-blur-md bg-white/90 border-b border-[#E0E0E0]">
-                <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
-                    {/* Logo */}
-                    <div className="flex items-center gap-2">
-                        <div className="h-8 w-8 rounded-lg bg-[#E60000] flex items-center justify-center">
-                            <Sparkles className="h-4 w-4 text-white" />
+        <div className="min-h-screen flex flex-col bg-white font-sans selection:bg-red-100 selection:text-brand-red">
+            {/* Top Navigation Bar */}
+            <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-neutral-100">
+                <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+                    {/* Brand / Logo Section */}
+                    <div className="flex items-center gap-4">
+                        <div className="h-10 w-10 rounded-xl bg-brand-red flex items-center justify-center shadow-lg shadow-red-500/20 active:scale-95 transition-transform">
+                            <Sparkles className="h-5 w-5 text-white" />
                         </div>
-                        <span className="text-sm font-bold tracking-wider text-black">
-                            DEX
-                        </span>
-                        <span className="text-xs text-[#E60000] font-mono">DASHBOARD</span>
+                        <div className="flex flex-col">
+                            <span className="text-sm font-black tracking-widest text-neutral-900 leading-none">DEX</span>
+                            <span className="text-[10px] text-brand-red font-bold tracking-[0.2em] mt-1 uppercase">Unified Engine</span>
+                        </div>
                     </div>
 
-                    {/* Right Actions */}
-                    <div className="flex items-center gap-3">
-                        {/* Search Toggle */}
+                    {/* Right Actions & Meta */}
+                    <div className="flex items-center gap-1 sm:gap-2">
+                        {/* Search Launcher */}
                         <button
                             onClick={() => setShowSearch(!showSearch)}
-                            className="p-2 rounded-lg hover:bg-gray-100 text-[#616161] hover:text-black transition-all"
-                            aria-label="Toggle Search"
-                        >
-                            <Search className="w-5 h-5" />
-                        </button>
-
-                        {/* Market Gap Alert */}
-                        {MOCK_MARKET_GAP && (
-                            <button className="p-2 rounded-lg hover:bg-gray-100 text-[#E65100] relative">
-                                <AlertTriangle className="w-5 h-5" />
-                                <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[#E65100]" />
-                            </button>
-                        )}
-
-                        {/* Notifications */}
-                        <button className="p-2 text-[#616161] hover:text-black hover:bg-gray-100 rounded-lg transition-colors relative" aria-label="Notifications">
-                            <Bell className="w-5 h-5" />
-                            <span className="absolute top-2 right-2 w-2 h-2 bg-[#E60000] rounded-full border-2 border-white"></span>
-                        </button>
-
-                        <button
-                            onClick={() => {
-                                if (confirm('Reset entire demo? This will clear all progress.')) {
-                                    localStorage.clear();
-                                    window.location.reload();
-                                }
-                            }}
-                            className="p-2 text-[#616161] hover:text-[#E60000] hover:bg-red-50 rounded-lg transition-colors"
-                            title="Reset Demo"
-                            aria-label="Reset Demo"
-                        >
-                            <RefreshCw className="w-5 h-5" />
-                        </button>
-
-                        <div className="w-px h-8 bg-[#E0E0E0] mx-2"></div>
-                        <button
-                            onClick={() => setIsOnline(!isOnline)}
-                            className={`p-2 rounded-lg hover:bg-gray-100 transition-all ${isOnline ? 'text-[#4CAF50]' : 'text-[#E60000]'
+                            className={`p-2.5 rounded-xl transition-all flex items-center gap-2 group ${showSearch ? 'bg-neutral-100 text-neutral-900' : 'text-neutral-500 hover:bg-neutral-50'
                                 }`}
+                            aria-label="Search and Actions"
                         >
-                            {isOnline ? <Wifi className="w-5 h-5" /> : <WifiOff className="w-5 h-5" />}
+                            <Search className={`w-5 h-5 transition-transform ${showSearch ? 'scale-110' : 'group-hover:scale-110'}`} />
+                            <span className="text-xs font-bold hidden sm:block text-neutral-400">⌘K</span>
                         </button>
 
-                        {/* User Avatar */}
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#E60000] to-purple-500 flex items-center justify-center text-xs font-bold text-white">
-                            {user.name
-                                .split(' ')
-                                .map((n) => n[0])
-                                .join('')}
+                        <div className="w-px h-6 bg-neutral-100 mx-1 hidden sm:block"></div>
+
+                        {/* Status Monitor */}
+                        <div className="flex items-center gap-2 bg-neutral-50/80 px-3 py-1.5 rounded-xl border border-neutral-100/50">
+                            {MOCK_MARKET_GAP && (
+                                <button className="p-1 text-amber-500 hover:scale-110 transition-transform relative" title="Market Gap Alert" aria-label="Market gap alert">
+                                    <AlertTriangle className="w-4 h-4" />
+                                    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-amber-500 border-2 border-white animate-pulse" />
+                                </button>
+                            )}
+
+                            <button
+                                onClick={() => setIsOnline(!isOnline)}
+                                className={`p-1 transition-all ${isOnline ? 'text-emerald-500' : 'text-brand-red animate-pulse'}`}
+                                title={isOnline ? 'Connected to Enterprise Core' : 'Offline Mode Active'}
+                                aria-label={isOnline ? 'Online' : 'Offline'}
+                            >
+                                {isOnline ? <Wifi className="w-4 h-4" /> : <WifiOff className="w-4 h-4" />}
+                            </button>
+                        </div>
+
+                        {/* User Profile */}
+                        <div className="flex items-center gap-3 pl-3 ml-1 border-l border-neutral-100">
+                            <div className="hidden sm:block text-right">
+                                <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider leading-none mb-1">{user.department}</p>
+                                <p className="text-xs font-bold text-neutral-900 truncate max-w-[100px]">{user.name}</p>
+                            </div>
+                            <button
+                                className="avatar avatar-md shadow-md hover:scale-105 active:scale-95 transition-transform overflow-hidden relative group"
+                                onClick={() => setActiveView('SETTINGS')}
+                                aria-label="Open profile settings"
+                            >
+                                <span className="relative z-10">{user.name.split(' ').map(n => n[0]).join('')}</span>
+                                <div className="absolute inset-0 bg-gradient-to-tr from-brand-red/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                {/* Quick Actions (Expandable) */}
+                {/* Sub-Navigation (Tabs) */}
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 overflow-x-auto no-scrollbar">
+                    <nav className="flex items-center gap-1 sm:gap-2" role="tablist" aria-label="Dashboard sections">
+                        {navItems.map((item) => (
+                            <button
+                                key={item.view}
+                                role="tab"
+                                aria-selected={activeView === item.view}
+                                onClick={() => setActiveView(item.view)}
+                                className={`
+                                    relative py-3.5 px-3 sm:px-4 text-xs font-bold tracking-wider uppercase transition-all whitespace-nowrap rounded-lg
+                                    flex items-center gap-2
+                                    ${activeView === item.view
+                                        ? 'text-brand-red'
+                                        : 'text-neutral-400 hover:text-neutral-600 hover:bg-neutral-50'}
+                                `}
+                            >
+                                {item.icon}
+                                <span className="hidden sm:inline">{item.label}</span>
+                                <span className="sm:hidden">{item.label.split(' ')[0]}</span>
+                                {activeView === item.view && (
+                                    <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-brand-red rounded-full animate-slide-right" />
+                                )}
+                            </button>
+                        ))}
+                    </nav>
+                </div>
+
+                {/* Integrated Magic Search Overlay */}
                 {showSearch && (
-                    <div className="border-t border-[#E0E0E0] p-4 animate-slide-down">
+                    <div className="border-t border-neutral-100 bg-neutral-50/50 p-6 animate-slide-down">
                         <MagicSearch onClose={() => setShowSearch(false)} />
                     </div>
                 )}
             </header>
 
-            {/* Main Content */}
-            <main className="flex-1 overflow-auto">
-                <div className="max-w-4xl mx-auto px-4 py-6">
+            {/* Main Content Area */}
+            <div className="flex-1 overflow-auto bg-neutral-50/30" role="tabpanel" aria-live="polite">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
                     {/* Daily View */}
                     {activeView === 'DAILY' && (
-                        <Daily3Feed
-                            cards={cards}
-                            isWednesday={isWednesday}
-                            onCardAction={handleCardAction}
-                            onCardFlag={handleCardFlag}
-                            user={{ jobTitle: user.jobTitle, department: user.department }}
-                        />
+                        <div className="page-transition">
+                            {/* Greeting Banner */}
+                            <div className="greeting-banner animate-fade-in">
+                                <div className="flex items-center gap-3">
+                                    {greeting.icon}
+                                    <div>
+                                        <h2>{greeting.text}, {user.name.split(' ')[0]}</h2>
+                                        <p>Here's what's important for you today.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <Daily3Feed
+                                user={user}
+                                cards={cards}
+                                isWednesday={isWednesday}
+                                completedCards={user.onboardingProgress || []}
+                                onCardAction={handleCardAction}
+                                onCardFlag={handleCardFlag}
+                                onMarkComplete={(id) => {
+                                    const newProgress = [...(user.onboardingProgress || []), id];
+                                    onUpdateUser({ onboardingProgress: newProgress });
+                                }}
+                            />
+                        </div>
                     )}
 
                     {/* Skills View */}
                     {activeView === 'SKILLS' && (
-                        <SkillTree branches={MOCK_SKILL_TREE} />
+                        <div className="page-transition">
+                            <SkillTree branches={MOCK_SKILL_TREE} />
+                        </div>
                     )}
 
                     {/* Insights View */}
                     {activeView === 'INSIGHTS' && (
-                        <InsightsHub />
+                        <div className="page-transition">
+                            <InsightsHub />
+                        </div>
                     )}
 
                     {/* Analytics View */}
                     {activeView === 'ANALYTICS' && (
-                        <AnalyticsDashboard />
-                    )}
-
-                    {/* Manager View */}
-                    {activeView === 'MANAGER' && (
-                        <ManagerHub showSafeMode={true} />
+                        <div className="page-transition">
+                            <AnalyticsDashboard />
+                        </div>
                     )}
 
                     {/* Settings View */}
                     {activeView === 'SETTINGS' && (
-                        <div className="space-y-6">
-                            <h1 className="text-2xl font-bold text-black mb-6">Settings</h1>
-
-                            {/* Safe Mode Toggle */}
-                            <div className="bg-white backdrop-blur-md rounded-xl border border-[#E0E0E0] p-4">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="font-medium text-black">Safe Mode</p>
-                                        <p className="text-sm text-[#616161]">
-                                            Hide learning activity and simulator failures from Manager Dashboard
-                                        </p>
-                                    </div>
-                                    <button
-                                        className={`
-                      w-12 h-6 rounded-full transition-all relative
-                      ${user.safeMode ? 'bg-[#4CAF50]' : 'bg-[#E0E0E0]'}
-                    `}
-                                    >
-                                        <div
-                                            className={`
-                        absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all
-                        ${user.safeMode ? 'left-7' : 'left-1'}
-                      `}
-                                        />
-                                    </button>
-                                </div>
+                        <div className="page-transition max-w-2xl mx-auto">
+                            <div className="flex items-center justify-between mb-8 border-b border-neutral-200 pb-4">
+                                <h1 className="text-3xl font-black text-neutral-900 leading-tight">System Settings</h1>
+                                <span className="text-label">Configuration v2.1</span>
                             </div>
 
-                            {/* Reset Onboarding (Demo) */}
-                            <div className="bg-white backdrop-blur-md rounded-xl border border-[#E0E0E0] p-4">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="font-medium text-black">Reset Onboarding</p>
-                                        <p className="text-sm text-[#616161]">
-                                            Restart the onboarding sprint (demo only)
-                                        </p>
+                            <div className="space-y-6">
+                                {/* Profile Card */}
+                                <section className="p-6 bg-white rounded-2xl border border-neutral-200 shadow-sm">
+                                    <h3 className="text-lg font-bold text-neutral-900 mb-5 flex items-center gap-2">
+                                        <Settings className="w-5 h-5 text-brand-red" />
+                                        Profile Overview
+                                    </h3>
+                                    <div className="flex items-start gap-5 mb-6">
+                                        <div className="avatar avatar-xl shadow-lg">
+                                            {user.name.split(' ').map(n => n[0]).join('')}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-lg font-bold text-neutral-900 mb-0.5">{user.name}</p>
+                                            <p className="text-sm text-neutral-500 mb-3">{user.jobTitle}</p>
+                                            <div className="flex flex-wrap gap-2">
+                                                <span className="badge badge-red">{user.department}</span>
+                                                <span className="badge badge-neutral">{user.roleCategory || 'DESK'}</span>
+                                            </div>
+                                        </div>
                                     </div>
+                                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-neutral-100">
+                                        <div>
+                                            <p className="text-label mb-1.5">Display Name</p>
+                                            <p className="text-sm font-semibold text-neutral-800">{user.name}</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-label mb-1.5">Institutional ID</p>
+                                            <p className="text-sm font-semibold font-mono text-neutral-800">{user.employeeId}</p>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                {/* Danger Zone */}
+                                <section className="p-6 bg-white rounded-2xl border border-red-100 shadow-sm">
+                                    <h3 className="text-lg font-bold text-neutral-900 mb-4 flex items-center gap-2">
+                                        <RefreshCw className="w-5 h-5 text-red-500" />
+                                        Danger Zone
+                                    </h3>
+                                    <p className="text-sm text-neutral-600 mb-6 leading-relaxed">
+                                        Permanently wipe all session progress, knowledge graph anchors, and locally cached institution state. This action is irreversible.
+                                    </p>
                                     <button
                                         onClick={() => {
-                                            localStorage.removeItem('livingos_state');
-                                            window.location.reload();
+                                            if (confirm('Reset entire institution state? This will clear all locally stored progress.')) {
+                                                localStorage.clear();
+                                                window.location.reload();
+                                            }
                                         }}
-                                        className="px-4 py-2 bg-red-50 text-[#E60000] text-sm font-medium rounded-lg hover:bg-red-100 transition-all"
+                                        className="btn-destructive w-full"
                                     >
-                                        Reset
+                                        <RefreshCw className="w-4 h-4" />
+                                        Execute Hard Reset
                                     </button>
-                                </div>
-                            </div>
-
-                            {/* Demo Settings: Role Switcher */}
-                            <div className="bg-white backdrop-blur-md rounded-xl border border-[#E0E0E0] p-4">
-                                <div className="flex items-center justify-between mb-2">
-                                    <div>
-                                        <p className="font-medium text-black">Demo Mode: Manager View</p>
-                                        <p className="text-sm text-[#616161]">
-                                            Enable experimental manager features
-                                        </p>
-                                    </div>
-                                    <button
-                                        onClick={() => onUpdateUser({ role: user.role === 'MANAGER' ? 'EMPLOYEE' : 'MANAGER' })}
-                                        className={`
-                      w-12 h-6 rounded-full transition-all relative
-                      ${user.role === 'MANAGER' ? 'bg-[#E60000]' : 'bg-[#E0E0E0]'}
-                    `}
-                                    >
-                                        <div
-                                            className={`
-                        absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all
-                        ${user.role === 'MANAGER' ? 'left-7' : 'left-1'}
-                      `}
-                                        />
-                                    </button>
-                                </div>
-                                <p className="text-xs text-[#9E9E9E] p-2 bg-[#FAFAFA] rounded-lg">
-                                    Current Role: <span className="font-mono text-[#E60000]">{user.role}</span>
-                                </p>
+                                </section>
                             </div>
                         </div>
                     )}
                 </div>
-            </main>
-
-            {/* Bottom Navigation Dock */}
-            <nav className="sticky bottom-0 backdrop-blur-md bg-white/90 border-t border-[#E0E0E0]">
-                <div className="max-w-md mx-auto px-4 py-2 flex justify-around">
-                    {navItems.map((item) => (
-                        <button
-                            key={item.view}
-                            onClick={() => setActiveView(item.view)}
-                            className={`
-                flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all
-                ${activeView === item.view
-                                    ? 'text-[#E60000] bg-red-50'
-                                    : 'text-[#616161] hover:text-black'
-                                }
-              `}
-                        >
-                            {item.icon}
-                            <span className="text-xs">{item.label}</span>
-                        </button>
-                    ))}
-                </div>
-            </nav>
+            </div>
         </div>
     );
 };

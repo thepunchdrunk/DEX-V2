@@ -27,7 +27,6 @@ import {
     CompletionStatus,
     OnboardingDay,
 } from '../../../types';
-import { MOCK_MANAGER_SIGNOFF } from '../../../constants';
 
 interface Day5GraduationProps {
     user: UserProfile;
@@ -36,7 +35,19 @@ interface Day5GraduationProps {
 
 const Day5Graduation: React.FC<Day5GraduationProps> = ({ user, onGraduate }) => {
     const [phase, setPhase] = useState<'OVERVIEW' | 'SIGNOFF' | 'FEEDBACK' | 'GRADUATION' | 'TRANSITION'>('OVERVIEW');
-    const [managerSignoff, setManagerSignoff] = useState<ManagerSignoff>(MOCK_MANAGER_SIGNOFF);
+    const [managerSignoff, setManagerSignoff] = useState<ManagerSignoff>({
+        managerId: 'sys-001',
+        managerName: 'Onboarding Advisor',
+        signedOff: false,
+        firstWeekGoals: [
+            { id: 'g1', title: 'Complete Setup', description: 'Ensure all tools are working', category: 'PROCESS', status: 'NOT_STARTED', dueDate: '' },
+            { id: 'g2', title: 'First PR', description: 'Submit your first code change', category: 'DELIVERY', status: 'NOT_STARTED', dueDate: '' }
+        ],
+        firstMonthGoals: [
+            { id: 'g3', title: 'Feature Ownership', description: 'Take lead on a small feature', category: 'DELIVERY', status: 'NOT_STARTED', dueDate: '' }
+        ],
+        welcomeMessage: 'Great job completing your first week! You are ready to transition to your role.'
+    });
     const [feedback, setFeedback] = useState<Partial<OnboardingFeedback>>({
         overallSatisfaction: undefined,
         confidenceLevel: undefined,
@@ -58,7 +69,7 @@ const Day5Graduation: React.FC<Day5GraduationProps> = ({ user, onGraduate }) => 
         { day: 4, dayTitle: 'Network Mapping', category: 'Relationships', itemsCompleted: 5, itemsTotal: 5, incompleteItems: [] },
         {
             day: 5, dayTitle: 'Graduation', category: 'Completion', itemsCompleted: 0, itemsTotal: 3, incompleteItems: [
-                { id: 'signoff', title: 'Manager Sign-off' },
+                { id: 'signoff', title: 'Final Sign-off' },
                 { id: 'feedback', title: 'Submit Feedback' },
                 { id: 'graduate', title: 'Complete Graduation' },
             ]
@@ -126,469 +137,523 @@ const Day5Graduation: React.FC<Day5GraduationProps> = ({ user, onGraduate }) => 
     const canSubmitFeedback = feedback.overallSatisfaction && feedback.confidenceLevel;
 
     const renderOverviewPhase = () => (
-        <div className="space-y-6">
-            <div className="text-center mb-8">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center mx-auto mb-4 border border-red-200">
-                    <Trophy className="w-10 h-10 text-[#E60000]" />
+        <div className="space-y-12 animate-fade-in">
+            <div className="text-center mb-12">
+                <div className="w-24 h-24 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-6 border border-red-100 shadow-inner">
+                    <Trophy className="w-12 h-12 text-brand-red" />
                 </div>
-                <h2 className="text-2xl font-bold text-black mb-2">Your Onboarding Journey</h2>
-                <p className="text-[#616161]">A quick overview of everything you've accomplished.</p>
+                <h2 className="text-3xl font-black text-neutral-900 mb-2 tracking-tight">Institutional Onboarding <span className="text-brand-red">Audit</span></h2>
+                <p className="text-sm text-neutral-500 max-w-sm mx-auto leading-relaxed">A strategic verification of your immersion journey. Review your operational milestones before final calibration.</p>
             </div>
 
-            {/* Completion Dashboard */}
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
-                {completionStatuses.map((status) => (
-                    <div
-                        key={status.day}
-                        className={`
-                            bg-white rounded-xl border p-4 text-center shadow-sm
-                            ${status.itemsCompleted === status.itemsTotal ? 'border-[#4CAF50]' : 'border-[#E0E0E0]'}
-                        `}
-                    >
-                        <div className={`
-                            w-10 h-10 rounded-full mx-auto mb-2 flex items-center justify-center
-                            ${status.itemsCompleted === status.itemsTotal ? 'bg-[#E8F5E9] text-[#4CAF50]' : 'bg-[#F5F5F5] text-[#9E9E9E]'}
-                        `}>
-                            {status.itemsCompleted === status.itemsTotal ? (
-                                <Check className="w-5 h-5" />
-                            ) : (
-                                <span className="text-sm font-bold">{status.day}</span>
+            {/* Completion Dashboard (Premium) */}
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4" role="list" aria-label="Onboarding Completion Status">
+                {completionStatuses.map((status) => {
+                    const isFullyComplete = status.itemsCompleted === status.itemsTotal;
+                    return (
+                        <div
+                            key={status.day}
+                            role="listitem"
+                            className={`
+                                relative bg-white rounded-[32px] border p-6 text-center transition-all group
+                                ${isFullyComplete ? 'border-emerald-100 shadow-lg shadow-emerald-100/20' : 'border-neutral-100'}
+                            `}
+                        >
+                            <div className={`
+                                w-12 h-12 rounded-2xl mx-auto mb-4 flex items-center justify-center border transition-transform duration-500 group-hover:scale-110
+                                ${isFullyComplete ? 'bg-emerald-500 border-emerald-400 text-white shadow-lg shadow-emerald-500/30' : 'bg-neutral-50 border-neutral-100 text-neutral-400'}
+                            `} aria-hidden="true">
+                                {isFullyComplete ? (
+                                    <Check className="w-6 h-6" />
+                                ) : (
+                                    <span className="text-sm font-black uppercase tracking-widest">{status.day}</span>
+                                )}
+                            </div>
+                            <p className="text-[10px] font-black text-neutral-900 uppercase tracking-widest mb-1 leading-none">Day 0{status.day}</p>
+                            <p className="text-[9px] text-neutral-400 font-bold uppercase tracking-widest truncate">{status.dayTitle}</p>
+
+                            <div className="mt-4 pt-4 border-t border-neutral-50">
+                                <span className={`text-[10px] font-black uppercase tracking-widest ${isFullyComplete ? 'text-emerald-600' : 'text-neutral-400'}`} aria-label={`${status.itemsCompleted} of ${status.itemsTotal} items completed`}>
+                                    {status.itemsCompleted}/{status.itemsTotal}
+                                </span>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+
+            {/* Relational Onboarding Protocol - Final Stages */}
+            <div className="bg-neutral-900 rounded-[40px] border border-neutral-800 p-10 relative overflow-hidden shadow-2xl">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-brand-red/10 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2" aria-hidden="true" />
+                <h3 className="text-xl font-black text-white mb-8 flex items-center gap-3">
+                    <Rocket className="w-6 h-6 text-brand-red" aria-hidden="true" />
+                    Final Calibration Protocol
+                </h3>
+                <div className="space-y-4" role="list" aria-label="Calibration Steps">
+                    {[
+                        { step: 1, label: 'Institutional Sign-off', complete: managerSignoff.signedOff, desc: 'Advisor validation of operational goals' },
+                        { step: 2, label: 'Strategic Feedback', complete: !!feedback.submittedAt, desc: 'Contribute to institutional scaling' },
+                        { step: 3, label: 'Graduation Ceremony', complete: false, desc: 'Transition to full operational status' }
+                    ].map((item) => (
+                        <div key={item.step} role="listitem" className="flex items-center gap-6 p-6 bg-white/5 border border-white/10 rounded-[28px] group transition-all hover:bg-white/10">
+                            <div className={`
+                                w-12 h-12 rounded-2xl flex items-center justify-center border-2 transition-all
+                                ${item.complete ? 'bg-emerald-500 border-emerald-400 text-white' : 'bg-transparent border-white/20 text-white/40'}
+                            `} aria-hidden="true">
+                                {item.complete ? <Check className="w-5 h-5" /> : <span className="text-xs font-black">{item.step}</span>}
+                            </div>
+                            <div className="flex-1">
+                                <p className={`text-sm font-black uppercase tracking-widest ${item.complete ? 'text-emerald-400' : 'text-white'}`}>
+                                    {item.label}
+                                </p>
+                                <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-widest mt-1">{item.desc}</p>
+                            </div>
+                            {!item.complete && item.step !== 3 && (
+                                <ChevronRight className="w-5 h-5 text-white/20 group-hover:text-brand-red transition-colors" aria-hidden="true" />
                             )}
                         </div>
-                        <p className="text-sm font-medium text-black mb-1">Day {status.day}</p>
-                        <p className="text-xs text-[#757575]">{status.dayTitle}</p>
-                        <div className="mt-2 text-xs text-[#9E9E9E]">
-                            {status.itemsCompleted}/{status.itemsTotal} complete
-                        </div>
-                    </div>
-                ))}
-            </div>
-
-            {/* What's Next */}
-            <div className="bg-[#FFF8E1] rounded-xl border border-[#FFECB3] p-6">
-                <h3 className="font-semibold text-black mb-4 flex items-center gap-2">
-                    <Rocket className="w-5 h-5 text-[#FF6F00]" />
-                    Final Steps to Graduate
-                </h3>
-                <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                        <div className={`
-                            w-8 h-8 rounded-full flex items-center justify-center border
-                            ${managerSignoff.signedOff ? 'bg-[#4CAF50] border-[#4CAF50]' : 'bg-white border-[#BDBDBD]'}
-                        `}>
-                            {managerSignoff.signedOff ? <Check className="w-4 h-4 text-white" /> : <span className="text-[#757575] text-sm">1</span>}
-                        </div>
-                        <span className={managerSignoff.signedOff ? 'text-[#388E3C] font-medium' : 'text-black'}>
-                            Manager Sign-off
-                        </span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <div className={`
-                            w-8 h-8 rounded-full flex items-center justify-center border
-                            ${feedback.submittedAt ? 'bg-[#4CAF50] border-[#4CAF50]' : 'bg-white border-[#BDBDBD]'}
-                        `}>
-                            {feedback.submittedAt ? <Check className="w-4 h-4 text-white" /> : <span className="text-[#757575] text-sm">2</span>}
-                        </div>
-                        <span className={feedback.submittedAt ? 'text-[#388E3C] font-medium' : 'text-black'}>
-                            Submit Onboarding Feedback
-                        </span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-white border border-[#BDBDBD] flex items-center justify-center">
-                            <span className="text-[#757575] text-sm">3</span>
-                        </div>
-                        <span className="text-black">Graduate & Transition to Daily Dashboard</span>
-                    </div>
+                    ))}
                 </div>
             </div>
 
             <button
                 onClick={() => setPhase('SIGNOFF')}
-                className="w-full py-4 bg-[#E60000] hover:bg-[#C62828] text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
+                className="w-full py-6 bg-brand-red hover:bg-red-600 text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl transition-all flex items-center justify-center gap-4 group shadow-xl shadow-red-500/20 hover:-translate-y-1 active:translate-y-0"
             >
-                Begin Final Steps <ChevronRight className="w-5 h-5" />
+                Initiate Graduation Sequence <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
         </div>
     );
 
     const renderSignoffPhase = () => (
-        <div className="space-y-6">
-            <h3 className="text-xl font-semibold text-black flex items-center gap-2">
-                <FileText className="w-6 h-6 text-[#E60000]" />
-                Manager Sign-off
-            </h3>
+        <div className="space-y-12 animate-fade-in">
+            <div className="mb-0">
+                <h3 className="text-xl font-black text-neutral-900 tracking-tight">Institutional Calibration & <span className="text-brand-red">Sign-off</span></h3>
+                <p className="text-sm text-neutral-500 mt-2 leading-relaxed">
+                    Formalize your operational transition. Your designated advisor has established primary objectives to ensure your first 30 days are calibrated for high-impact delivery.
+                </p>
+            </div>
 
-            {/* Manager Message */}
+            {/* Advisor Message (Refined) */}
             {managerSignoff.welcomeMessage && (
-                <div className="bg-white rounded-xl border border-[#E0E0E0] p-6 shadow-sm">
-                    <div className="flex items-start gap-4">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gray-700 to-black flex items-center justify-center text-white font-bold">
+                <div className="relative bg-neutral-50 rounded-[32px] border border-neutral-100 p-8 overflow-hidden group" role="note" aria-label={`Message from ${managerSignoff.managerName}`}>
+                    <div className="absolute top-4 right-8 text-neutral-100 font-black text-6xl select-none group-hover:text-neutral-200 transition-colors" aria-hidden="true">"</div>
+                    <div className="flex items-start gap-6 relative z-10">
+                        <div className="w-16 h-16 rounded-2xl bg-neutral-900 flex items-center justify-center text-white font-black text-lg shadow-xl shrink-0" aria-hidden="true">
                             {managerSignoff.managerName.split(' ').map(n => n[0]).join('')}
                         </div>
                         <div>
-                            <p className="text-sm text-[#757575] mb-1">Message from {managerSignoff.managerName}</p>
-                            <p className="text-black">{managerSignoff.welcomeMessage}</p>
+                            <p className="text-[10px] font-black text-brand-red uppercase tracking-[0.2em] mb-2" aria-hidden="true">Advisor Recommendation</p>
+                            <p className="text-sm text-neutral-700 font-bold leading-relaxed pr-12">{managerSignoff.welcomeMessage}</p>
+                            <p className="text-[10px] text-neutral-400 font-black uppercase tracking-widest mt-4">— {managerSignoff.managerName}</p>
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* Goals Overview */}
-            <div className="bg-white rounded-xl border border-[#E0E0E0] p-6 shadow-sm">
-                <h4 className="font-medium text-black mb-4 flex items-center gap-2">
-                    <Target className="w-5 h-5 text-[#E60000]" />
-                    First Week Goals
-                </h4>
-                <div className="space-y-3">
-                    {managerSignoff.firstWeekGoals.map((goal) => (
-                        <div key={goal.id} className="flex items-start gap-3 p-3 bg-[#FAFAFA] rounded-lg border border-[#F5F5F5]">
-                            <div className="w-8 h-8 rounded-lg bg-white border border-[#E0E0E0] flex items-center justify-center flex-shrink-0 text-lg">
-                                {goal.category === 'LEARNING' && '📚'}
-                                {goal.category === 'DELIVERY' && '✅'}
-                                {goal.category === 'RELATIONSHIP' && '🤝'}
-                                {goal.category === 'PROCESS' && '⚙️'}
-                            </div>
-                            <div>
-                                <p className="text-sm font-medium text-black">{goal.title}</p>
-                                <p className="text-xs text-[#616161]">{goal.description}</p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            <div className="bg-white rounded-xl border border-[#E0E0E0] p-6 shadow-sm">
-                <h4 className="font-medium text-black mb-4 flex items-center gap-2">
-                    <Calendar className="w-5 h-5 text-[#E60000]" />
-                    First Month Goals
-                </h4>
-                <div className="space-y-3">
-                    {managerSignoff.firstMonthGoals.map((goal) => (
-                        <div key={goal.id} className="flex items-start gap-3 p-3 bg-[#FAFAFA] rounded-lg border border-[#F5F5F5]">
-                            <div className="w-8 h-8 rounded-lg bg-white border border-[#E0E0E0] flex items-center justify-center flex-shrink-0 text-lg">
-                                {goal.category === 'LEARNING' && '📚'}
-                                {goal.category === 'DELIVERY' && '✅'}
-                                {goal.category === 'RELATIONSHIP' && '🤝'}
-                                {goal.category === 'PROCESS' && '⚙️'}
-                            </div>
-                            <div>
-                                <p className="text-sm font-medium text-black">{goal.title}</p>
-                                <p className="text-xs text-[#616161]">{goal.description}</p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Sign-off Status */}
-            {!managerSignoff.signedOff ? (
-                <div className="bg-[#FFF3E0] border border-[#FFB74D] rounded-xl p-6">
-                    <div className="flex items-center gap-4">
-                        {signoffRequested ? (
-                            <>
-                                <Clock className="w-8 h-8 text-[#FF9800] animate-pulse" />
-                                <div>
-                                    <p className="font-medium text-[#F57C00]">Awaiting Manager Sign-off</p>
-                                    <p className="text-sm text-[#795548]">Notification sent to {managerSignoff.managerName}</p>
+            {/* Dual Goal Horizon Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Weekly Horizon */}
+                <div className="space-y-4">
+                    <div className="flex items-center gap-3 px-2">
+                        <div className="w-2 h-2 rounded-full bg-brand-red" aria-hidden="true" />
+                        <h4 className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em]">Weekly Horizon</h4>
+                    </div>
+                    <div role="list" aria-label="Weekly Goals">
+                        {managerSignoff.firstWeekGoals.map((goal) => (
+                            <div key={goal.id} role="listitem" className="bg-white rounded-[24px] border border-neutral-100 p-5 flex items-center gap-5 hover:border-brand-red/20 transition-all hover:shadow-lg group mb-4">
+                                <div className="w-12 h-12 rounded-2xl bg-neutral-50 flex items-center justify-center text-xl shadow-inner group-hover:scale-110 transition-transform" aria-hidden="true">
+                                    {goal.category === 'LEARNING' && '📚'}
+                                    {goal.category === 'DELIVERY' && '✅'}
+                                    {goal.category === 'RELATIONSHIP' && '🤝'}
+                                    {goal.category === 'PROCESS' && '⚙️'}
                                 </div>
-                            </>
-                        ) : (
-                            <>
-                                <AlertCircle className="w-8 h-8 text-[#FF9800]" />
-                                <div className="flex-1">
-                                    <p className="font-medium text-[#E65100]">Manager sign-off required</p>
-                                    <p className="text-sm text-[#795548]">Your manager will confirm you're ready to proceed</p>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-black text-neutral-900 tracking-tight leading-none mb-1 uppercase tracking-widest">{goal.title}</p>
+                                    <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-[0.1em] truncate">{goal.description}</p>
                                 </div>
-                                <button
-                                    onClick={requestSignoff}
-                                    className="px-4 py-2 bg-[#FF9800] hover:bg-[#F57C00] text-white font-medium rounded-lg transition-all flex items-center gap-2 shadow-sm"
-                                >
-                                    <Send className="w-4 h-4" /> Complete Onboarding
-                                </button>
-                            </>
-                        )}
+                            </div>
+                        ))}
                     </div>
                 </div>
-            ) : (
-                <div className="bg-[#E8F5E9] border border-[#66BB6A] rounded-xl p-6">
-                    <div className="flex items-center gap-4">
-                        <Check className="w-8 h-8 text-[#2E7D32]" />
-                        <div>
-                            <p className="font-medium text-[#2E7D32]">Signed Off!</p>
-                            <p className="text-sm text-[#388E3C]">
-                                {managerSignoff.managerName} signed off on {new Date(managerSignoff.signedOffAt!).toLocaleString()}
+
+                {/* Monthly Horizon */}
+                <div className="space-y-4">
+                    <div className="flex items-center gap-3 px-2">
+                        <div className="w-2 h-2 rounded-full bg-neutral-900" aria-hidden="true" />
+                        <h4 className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em]">Monthly Horizon</h4>
+                    </div>
+                    <div role="list" aria-label="Monthly Goals">
+                        {managerSignoff.firstMonthGoals.map((goal) => (
+                            <div key={goal.id} role="listitem" className="bg-white rounded-[24px] border border-neutral-100 p-5 flex items-center gap-5 hover:border-brand-red/20 transition-all hover:shadow-lg group mb-4">
+                                <div className="w-12 h-12 rounded-2xl bg-neutral-50 flex items-center justify-center text-xl shadow-inner group-hover:scale-110 transition-transform" aria-hidden="true">
+                                    {goal.category === 'LEARNING' && '📚'}
+                                    {goal.category === 'DELIVERY' && '✅'}
+                                    {goal.category === 'RELATIONSHIP' && '🤝'}
+                                    {goal.category === 'PROCESS' && '⚙️'}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-black text-neutral-900 tracking-tight leading-none mb-1 uppercase tracking-widest">{goal.title}</p>
+                                    <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-[0.1em] truncate">{goal.description}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* Sign-off Engagement Shell */}
+            <div className="mt-12">
+                {!managerSignoff.signedOff ? (
+                    <div className={`
+                        rounded-[32px] p-8 border transition-all duration-500
+                        ${signoffRequested ? 'bg-amber-50 border-amber-100 shadow-xl shadow-amber-100/30' : 'bg-neutral-50 border-neutral-100'}
+                    `} role="status" aria-busy={signoffRequested} aria-live="polite">
+                        <div className="flex items-center justify-between gap-8 flex-wrap md:flex-nowrap">
+                            <div className="flex items-center gap-6">
+                                {signoffRequested ? (
+                                    <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-lg relative" aria-hidden="true">
+                                        <Clock className="w-8 h-8 text-amber-500 animate-pulse" />
+                                        <div className="absolute inset-0 border-4 border-amber-500 border-t-transparent rounded-full animate-spin" />
+                                    </div>
+                                ) : (
+                                    <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-lg" aria-hidden="true">
+                                        <AlertCircle className="w-8 h-8 text-neutral-300" />
+                                    </div>
+                                )}
+                                <div>
+                                    <h4 className={`text-lg font-black tracking-tight leading-none mb-1 uppercase ${signoffRequested ? 'text-amber-900' : 'text-neutral-900'}`}>
+                                        {signoffRequested ? 'Calibration in Progress' : 'Final Verification Pending'}
+                                    </h4>
+                                    <p className="text-xs text-neutral-500 font-medium leading-relaxed">
+                                        {signoffRequested
+                                            ? `Transmitting final assessment to ${managerSignoff.managerName}...`
+                                            : 'Confirming operational readiness for transition to role-specific cockpit.'}
+                                    </p>
+                                </div>
+                            </div>
+                            {!signoffRequested && (
+                                <button
+                                    onClick={requestSignoff}
+                                    className="px-8 py-4 bg-neutral-900 hover:bg-brand-red text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl transition-all shadow-xl shadow-neutral-100/50 hover:-translate-y-1 active:translate-y-0"
+                                >
+                                    Authorize Calibration
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                ) : (
+                    <div className="bg-emerald-50 rounded-[40px] border border-emerald-100 p-10 flex items-center gap-8 shadow-2xl shadow-emerald-100/30 animate-scale-in" role="status" aria-label="Calibration synced">
+                        <div className="w-20 h-20 rounded-full bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20" aria-hidden="true">
+                            <Check className="w-10 h-10" />
+                        </div>
+                        <div className="flex-1">
+                            <p className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.3em] mb-2" aria-hidden="true">Authenticated Onboarding</p>
+                            <h4 className="text-2xl font-black text-neutral-900 tracking-tight leading-none mb-2">Calibration Successfully Synced</h4>
+                            <p className="text-xs text-neutral-500 font-medium leading-relaxed">
+                                {managerSignoff.managerName} finalized your operational status on {new Date(managerSignoff.signedOffAt!).toLocaleDateString()} at {new Date(managerSignoff.signedOffAt!).toLocaleTimeString()}.
                             </p>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
 
             <button
                 onClick={() => setPhase('FEEDBACK')}
                 disabled={!managerSignoff.signedOff}
                 className={`
-                    w-full py-4 font-semibold rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm
+                    w-full py-6 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-4 group shadow-xl
                     ${managerSignoff.signedOff
-                        ? 'bg-[#E60000] hover:bg-[#C62828] text-white'
-                        : 'bg-[#F5F5F5] text-[#9E9E9E] cursor-not-allowed border border-[#E0E0E0]'}
+                        ? 'bg-neutral-900 text-white hover:bg-neutral-800 hover:-translate-y-1 active:translate-y-0'
+                        : 'bg-neutral-100 text-neutral-300 cursor-not-allowed'}
                 `}
             >
-                Continue to Feedback <ChevronRight className="w-5 h-5" />
+                Transition to Feedback <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
         </div>
     );
 
     const renderFeedbackPhase = () => (
-        <div className="space-y-6">
-            <h3 className="text-xl font-semibold text-black flex items-center gap-2">
-                <MessageSquare className="w-6 h-6 text-[#E60000]" />
-                Onboarding Feedback
-            </h3>
-            <p className="text-[#616161]">
-                Help us improve the experience for future new hires.
-            </p>
+        <div className="space-y-12 animate-fade-in">
+            <div className="mb-0">
+                <h3 className="text-xl font-black text-neutral-900 tracking-tight">Institutional <span className="text-brand-red">Feedback</span> Loop</h3>
+                <p className="text-sm text-neutral-500 mt-2 leading-relaxed">
+                    Contribute to the evolution of our onboarding infrastructure. Your strategic insights directly influence the development of future institutional immersion protocols.
+                </p>
+            </div>
 
-            {/* Overall Satisfaction */}
-            <div className="bg-white rounded-xl border border-[#E0E0E0] p-6 shadow-sm">
-                <h4 className="font-medium text-black mb-4">How satisfied are you with your onboarding experience?</h4>
-                <div className="flex items-center justify-center gap-4">
-                    {[1, 2, 3, 4, 5].map((rating) => (
-                        <button
-                            key={rating}
-                            onClick={() => setFeedback(prev => ({ ...prev, overallSatisfaction: rating as 1 | 2 | 3 | 4 | 5 }))}
-                            className={`
-                                w-12 h-12 rounded-xl flex items-center justify-center text-xl transition-all border
-                                ${feedback.overallSatisfaction === rating
-                                    ? 'bg-red-50 border-red-200 scale-110 shadow-sm'
-                                    : 'bg-white border-[#E0E0E0] hover:bg-[#F5F5F5]'}
-                            `}
-                        >
-                            {rating === 1 && '😔'}
-                            {rating === 2 && '😕'}
-                            {rating === 3 && '😐'}
-                            {rating === 4 && '🙂'}
-                            {rating === 5 && '😄'}
-                        </button>
-                    ))}
+            {/* Satisfaction & Confidence Matrix */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Overall Satisfaction */}
+                <div className="bg-white rounded-[32px] border border-neutral-100 p-8 shadow-sm">
+                    <p className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] mb-6">Onboarding Satisfaction</p>
+                    <div className="flex items-center justify-between gap-2" role="radiogroup" aria-label="Satisfaction rating">
+                        {[1, 2, 3, 4, 5].map((rating) => (
+                            <button
+                                key={rating}
+                                role="radio"
+                                aria-checked={feedback.overallSatisfaction === rating}
+                                aria-label={`${rating} out of 5 satisfaction`}
+                                onClick={() => setFeedback(prev => ({ ...prev, overallSatisfaction: rating as 1 | 2 | 3 | 4 | 5 }))}
+                                className={`
+                                    flex-1 h-16 rounded-2xl flex items-center justify-center text-2xl transition-all border
+                                    ${feedback.overallSatisfaction === rating
+                                        ? 'bg-neutral-900 border-neutral-900 text-white shadow-xl -translate-y-1'
+                                        : 'bg-neutral-50 border-neutral-100 text-neutral-400 hover:bg-white hover:border-brand-red/30'}
+                                `}
+                            >
+                                <span aria-hidden="true">
+                                    {rating === 1 && '😔'}
+                                    {rating === 2 && '😕'}
+                                    {rating === 3 && '😐'}
+                                    {rating === 4 && '🙂'}
+                                    {rating === 5 && '😄'}
+                                </span>
+                            </button>
+                        ))}
+                    </div>
+                    <div className="flex justify-between mt-4 px-1">
+                        <span className="text-[9px] font-black text-neutral-300 uppercase tracking-widest">Dissatisfied</span>
+                        <span className="text-[9px] font-black text-neutral-300 uppercase tracking-widest">Exceptional</span>
+                    </div>
+                </div>
+
+                {/* Confidence Level */}
+                <div className="bg-white rounded-[32px] border border-neutral-100 p-8 shadow-sm">
+                    <p className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] mb-6">Operational Confidence</p>
+                    <div className="flex items-center justify-between gap-2" role="radiogroup" aria-label="Confidence rating">
+                        {[1, 2, 3, 4, 5].map((rating) => (
+                            <button
+                                key={rating}
+                                role="radio"
+                                aria-checked={feedback.confidenceLevel === rating}
+                                aria-label={`${rating} out of 5 confidence`}
+                                onClick={() => setFeedback(prev => ({ ...prev, confidenceLevel: rating as 1 | 2 | 3 | 4 | 5 }))}
+                                className={`
+                                    flex-1 h-16 rounded-2xl flex items-center justify-center transition-all border
+                                    ${feedback.confidenceLevel === rating
+                                        ? 'bg-brand-red border-brand-red text-white shadow-xl -translate-y-1'
+                                        : 'bg-neutral-50 border-neutral-100 text-neutral-400 hover:bg-white hover:border-brand-red/30'}
+                                `}
+                            >
+                                <span aria-hidden="true">
+                                    {rating === 1 && <Star className="w-6 h-6" />}
+                                    {rating === 2 && <Star className="w-6 h-6" />}
+                                    {rating === 3 && <Star className="w-6 h-6" />}
+                                    {rating === 4 && <Star className="w-6 h-6 fill-current" />}
+                                    {rating === 5 && <Sparkles className="w-6 h-6" />}
+                                </span>
+                            </button>
+                        ))}
+                    </div>
+                    <div className="flex justify-between mt-4 px-1">
+                        <span className="text-[9px] font-black text-neutral-300 uppercase tracking-widest">Uncertain</span>
+                        <span className="text-[9px] font-black text-neutral-300 uppercase tracking-widest">Mission Ready</span>
+                    </div>
                 </div>
             </div>
 
-            {/* Confidence Level */}
-            <div className="bg-white rounded-xl border border-[#E0E0E0] p-6 shadow-sm">
-                <h4 className="font-medium text-black mb-4">How confident do you feel starting your role?</h4>
-                <div className="flex items-center justify-center gap-4">
-                    {[1, 2, 3, 4, 5].map((rating) => (
+            {/* Strategic Qualitative Input */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Friction Points */}
+                <div className="space-y-4">
+                    <h4 className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] px-2">Operational Friction (Optional)</h4>
+                    <div className="relative">
+                        <input
+                            type="text"
+                            value={frictionInput}
+                            onChange={(e) => setFrictionInput(e.target.value)}
+                            placeholder="Identify institutional bottlenecks..."
+                            className="w-full px-6 py-4 bg-neutral-50 border border-neutral-100 rounded-2xl text-xs font-bold text-neutral-900 placeholder-neutral-300 focus:outline-none focus:border-brand-red focus:bg-white transition-all pr-24"
+                            onKeyPress={(e) => e.key === 'Enter' && handleAddFriction()}
+                        />
                         <button
-                            key={rating}
-                            onClick={() => setFeedback(prev => ({ ...prev, confidenceLevel: rating as 1 | 2 | 3 | 4 | 5 }))}
-                            className={`
-                                w-12 h-12 rounded-xl flex items-center justify-center transition-all border
-                                ${feedback.confidenceLevel === rating
-                                    ? 'bg-red-50 border-red-200 scale-110 shadow-sm'
-                                    : 'bg-white border-[#E0E0E0] hover:bg-[#F5F5F5]'}
-                            `}
+                            onClick={handleAddFriction}
+                            className="absolute right-2 top-2 bottom-2 px-4 bg-neutral-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-brand-red transition-colors"
                         >
-                            {rating === 1 && <Star className="w-6 h-6 text-[#9E9E9E]" />}
-                            {rating === 2 && <Star className="w-6 h-6 text-[#757575]" />}
-                            {rating === 3 && <Star className="w-6 h-6 text-[#E60000]" />}
-                            {rating === 4 && <Star className="w-6 h-6 text-[#E60000] fill-[#E60000]" />}
-                            {rating === 5 && <Sparkles className="w-6 h-6 text-[#E60000]" />}
+                            Log Point
                         </button>
-                    ))}
-                </div>
-            </div>
-
-            {/* Friction Points */}
-            <div className="bg-white rounded-xl border border-[#E0E0E0] p-6 shadow-sm">
-                <h4 className="font-medium text-black mb-4">Any friction points or challenges? (Optional)</h4>
-                <div className="flex gap-2 mb-3">
-                    <input
-                        type="text"
-                        value={frictionInput}
-                        onChange={(e) => setFrictionInput(e.target.value)}
-                        placeholder="e.g., System access took too long"
-                        className="flex-1 px-4 py-2 bg-[#FAFAFA] border border-[#E0E0E0] rounded-lg text-black placeholder-[#9E9E9E] focus:outline-none focus:border-[#E60000] focus:ring-1 focus:ring-[#E60000]"
-                        onKeyPress={(e) => e.key === 'Enter' && handleAddFriction()}
-                    />
-                    <button
-                        onClick={handleAddFriction}
-                        className="px-4 py-2 bg-[#FAFAFA] border border-[#E0E0E0] hover:bg-[#F5F5F5] text-black rounded-lg transition-all"
-                    >
-                        Add
-                    </button>
-                </div>
-                {feedback.frictionPoints && feedback.frictionPoints.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                        {feedback.frictionPoints.map((point, i) => (
-                            <span key={i} className="px-3 py-1 bg-red-50 text-red-600 border border-red-100 text-sm rounded-full">
+                    </div>
+                    <div className="flex flex-wrap gap-2" role="list" aria-label="Logged friction points">
+                        {feedback.frictionPoints?.map((point, i) => (
+                            <span key={i} role="listitem" className="px-4 py-2 bg-red-50 text-brand-red border border-red-100 text-[10px] font-black uppercase tracking-widest rounded-xl animate-scale-in">
                                 {point}
                             </span>
                         ))}
                     </div>
-                )}
-            </div>
-
-            {/* Highlights */}
-            <div className="bg-white rounded-xl border border-[#E0E0E0] p-6 shadow-sm">
-                <h4 className="font-medium text-black mb-4">What worked well? (Optional)</h4>
-                <div className="flex gap-2 mb-3">
-                    <input
-                        type="text"
-                        value={highlightInput}
-                        onChange={(e) => setHighlightInput(e.target.value)}
-                        placeholder="e.g., The buddy system was really helpful"
-                        className="flex-1 px-4 py-2 bg-[#FAFAFA] border border-[#E0E0E0] rounded-lg text-black placeholder-[#9E9E9E] focus:outline-none focus:border-[#E60000] focus:ring-1 focus:ring-[#E60000]"
-                        onKeyPress={(e) => e.key === 'Enter' && handleAddHighlight()}
-                    />
-                    <button
-                        onClick={handleAddHighlight}
-                        className="px-4 py-2 bg-[#FAFAFA] border border-[#E0E0E0] hover:bg-[#F5F5F5] text-black rounded-lg transition-all"
-                    >
-                        Add
-                    </button>
                 </div>
-                {feedback.highlights && feedback.highlights.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                        {feedback.highlights.map((highlight, i) => (
-                            <span key={i} className="px-3 py-1 bg-green-50 text-green-600 border border-green-100 text-sm rounded-full">
+
+                {/* Highlights */}
+                <div className="space-y-4">
+                    <h4 className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] px-2">Institutional Wins (Optional)</h4>
+                    <div className="relative">
+                        <input
+                            type="text"
+                            value={highlightInput}
+                            onChange={(e) => setHighlightInput(e.target.value)}
+                            placeholder="Institutional strengths..."
+                            className="w-full px-6 py-4 bg-neutral-50 border border-neutral-100 rounded-2xl text-xs font-bold text-neutral-900 placeholder-neutral-300 focus:outline-none focus:border-emerald-500 focus:bg-white transition-all pr-24"
+                            onKeyPress={(e) => e.key === 'Enter' && handleAddHighlight()}
+                        />
+                        <button
+                            onClick={handleAddHighlight}
+                            className="absolute right-2 top-2 bottom-2 px-4 bg-neutral-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-600 transition-colors"
+                        >
+                            Log Win
+                        </button>
+                    </div>
+                    <div className="flex flex-wrap gap-2" role="list" aria-label="Logged wins">
+                        {feedback.highlights?.map((highlight, i) => (
+                            <span key={i} role="listitem" className="px-4 py-2 bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] font-black uppercase tracking-widest rounded-xl animate-scale-in">
                                 {highlight}
                             </span>
                         ))}
                     </div>
-                )}
+                </div>
             </div>
 
             <button
                 onClick={handleSubmitFeedback}
                 disabled={!canSubmitFeedback}
                 className={`
-                    w-full py-4 font-semibold rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm
+                    w-full py-6 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-4 group shadow-xl
                     ${canSubmitFeedback
-                        ? 'bg-[#E60000] hover:bg-[#C62828] text-white'
-                        : 'bg-[#F5F5F5] text-[#9E9E9E] cursor-not-allowed border border-[#E0E0E0]'}
+                        ? 'bg-brand-red text-white hover:bg-red-600 hover:-translate-y-1 active:translate-y-0'
+                        : 'bg-neutral-100 text-neutral-300 cursor-not-allowed border border-neutral-200'}
                 `}
             >
-                <Send className="w-5 h-5" /> Submit Feedback
+                Transmit Strategic Feedback <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
             </button>
         </div>
     );
 
     const renderGraduationPhase = () => (
-        <div className="text-center py-8 space-y-8">
-            <div className="relative">
-                <div className="w-32 h-32 rounded-full bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center mx-auto border border-red-200">
-                    <Trophy className="w-16 h-16 text-[#E60000]" />
+        <div className="text-center py-12 space-y-12 animate-fade-in">
+            <div className="relative inline-block" role="img" aria-label="Graduation Trophy">
+                <div className="w-40 h-40 rounded-full bg-red-50 flex items-center justify-center mx-auto border-2 border-red-100 shadow-2xl relative z-10">
+                    <Trophy className="w-20 h-20 text-brand-red animate-bounce-subtle" aria-hidden="true" />
                 </div>
-                <div className="absolute -top-2 -right-2 w-12 h-12 rounded-full bg-[#E60000] flex items-center justify-center animate-bounce shadow-lg">
-                    <PartyPopper className="w-6 h-6 text-white" />
+                <div className="absolute -top-4 -right-4 w-16 h-16 rounded-2xl bg-brand-red flex items-center justify-center shadow-xl shadow-red-500/30 z-20 rotate-12" aria-hidden="true">
+                    <PartyPopper className="w-8 h-8 text-white" />
                 </div>
             </div>
 
             <div>
-                <h2 className="text-3xl font-bold text-black mb-2">Congratulations, {user.name}!</h2>
-                <p className="text-xl text-[#757575]">You've completed your onboarding journey.</p>
+                <h2 className="text-4xl font-black text-neutral-900 mb-2 tracking-tight uppercase">Onboarding <span className="text-brand-red">Complete</span></h2>
+                <p className="text-sm font-bold text-neutral-400 uppercase tracking-[0.3em]">Institutional Calibration Verified: {user.name}</p>
             </div>
 
-            {/* Badges Earned */}
-            <div className="flex items-center justify-center gap-4 flex-wrap">
+            {/* Badges Earned (Premium Nodes) */}
+            <div className="flex items-center justify-center gap-6 flex-wrap" role="list" aria-label="Badges Earned">
                 {[
-                    { icon: '🚀', label: 'Quick Starter' },
-                    { icon: '🎯', label: 'Goal Setter' },
-                    { icon: '🤝', label: 'Connector' },
-                    { icon: '📚', label: 'Fast Learner' },
+                    { icon: '🚀', label: 'Velocity' },
+                    { icon: '🎯', label: 'Precision' },
+                    { icon: '🤝', label: 'Synergy' },
+                    { icon: '📚', label: 'Fluency' },
                 ].map((badge, i) => (
                     <div
                         key={i}
-                        className="flex flex-col items-center p-4 bg-white border border-[#E0E0E0] rounded-xl shadow-sm"
+                        role="listitem"
+                        className="flex flex-col items-center p-6 bg-white border border-neutral-100 rounded-[28px] shadow-lg shadow-neutral-100/50 hover:shadow-xl hover:-translate-y-2 transition-all w-28 group"
                     >
-                        <span className="text-3xl mb-2">{badge.icon}</span>
-                        <span className="text-sm text-[#616161]">{badge.label}</span>
+                        <span className="text-3xl mb-3 group-hover:scale-110 transition-transform" aria-hidden="true">{badge.icon}</span>
+                        <span className="text-[10px] font-black text-neutral-900 uppercase tracking-widest">{badge.label}</span>
                     </div>
                 ))}
             </div>
 
-            {/* What's Next Teaser */}
-            <div className="bg-[#FFF8E1] rounded-xl border border-[#FFECB3] p-6 max-w-lg mx-auto shadow-sm">
-                <h3 className="font-semibold text-black mb-4 flex items-center justify-center gap-2">
-                    <Rocket className="w-5 h-5 text-[#FF6F00]" />
-                    Your Daily Dashboard Awaits
-                </h3>
-                <p className="text-[#616161] text-sm mb-4">
-                    Starting tomorrow, you'll have a personalized daily experience with context cards,
-                    smart nudges, and everything you need to thrive in your role.
-                </p>
-                <div className="flex items-center justify-center gap-4 text-sm">
-                    <span className="px-3 py-1 bg-white border border-[#E0E0E0] rounded-full text-[#757575]">📊 Daily Cards</span>
-                    <span className="px-3 py-1 bg-white border border-[#E0E0E0] rounded-full text-[#757575]">🔔 Smart Nudges</span>
-                    <span className="px-3 py-1 bg-white border border-[#E0E0E0] rounded-full text-[#757575]">📈 Growth Tracking</span>
+            {/* Role Dashboard Teaser (Operational Impact) */}
+            <div className="bg-neutral-900 rounded-[48px] border border-neutral-800 p-12 max-w-2xl mx-auto shadow-2xl relative overflow-hidden text-left">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-brand-red/10 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2" />
+                <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
+                    <div className="shrink-0 bg-white/5 p-6 rounded-[32px] border border-white/10">
+                        <Rocket className="w-12 h-12 text-brand-red" />
+                    </div>
+                    <div>
+                        <h3 className="text-xl font-black text-white mb-2 uppercase tracking-wide">Role-Specific <span className="text-brand-red">Cockpit</span> Initialized</h3>
+                        <p className="text-[11px] text-neutral-400 font-bold uppercase tracking-widest leading-relaxed mb-6">
+                            Institutional immersion transitions to operational delivery. Your personalized ecosystem is now active, featuring context-aware intelligence, priority mapping, and strategic growth tracking.
+                        </p>
+                        <div className="flex items-center gap-3 flex-wrap" role="list" aria-label="Role cockpit features">
+                            {['Intelligent Nudges', 'Priority Graph', 'Velocity Analytics'].map((feat, i) => (
+                                <span key={i} role="listitem" className="px-4 py-2 bg-white/5 border border-white/10 rounded-full text-[9px] font-black text-white uppercase tracking-widest">
+                                    {feat}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <button
                 onClick={() => setPhase('TRANSITION')}
-                className="px-8 py-4 bg-[#E60000] hover:bg-[#C62828] text-white font-bold text-lg rounded-xl transition-all flex items-center justify-center gap-3 mx-auto shadow-md hover:shadow-lg"
+                className="px-12 py-6 bg-brand-red hover:bg-red-600 text-white font-black text-xs uppercase tracking-[0.3em] rounded-2xl transition-all flex items-center justify-center gap-6 mx-auto shadow-2xl shadow-red-500/20 hover:-translate-y-1 active:translate-y-0 group"
             >
-                <Sparkles className="w-6 h-6" />
-                Enter Daily Dashboard
-                <ChevronRight className="w-6 h-6" />
+                <Sparkles className="w-6 h-6 group-hover:rotate-12 transition-transform" />
+                Activate Daily Protocol
+                <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
             </button>
         </div>
     );
 
     const renderTransitionPhase = () => (
-        <div className="text-center py-16 space-y-8 bg-white rounded-xl">
-            <div className="relative">
-                <div
-                    className="w-24 h-24 rounded-full mx-auto flex items-center justify-center transition-all duration-500 bg-red-50"
-                >
-                    <Sparkles className="w-12 h-12 text-[#E60000] animate-spin" />
+        <div className="text-center py-24 space-y-12 animate-fade-in">
+            <div className="relative inline-block" role="img" aria-label="Calibration icon">
+                <div className="w-32 h-32 rounded-full mx-auto flex items-center justify-center bg-red-50 border border-red-100 shadow-inner relative z-10">
+                    <Sparkles className="w-12 h-12 text-brand-red animate-spin-slow" aria-hidden="true" />
                 </div>
+                <div className="absolute inset-0 border-2 border-brand-red/20 rounded-full animate-ping scale-110" aria-hidden="true" />
             </div>
 
-            <div>
-                <h2 className="text-2xl font-bold text-black mb-2">
-                    {themeTransitionProgress < 50 ? 'Transitioning...' : 'Welcome to your new experience!'}
+            <div className="space-y-4">
+                <h2 className="text-3xl font-black text-neutral-900 tracking-tight uppercase">
+                    {themeTransitionProgress < 50 ? 'Initializing <span className="text-brand-red">Ecosystem</span>' : 'Calibration <span className="text-brand-red">Finalized</span>'}
                 </h2>
-                <p className="text-[#757575]">
+                <p className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.4em] animate-pulse">
                     {themeTransitionProgress < 50
-                        ? 'Finalizing your profile setup...'
-                        : 'Your daily dashboard is ready'}
+                        ? 'Synthesizing Institutional Context...'
+                        : 'Operational Cockpit Ready'}
                 </p>
             </div>
 
-            {/* Progress Bar */}
-            <div className="max-w-sm mx-auto">
-                <div className="h-2 bg-[#E0E0E0] rounded-full overflow-hidden">
+            {/* Progress Visualization (Premium) */}
+            <div className="max-w-md mx-auto relative px-8" role="progressbar" aria-valuenow={themeTransitionProgress} aria-valuemin={0} aria-valuemax={100} aria-label="Ecosystem activation progress">
+                <div className="h-1 bg-neutral-100 rounded-full overflow-hidden mb-4">
                     <div
-                        className="h-full transition-all duration-100 bg-[#E60000]"
+                        className="h-full transition-all duration-100 bg-brand-red shadow-[0_0_15px_rgba(230,0,0,0.5)]"
                         style={{
                             width: `${themeTransitionProgress}%`,
                         }}
                     />
                 </div>
-                <p className="text-sm text-[#9E9E9E] mt-2">{themeTransitionProgress}%</p>
+                <div className="flex justify-between items-center text-[9px] font-black text-neutral-300 uppercase tracking-widest" aria-hidden="true">
+                    <span>Calibration</span>
+                    <span className="text-brand-red">{themeTransitionProgress}%</span>
+                    <span>Deployment</span>
+                </div>
             </div>
         </div>
     );
 
     return (
-        <div className="p-8 max-w-4xl mx-auto">
-            {/* Header */}
-            <div className="mb-8">
-                <p className="text-[#E60000] text-sm font-bold uppercase tracking-wider mb-2">
-                    Day 5 of 5
-                </p>
-                <h1 className="text-3xl font-bold text-black mb-2">
-                    Completion Day
+        <div className="max-w-5xl mx-auto px-6 py-12 animate-fade-in selection:bg-red-100 selection:text-brand-red">
+            {/* Context Header (Day 5 - Graduation) */}
+            <div className="mb-12">
+                <div className="flex items-center gap-3 mb-4">
+                    <span className="text-[10px] font-black text-brand-red bg-red-50 px-3 py-1 rounded-full uppercase tracking-widest">Phase 05 / 05</span>
+                    <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Institutional Calibration & Graduation</span>
+                </div>
+                <h1 className="text-4xl font-black text-neutral-900 tracking-tight mb-4 leading-tight">
+                    Final <span className="text-brand-red">Operational Handover</span>
                 </h1>
-                <p className="text-[#616161]">
-                    You've made it! Time to celebrate and transition to your daily experience.
+                <p className="text-sm text-neutral-500 max-w-2xl leading-relaxed">
+                    Institutional immersion is complete. Validate your calibration, provides strategic feedback, and transition to your full roles with complete operational confidence.
                 </p>
             </div>
 
-            {/* Phase Navigation */}
+            {/* Phase Navigation (Unified & Premium) */}
             {phase !== 'TRANSITION' && (
-                <div className="flex items-center gap-4 mb-8">
+                <div className="bg-white rounded-3xl border border-neutral-100 shadow-xl shadow-neutral-100/30 p-2 mb-10 flex gap-1 overflow-x-auto no-scrollbar" role="tablist" aria-label="Graduation phases">
                     {[
                         { id: 'OVERVIEW', label: 'Overview', icon: '📊' },
                         { id: 'SIGNOFF', label: 'Sign-off', icon: '✍️' },
@@ -598,36 +663,43 @@ const Day5Graduation: React.FC<Day5GraduationProps> = ({ user, onGraduate }) => 
                         const isActive = phase === p.id;
                         const isPast =
                             (p.id === 'OVERVIEW' && phase !== 'OVERVIEW') ||
-                            (p.id === 'SIGNOFF' && (phase === 'FEEDBACK' || phase === 'GRADUATION')) ||
-                            (p.id === 'FEEDBACK' && phase === 'GRADUATION');
+                            (p.id === 'SIGNOFF' && (phase === 'FEEDBACK' || phase === 'GRADUATION' || phase === 'TRANSITION')) ||
+                            (p.id === 'FEEDBACK' && (phase === 'GRADUATION' || phase === 'TRANSITION')) ||
+                            (p.id === 'GRADUATION' && phase === 'TRANSITION');
 
                         return (
-                            <React.Fragment key={p.id}>
-                                <div
-                                    className={`
-                                        flex items-center gap-2 px-4 py-2 rounded-xl transition-all border
-                                        ${isActive ? 'bg-red-50 border-red-200 text-[#E60000]' : ''}
-                                        ${isPast ? 'bg-green-50 border-green-200 text-[#4CAF50]' : ''}
-                                        ${!isActive && !isPast ? 'bg-white border-[#E0E0E0] text-[#9E9E9E]' : ''}
-                                    `}
-                                >
-                                    {isPast ? <Check className="w-4 h-4" /> : <span>{p.icon}</span>}
-                                    <span className="font-medium">{p.label}</span>
-                                </div>
-                                {i < 3 && <ChevronRight className="w-5 h-5 text-[#BDBDBD]" />}
-                            </React.Fragment>
+                            <button
+                                key={p.id}
+                                onClick={() => !isActive && phase !== 'TRANSITION' && setPhase(p.id as any)}
+                                role="tab"
+                                aria-selected={isActive}
+                                aria-label={`${p.label}${isPast ? ', Completed' : ''}`}
+                                className={`
+                                    flex-1 min-w-[150px] px-6 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all flex items-center justify-center gap-3
+                                    ${isActive
+                                        ? 'bg-neutral-900 text-white shadow-lg -translate-y-0.5'
+                                        : (isPast ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-white text-neutral-400 hover:bg-neutral-50 hover:text-neutral-600')}
+                                `}
+                            >
+                                <span className="text-lg" aria-hidden="true">
+                                    {isPast ? <Check className="w-4 h-4" /> : p.icon}
+                                </span>
+                                {p.label}
+                            </button>
                         );
                     })}
                 </div>
             )}
 
-            {/* Phase Content */}
-            <div className="bg-white rounded-2xl border border-[#E0E0E0] p-6 shadow-sm">
-                {phase === 'OVERVIEW' && renderOverviewPhase()}
-                {phase === 'SIGNOFF' && renderSignoffPhase()}
-                {phase === 'FEEDBACK' && renderFeedbackPhase()}
-                {phase === 'GRADUATION' && renderGraduationPhase()}
-                {phase === 'TRANSITION' && renderTransitionPhase()}
+            {/* Focused Graduation Content */}
+            <div className="bg-white rounded-[32px] border border-neutral-100 shadow-sm p-8 md:p-12 mb-10 min-h-[500px] animate-slide-up">
+                <div className="max-w-4xl mx-auto">
+                    {phase === 'OVERVIEW' && renderOverviewPhase()}
+                    {phase === 'SIGNOFF' && renderSignoffPhase()}
+                    {phase === 'FEEDBACK' && renderFeedbackPhase()}
+                    {phase === 'GRADUATION' && renderGraduationPhase()}
+                    {phase === 'TRANSITION' && renderTransitionPhase()}
+                </div>
             </div>
         </div>
     );

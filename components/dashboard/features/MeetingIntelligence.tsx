@@ -37,11 +37,18 @@ const MeetingIntelligence: React.FC<MeetingIntelligenceProps & { viewMode?: 'FUL
         return 'text-[#4CAF50] bg-[#E8F5E9]';
     };
 
-    const getSeverityColor = (severity: 'HIGH' | 'MEDIUM' | 'LOW') => {
+    const getSeverityColor = (severity: string) => {
         switch (severity) {
-            case 'HIGH': return 'text-[#D32F2F] bg-[#FFEBEE] border-[#D32F2F]/30';
-            case 'MEDIUM': return 'text-[#E65100] bg-[#FFF3E0] border-[#E65100]/30';
-            case 'LOW': return 'text-blue-600 bg-blue-50 border-blue-300';
+            case 'CRITICAL':
+            case 'HIGH':
+                return 'text-[#D32F2F] bg-[#FFEBEE] border-[#D32F2F]/30';
+            case 'WARNING':
+            case 'MEDIUM':
+                return 'text-[#E65100] bg-[#FFF3E0] border-[#E65100]/30';
+            case 'INFO':
+            case 'LOW':
+            default:
+                return 'text-blue-600 bg-blue-50 border-blue-300';
         }
     };
 

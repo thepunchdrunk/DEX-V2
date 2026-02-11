@@ -11,7 +11,8 @@ import {
     AlertCircle,
     CheckCircle2,
 } from 'lucide-react';
-import { DailyCard, TimeHorizon, HORIZON_CONFIG, CognitiveLoadLevel } from '../../types';
+import { DailyCard, TimeHorizon, CognitiveLoadLevel } from '../../types';
+import { HORIZON_CONFIG } from '../../constants';
 
 interface Daily3EngineProps {
     cards: DailyCard[];

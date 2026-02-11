@@ -148,15 +148,15 @@ const MagicSearch: React.FC<MagicSearchProps> = ({ onClose }) => {
     const getIntentColor = (intent: MagicSearchResult['intent']) => {
         switch (intent) {
             case 'PROVISION':
-                return 'text-purple-400 bg-purple-500/20';
+                return 'text-purple-600 bg-purple-50';
             case 'NAVIGATE':
-                return 'text-blue-400 bg-blue-500/20';
+                return 'text-blue-600 bg-blue-50';
             case 'CREATE':
-                return 'text-green-400 bg-green-500/20';
+                return 'text-emerald-600 bg-emerald-50';
             case 'SEARCH':
-                return 'text-slate-400 bg-slate-500/20';
+                return 'text-neutral-600 bg-neutral-100';
             case 'HELP':
-                return 'text-amber-400 bg-amber-500/20';
+                return 'text-amber-600 bg-amber-50';
         }
     };
 
@@ -182,12 +182,12 @@ const MagicSearch: React.FC<MagicSearchProps> = ({ onClose }) => {
     return (
         <div className="w-full max-w-2xl mx-auto">
             {/* Search Input */}
-            <div className="relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2">
+            <div className="relative group">
+                <div className="absolute left-5 top-1/2 -translate-y-1/2 transition-transform group-focus-within:scale-110 duration-300">
                     {isProcessing ? (
-                        <Loader2 className="w-5 h-5 text-blue-400 animate-spin" />
+                        <Loader2 className="w-5 h-5 text-blue-500 animate-spin" />
                     ) : (
-                        <Sparkles className="w-5 h-5 text-amber-400" />
+                        <Sparkles className="w-5 h-5 text-amber-500" />
                     )}
                 </div>
                 <input
@@ -196,7 +196,7 @@ const MagicSearch: React.FC<MagicSearchProps> = ({ onClose }) => {
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder='Quick Actions — Try "I need a sandbox" or "Open Jira"'
-                    className="w-full pl-12 pr-12 py-4 bg-slate-900 border border-slate-700 rounded-2xl text-white placeholder-slate-500 focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 outline-none transition-all text-lg"
+                    className="w-full pl-14 pr-12 py-5 bg-white border border-neutral-200 rounded-2xl text-neutral-900 placeholder-neutral-400 focus:ring-4 focus:ring-red-500/10 focus:border-red-500 outline-none transition-all text-lg shadow-sm group-hover:shadow-md"
                 />
                 {query && (
                     <button
@@ -204,7 +204,8 @@ const MagicSearch: React.FC<MagicSearchProps> = ({ onClose }) => {
                             setQuery('');
                             setResult(null);
                         }}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                        className="absolute right-5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-red-500 transition-colors"
+                        aria-label="Clear search"
                     >
                         <X className="w-5 h-5" />
                     </button>
@@ -213,83 +214,91 @@ const MagicSearch: React.FC<MagicSearchProps> = ({ onClose }) => {
 
             {/* Result Preview */}
             {result && !showConfirmation && (
-                <div className="mt-4 bg-slate-800/80 backdrop-blur-md rounded-xl border border-slate-700 p-4 animate-fade-in">
+                <div className="mt-4 bg-white/95 backdrop-blur-xl rounded-2xl border border-neutral-200 p-5 animate-slide-up shadow-xl relative overflow-hidden">
+                    {/* Brand Accent */}
+                    <div className="absolute top-0 left-0 w-1 h-full bg-brand-red opacity-50" />
+
                     <div className="flex items-start gap-4">
                         {/* Intent Icon */}
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${getIntentColor(result.intent)}`}>
+                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${getIntentColor(result.intent)} transition-transform hover:rotate-3 duration-300 shadow-sm`}>
                             {getIntentIcon(result.intent)}
                         </div>
 
                         {/* Action Details */}
                         <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                                <span className="text-sm font-medium text-slate-400 uppercase">
+                            <div className="flex items-center gap-2 mb-1.5">
+                                <span className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">
                                     {result.intent.replace('_', ' ')}
                                 </span>
-                                <span className="text-xs text-slate-500">
-                                    {Math.round(result.confidence * 100)}% confidence
+                                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-neutral-100 text-neutral-500 font-medium">
+                                    {Math.round(result.confidence * 100)}% Match
                                 </span>
                             </div>
-                            <p className="font-semibold text-white mb-1">{result.action.label}</p>
-                            <p className="text-sm text-slate-400">{result.action.description}</p>
+                            <h3 className="font-bold text-neutral-900 text-lg mb-1 leading-tight">{result.action.label}</h3>
+                            <p className="text-sm text-neutral-600 leading-relaxed mb-4">{result.action.description}</p>
 
                             {/* Pre-filled Fields */}
                             {result.action.prefilled && (
-                                <div className="mt-3 p-3 bg-slate-900/50 rounded-lg">
-                                    <p className="text-xs text-slate-500 mb-2">Pre-filled fields:</p>
-                                    <div className="grid grid-cols-2 gap-2">
+                                <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-100 mb-4">
+                                    <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider mb-2">Contextual Parameters</p>
+                                    <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                                         {Object.entries(result.action.prefilled).map(([key, value]) => (
                                             <div key={key} className="text-xs">
-                                                <span className="text-slate-500">{key}:</span>{' '}
-                                                <span className="text-white">{value}</span>
+                                                <span className="text-neutral-500">{key}:</span>{' '}
+                                                <span className="text-neutral-900 font-semibold">{value}</span>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
                             )}
-                        </div>
 
-                        {/* Execute Button */}
-                        <button
-                            onClick={handleExecute}
-                            className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-white font-medium rounded-lg transition-all flex items-center gap-2"
-                        >
-                            Execute
-                            <ArrowRight className="w-4 h-4" />
-                        </button>
+                            {/* Execute Button Mobile-First (Full width on small, auto on large) */}
+                            <button
+                                onClick={handleExecute}
+                                className="w-full sm:w-auto px-6 py-3 bg-brand-red hover:bg-red-700 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-red active:scale-95 translate-y-0 hover:-translate-y-0.5"
+                            >
+                                Execute Action
+                                <ArrowRight className="w-5 h-5" />
+                            </button>
+                        </div>
                     </div>
 
                     {/* Warning for high-impact actions */}
                     {result.action.requiresConfirmation && (
-                        <div className="mt-3 flex items-center gap-2 text-xs text-amber-400">
-                            <AlertTriangle className="w-3 h-3" />
-                            <span>This action requires confirmation</span>
+                        <div className="mt-4 pt-4 border-t border-neutral-100 flex items-center gap-2 text-xs text-amber-600 font-medium">
+                            <AlertTriangle className="w-3.5 h-3.5" />
+                            <span>This action modified institutional state and requires manual confirmation</span>
                         </div>
                     )}
                 </div>
             )}
 
-            {/* Confirmation Modal */}
+            {/* Confirmation Modal (Streamlined) */}
             {showConfirmation && result && (
-                <div className="mt-4 bg-amber-500/10 backdrop-blur-md rounded-xl border border-amber-500/30 p-4 animate-fade-in">
-                    <div className="flex items-center gap-2 text-amber-400 mb-3">
-                        <AlertTriangle className="w-5 h-5" />
-                        <span className="font-medium">Confirm Action</span>
+                <div className="mt-4 bg-amber-50 backdrop-blur-md rounded-2xl border border-amber-200 p-6 animate-slide-up shadow-lg">
+                    <div className="flex items-center gap-3 text-amber-700 mb-4">
+                        <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
+                            <AlertTriangle className="w-6 h-6" />
+                        </div>
+                        <div>
+                            <span className="font-bold block">Final Confirmation</span>
+                            <span className="text-xs text-amber-600/80">Check all data before proceeding</span>
+                        </div>
                     </div>
-                    <p className="text-slate-300 mb-4">
-                        You're about to: <strong>{result.action.label}</strong>
-                    </p>
-                    <p className="text-sm text-slate-400 mb-4">{result.action.description}</p>
+                    <div className="mb-6">
+                        <p className="text-neutral-900 font-semibold mb-1">{result.action.label}</p>
+                        <p className="text-sm text-neutral-600">{result.action.description}</p>
+                    </div>
                     <div className="flex gap-3">
                         <button
                             onClick={handleExecute}
-                            className="flex-1 py-2 bg-amber-500 hover:bg-amber-400 text-white font-medium rounded-lg transition-all"
+                            className="flex-1 py-3 bg-brand-red hover:bg-red-700 text-white font-bold rounded-xl transition-all shadow-sm active:scale-95"
                         >
                             Confirm & Execute
                         </button>
                         <button
                             onClick={() => setShowConfirmation(false)}
-                            className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 font-medium rounded-lg transition-all"
+                            className="px-6 py-3 bg-white hover:bg-neutral-50 text-neutral-600 font-bold rounded-xl transition-all border border-neutral-200 active:scale-95"
                         >
                             Cancel
                         </button>
@@ -299,9 +308,9 @@ const MagicSearch: React.FC<MagicSearchProps> = ({ onClose }) => {
 
             {/* Empty State Suggestions */}
             {!query && (
-                <div className="mt-4 text-center">
-                    <p className="text-sm text-slate-500 mb-3">Try saying:</p>
-                    <div className="flex flex-wrap justify-center gap-2">
+                <div className="mt-8 text-center animate-fade-in">
+                    <p className="text-xs font-bold text-neutral-400 uppercase tracking-[0.2em] mb-4">Common Intents</p>
+                    <div className="flex flex-wrap justify-center gap-3">
                         {[
                             'I need a sandbox',
                             'Open my Jira board',
@@ -311,7 +320,7 @@ const MagicSearch: React.FC<MagicSearchProps> = ({ onClose }) => {
                             <button
                                 key={suggestion}
                                 onClick={() => setQuery(suggestion)}
-                                className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white text-sm rounded-lg transition-all"
+                                className="px-5 py-2.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-600 hover:text-neutral-900 text-sm font-semibold rounded-xl transition-all active:scale-95 border border-transparent hover:border-neutral-300"
                             >
                                 {suggestion}
                             </button>
