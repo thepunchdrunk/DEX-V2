@@ -22,10 +22,10 @@ import { THEME_COLORS, MOCK_DAILY_CARDS, MOCK_MARKET_GAP, MOCK_SKILL_TREE } from
 import Daily3Feed from './Daily3Feed';
 import SkillTree from '../tree/SkillTree';
 import MagicSearch from '../search/MagicSearch';
-import AnalyticsDashboard from '../analytics/AnalyticsDashboard';
 import InsightsHub from './InsightsHub';
+import { StreakCounter, BadgeShowcase, SkillEndorsements, CareerHorizon } from './features';
 
-type DashboardView = 'DAILY' | 'SKILLS' | 'INSIGHTS' | 'ANALYTICS' | 'SETTINGS';
+type DashboardView = 'DAILY' | 'SKILLS' | 'INSIGHTS' | 'SETTINGS';
 
 interface RoleDashboardProps {
     user: UserProfile;
@@ -44,8 +44,7 @@ const RoleDashboard: React.FC<RoleDashboardProps> = ({ user, isWednesday = false
     const navItems: { view: DashboardView; icon: React.ReactNode; label: string }[] = [
         { view: 'DAILY', icon: <Sparkles className="w-4 h-4" />, label: 'Daily 3' },
         { view: 'SKILLS', icon: <TreePine className="w-4 h-4" />, label: 'Skill Graph' },
-        { view: 'INSIGHTS', icon: <Compass className="w-4 h-4" />, label: 'Radar' },
-        { view: 'ANALYTICS', icon: <TrendingUp className="w-4 h-4" />, label: 'Growth' },
+        { view: 'INSIGHTS', icon: <Compass className="w-4 h-4" />, label: 'Toolkit' },
         { view: 'SETTINGS', icon: <Settings className="w-4 h-4" />, label: 'Profile' },
     ];
 
@@ -122,6 +121,11 @@ const RoleDashboard: React.FC<RoleDashboardProps> = ({ user, isWednesday = false
                             >
                                 {isOnline ? <Wifi className="w-4 h-4" /> : <WifiOff className="w-4 h-4" />}
                             </button>
+                        </div>
+
+                        {/* Streak Counter */}
+                        <div className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-orange-50 border border-orange-200">
+                            <StreakCounter compact />
                         </div>
 
                         {/* User Profile */}
@@ -211,8 +215,10 @@ const RoleDashboard: React.FC<RoleDashboardProps> = ({ user, isWednesday = false
 
                     {/* Skills View */}
                     {activeView === 'SKILLS' && (
-                        <div className="page-transition">
+                        <div className="page-transition space-y-6">
                             <SkillTree branches={MOCK_SKILL_TREE} />
+                            <SkillEndorsements />
+                            <CareerHorizon />
                         </div>
                     )}
 
@@ -223,12 +229,6 @@ const RoleDashboard: React.FC<RoleDashboardProps> = ({ user, isWednesday = false
                         </div>
                     )}
 
-                    {/* Analytics View */}
-                    {activeView === 'ANALYTICS' && (
-                        <div className="page-transition">
-                            <AnalyticsDashboard />
-                        </div>
-                    )}
 
                     {/* Settings View */}
                     {activeView === 'SETTINGS' && (
@@ -268,6 +268,16 @@ const RoleDashboard: React.FC<RoleDashboardProps> = ({ user, isWednesday = false
                                             <p className="text-sm font-semibold font-mono text-neutral-800">{user.employeeId}</p>
                                         </div>
                                     </div>
+                                </section>
+
+                                {/* Gamification Stats */}
+                                <section>
+                                    <StreakCounter />
+                                </section>
+
+                                {/* Badge Collection */}
+                                <section>
+                                    <BadgeShowcase />
                                 </section>
 
                                 {/* Danger Zone */}
