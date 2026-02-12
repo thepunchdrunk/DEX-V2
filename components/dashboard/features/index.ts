@@ -16,3 +16,10 @@ export { default as MentorMatch } from './MentorMatch';
 export { default as OfficeHours } from './OfficeHours';
 export { default as WhisperCourse } from './WhisperCourse';
 export { default as BountyBoard } from './BountyBoard';
+
+// Apple/Google DEX Gap Features
+export { default as PlayerIdentityBadge } from './PlayerIdentity';
+export { default as PulseCheck } from './PulseCheck';
+export { default as FearlessFeedback } from './FearlessFeedback';
+export { default as ManagerChecklist } from './ManagerChecklist';
+export { default as AgentDossier } from './AgentDossier';

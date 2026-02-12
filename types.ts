@@ -1131,7 +1131,7 @@ export interface StreakData {
 
 // Badge System
 export type BadgeTier = 'BRONZE' | 'SILVER' | 'GOLD' | 'PLATINUM';
-export type BadgeCategory = 'ONBOARDING' | 'MASTERY' | 'COMMUNITY' | 'STREAK' | 'SIMULATOR' | 'LEADERSHIP';
+export type BadgeCategory = 'ONBOARDING' | 'MASTERY' | 'COMMUNITY' | 'STREAK' | 'SIMULATOR' | 'LEADERSHIP' | 'EASTER_EGG';
 
 export interface Badge {
   id: string;

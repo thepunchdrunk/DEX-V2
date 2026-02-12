@@ -23,7 +23,7 @@ import Daily3Feed from './Daily3Feed';
 import SkillTree from '../tree/SkillTree';
 import MagicSearch from '../search/MagicSearch';
 import InsightsHub from './InsightsHub';
-import { StreakCounter, BadgeShowcase, SkillEndorsements, CareerHorizon } from './features';
+import { StreakCounter, SkillEndorsements, CareerHorizon, PlayerIdentityBadge, FearlessFeedback, ManagerChecklist, AgentDossier } from './features';
 
 type DashboardView = 'DAILY' | 'SKILLS' | 'INSIGHTS' | 'SETTINGS';
 
@@ -123,6 +123,11 @@ const RoleDashboard: React.FC<RoleDashboardProps> = ({ user, isWednesday = false
                             </button>
                         </div>
 
+                        {/* Player Identity Badge */}
+                        <div className="hidden sm:block">
+                            <PlayerIdentityBadge compact daysSinceJoin={45} />
+                        </div>
+
                         {/* Streak Counter */}
                         <div className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-orange-50 border border-orange-200">
                             <StreakCounter compact />
@@ -210,6 +215,13 @@ const RoleDashboard: React.FC<RoleDashboardProps> = ({ user, isWednesday = false
                                     onUpdateUser({ onboardingProgress: newProgress });
                                 }}
                             />
+
+                            {/* Manager Quest Board (conditionally shown for manager roles) */}
+                            {user.role === 'MANAGER' && (
+                                <div className="mt-6">
+                                    <ManagerChecklist />
+                                </div>
+                            )}
                         </div>
                     )}
 
@@ -217,8 +229,11 @@ const RoleDashboard: React.FC<RoleDashboardProps> = ({ user, isWednesday = false
                     {activeView === 'SKILLS' && (
                         <div className="page-transition space-y-6">
                             <SkillTree branches={MOCK_SKILL_TREE} />
-                            <SkillEndorsements />
-                            <CareerHorizon />
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                                <CareerHorizon />
+                                <SkillEndorsements />
+                                <FearlessFeedback />
+                            </div>
                         </div>
                     )}
 
@@ -230,79 +245,10 @@ const RoleDashboard: React.FC<RoleDashboardProps> = ({ user, isWednesday = false
                     )}
 
 
-                    {/* Settings View */}
+                    {/* Settings View (Now Agent Dossier) */}
                     {activeView === 'SETTINGS' && (
-                        <div className="page-transition max-w-2xl mx-auto">
-                            <div className="flex items-center justify-between mb-8 border-b border-neutral-200 pb-4">
-                                <h1 className="text-3xl font-black text-neutral-900 leading-tight">System Settings</h1>
-                                <span className="text-label">Configuration v2.1</span>
-                            </div>
-
-                            <div className="space-y-6">
-                                {/* Profile Card */}
-                                <section className="p-6 bg-white rounded-2xl border border-neutral-200 shadow-sm">
-                                    <h3 className="text-lg font-bold text-neutral-900 mb-5 flex items-center gap-2">
-                                        <Settings className="w-5 h-5 text-brand-red" />
-                                        Profile Overview
-                                    </h3>
-                                    <div className="flex items-start gap-5 mb-6">
-                                        <div className="avatar avatar-xl shadow-lg">
-                                            {user.name.split(' ').map(n => n[0]).join('')}
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <p className="text-lg font-bold text-neutral-900 mb-0.5">{user.name}</p>
-                                            <p className="text-sm text-neutral-500 mb-3">{user.jobTitle}</p>
-                                            <div className="flex flex-wrap gap-2">
-                                                <span className="badge badge-red">{user.department}</span>
-                                                <span className="badge badge-neutral">{user.roleCategory || 'DESK'}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-neutral-100">
-                                        <div>
-                                            <p className="text-label mb-1.5">Display Name</p>
-                                            <p className="text-sm font-semibold text-neutral-800">{user.name}</p>
-                                        </div>
-                                        <div>
-                                            <p className="text-label mb-1.5">Institutional ID</p>
-                                            <p className="text-sm font-semibold font-mono text-neutral-800">{user.employeeId}</p>
-                                        </div>
-                                    </div>
-                                </section>
-
-                                {/* Gamification Stats */}
-                                <section>
-                                    <StreakCounter />
-                                </section>
-
-                                {/* Badge Collection */}
-                                <section>
-                                    <BadgeShowcase />
-                                </section>
-
-                                {/* Danger Zone */}
-                                <section className="p-6 bg-white rounded-2xl border border-red-100 shadow-sm">
-                                    <h3 className="text-lg font-bold text-neutral-900 mb-4 flex items-center gap-2">
-                                        <RefreshCw className="w-5 h-5 text-red-500" />
-                                        Danger Zone
-                                    </h3>
-                                    <p className="text-sm text-neutral-600 mb-6 leading-relaxed">
-                                        Permanently wipe all session progress, knowledge graph anchors, and locally cached institution state. This action is irreversible.
-                                    </p>
-                                    <button
-                                        onClick={() => {
-                                            if (confirm('Reset entire institution state? This will clear all locally stored progress.')) {
-                                                localStorage.clear();
-                                                window.location.reload();
-                                            }
-                                        }}
-                                        className="btn-destructive w-full"
-                                    >
-                                        <RefreshCw className="w-4 h-4" />
-                                        Execute Hard Reset
-                                    </button>
-                                </section>
-                            </div>
+                        <div className="page-transition">
+                            <AgentDossier user={user} />
                         </div>
                     )}
                 </div>

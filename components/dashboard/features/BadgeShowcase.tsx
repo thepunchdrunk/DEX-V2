@@ -15,6 +15,7 @@ const CATEGORY_LABELS: Record<BadgeCategory, { label: string; color: string }> =
     STREAK: { label: 'Streak', color: 'bg-orange-100 text-orange-700 border-orange-200' },
     SIMULATOR: { label: 'Simulator', color: 'bg-red-100 text-red-700 border-red-200' },
     LEADERSHIP: { label: 'Leadership', color: 'bg-amber-100 text-amber-700 border-amber-200' },
+    EASTER_EGG: { label: '??? Hidden', color: 'bg-neutral-100 text-neutral-600 border-neutral-300' },
 };
 
 const TIER_STYLES: Record<string, string> = {
@@ -74,8 +75,8 @@ const BadgeShowcase: React.FC<BadgeShowcaseProps> = ({
                 <button
                     onClick={() => setFilter('ALL')}
                     className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all whitespace-nowrap border ${filter === 'ALL'
-                            ? 'bg-neutral-900 text-white border-neutral-900'
-                            : 'bg-neutral-50 text-neutral-600 border-neutral-200 hover:bg-neutral-100'
+                        ? 'bg-neutral-900 text-white border-neutral-900'
+                        : 'bg-neutral-50 text-neutral-600 border-neutral-200 hover:bg-neutral-100'
                         }`}
                 >
                     All
@@ -85,8 +86,8 @@ const BadgeShowcase: React.FC<BadgeShowcaseProps> = ({
                         key={cat}
                         onClick={() => setFilter(cat)}
                         className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all whitespace-nowrap border ${filter === cat
-                                ? 'bg-neutral-900 text-white border-neutral-900'
-                                : `${CATEGORY_LABELS[cat].color}`
+                            ? 'bg-neutral-900 text-white border-neutral-900'
+                            : `${CATEGORY_LABELS[cat].color}`
                             }`}
                     >
                         {CATEGORY_LABELS[cat].label}
@@ -101,14 +102,14 @@ const BadgeShowcase: React.FC<BadgeShowcaseProps> = ({
                         key={badge.id}
                         onClick={() => setSelectedBadge(selectedBadge?.id === badge.id ? null : badge)}
                         className={`group relative flex flex-col items-center p-4 rounded-2xl border transition-all ${badge.isUnlocked
-                                ? 'bg-white border-neutral-200 hover:border-amber-300 hover:shadow-md'
-                                : 'bg-neutral-50 border-neutral-100 opacity-60'
+                            ? 'bg-white border-neutral-200 hover:border-amber-300 hover:shadow-md'
+                            : 'bg-neutral-50 border-neutral-100 opacity-60'
                             } ${selectedBadge?.id === badge.id ? 'ring-2 ring-amber-400 shadow-md' : ''}`}
                     >
                         {/* Badge Icon */}
                         <div className={`relative w-14 h-14 rounded-full flex items-center justify-center text-2xl mb-2 ${badge.isUnlocked
-                                ? `bg-gradient-to-br ${TIER_STYLES[badge.tier]} shadow-md`
-                                : 'bg-neutral-200'
+                            ? `bg-gradient-to-br ${TIER_STYLES[badge.tier]} shadow-md`
+                            : 'bg-neutral-200'
                             }`}>
                             {badge.isUnlocked ? (
                                 <span className="drop-shadow-sm">{badge.icon}</span>
