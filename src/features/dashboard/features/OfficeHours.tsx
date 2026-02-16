@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Calendar, Clock, Users, MapPin, Tag, CheckCircle, Video, ChevronRight } from 'lucide-react';
-import { OfficeHoursSlot } from '../../../types';
-import { MOCK_OFFICE_HOURS } from '../../../constants';
+import { OfficeHoursSlot } from '@/types';
+import { MOCK_OFFICE_HOURS } from '@/config/constants';
 
 interface OfficeHoursProps {
     slots?: OfficeHoursSlot[];

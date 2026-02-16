@@ -13,10 +13,10 @@ import {
     Share2,
     Users
 } from 'lucide-react';
-import { UserProfile } from '../../../types';
-import { MOCK_BADGES, MOCK_SKILL_TREE } from '../../../constants';
+import { UserProfile } from '@/types';
+import { MOCK_BADGES, MOCK_SKILL_TREE } from '@/config/constants';
 import { getPlayerTier, getNextTier, PlayerTier } from './PlayerIdentity';
-import { StreakCounter } from './';
+import StreakCounter from './StreakCounter';
 import SkillRadar from './charts/SkillRadar';
 
 interface AgentDossierProps {

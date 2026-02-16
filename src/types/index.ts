@@ -1259,3 +1259,4 @@ export interface LessonLearned {
   postedAt: string;
   category: 'TECHNICAL' | 'PROCESS' | 'COMMUNICATION' | 'LEADERSHIP' | 'PROJECT';
 }
+

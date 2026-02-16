@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import {
     Check,
@@ -18,177 +19,229 @@ import {
     Rocket,
     PartyPopper,
     Heart,
-    ArrowLeft,
-    CheckCircle2,
-    ClipboardList,
+    ArrowRight,
 } from 'lucide-react';
 import {
     UserProfile,
     ManagerSignoff,
-    Goal,
     OnboardingFeedback,
-    CompletionStatus,
-    OnboardingDay,
+    CompletionStatus
 } from '@/types';
-import OnboardingFeed, { OnboardingCard } from '../shared/OnboardingFeed';
 
 interface Day5GraduationProps {
     user: UserProfile;
     onGraduate: () => void;
 }
 
-type Phase = 'OVERVIEW' | 'SIGNOFF' | 'FEEDBACK' | 'GRADUATION';
-
 const Day5Graduation: React.FC<Day5GraduationProps> = ({ user, onGraduate }) => {
-    // Phase State
-    const [activePhase, setActivePhase] = useState<Phase | null>(null);
-    const [completedPhases, setCompletedPhases] = useState<Phase[]>([]);
+    const [phase, setPhase] = useState<'OVERVIEW' | 'PLEDGE' | 'SIGNOFF' | 'FEEDBACK' | 'GRADUATION' | 'TRANSITION'>('OVERVIEW');
 
-    // Data State
+    // Mock Data
     const [managerSignoff, setManagerSignoff] = useState<ManagerSignoff>({
         managerId: 'sys-001',
-        managerName: 'Onboarding Advisor',
+        managerName: 'Sarah Jenkins',
         signedOff: false,
-        firstWeekGoals: [
-            { id: 'g1', title: 'Complete Setup', description: 'Ensure all tools are working', category: 'PROCESS', status: 'NOT_STARTED', dueDate: '' },
-            { id: 'g2', title: 'First PR', description: 'Submit your first code change', category: 'DELIVERY', status: 'NOT_STARTED', dueDate: '' }
-        ],
-        firstMonthGoals: [
-            { id: 'g3', title: 'Feature Ownership', description: 'Take lead on a small feature', category: 'DELIVERY', status: 'NOT_STARTED', dueDate: '' }
-        ],
-        welcomeMessage: 'Great job completing your first week! You are ready to transition to your role.'
+        firstWeekGoals: [], // Unused in this view
+        firstMonthGoals: [], // Unused in this view
+        welcomeMessage: 'I\'ve seen you crushing it in the sandbox. You are ready. Let\'s make it official.'
     });
+
     const [feedback, setFeedback] = useState<Partial<OnboardingFeedback>>({
         overallSatisfaction: undefined,
         confidenceLevel: undefined,
+        dayRatings: { 1: 5, 2: 5, 3: 5, 4: 5, 5: 5 },
         frictionPoints: [],
         highlights: [],
+        suggestions: '',
     });
 
-    // UI State
+    const [pledgeSigned, setPledgeSigned] = useState(false);
     const [signoffRequested, setSignoffRequested] = useState(false);
-    const [frictionInput, setFrictionInput] = useState('');
-    const [highlightInput, setHighlightInput] = useState('');
     const [themeTransitionProgress, setThemeTransitionProgress] = useState(0);
 
-    // Derived State
-    const allModulesComplete =
-        completedPhases.includes('OVERVIEW') &&
-        managerSignoff.signedOff &&
-        completedPhases.includes('FEEDBACK') &&
-        completedPhases.includes('GRADUATION');
+    // Completion status matching the new "Culture OS" structure
+    const completionStatuses: CompletionStatus[] = [
+        { day: 1, dayTitle: 'The Mission', category: 'Purpose', itemsCompleted: 4, itemsTotal: 4, incompleteItems: [] },
+        { day: 2, dayTitle: 'The Toolkit', category: 'Systems', itemsCompleted: 4, itemsTotal: 4, incompleteItems: [] },
+        { day: 3, dayTitle: 'The OS', category: 'Autonomy', itemsCompleted: 4, itemsTotal: 4, incompleteItems: [] },
+        { day: 4, dayTitle: 'Social Capital', category: 'Network', itemsCompleted: 4, itemsTotal: 4, incompleteItems: [] },
+        {
+            day: 5, dayTitle: 'Impact Launch', category: 'Ownership', itemsCompleted: 0, itemsTotal: 3, incompleteItems: [
+                { id: 'pledge', title: 'Impact Pledge' },
+                { id: 'signoff', title: 'Manager Approval' },
+                { id: 'feedback', title: 'Final Feedback' },
+            ]
+        },
+    ];
 
-    // Handlers
-    const completePhase = (phase: Phase) => {
-        if (!completedPhases.includes(phase)) {
-            setCompletedPhases(prev => [...prev, phase]);
+    // Theme transition animation
+    useEffect(() => {
+        if (phase === 'TRANSITION') {
+            const interval = setInterval(() => {
+                setThemeTransitionProgress(prev => {
+                    if (prev >= 100) {
+                        clearInterval(interval);
+                        setTimeout(onGraduate, 500);
+                        return 100;
+                    }
+                    return prev + 2;
+                });
+            }, 50);
+            return () => clearInterval(interval);
         }
-        setActivePhase(null);
-    };
+    }, [phase, onGraduate]);
 
     const requestSignoff = () => {
         setSignoffRequested(true);
         setTimeout(() => {
-            setManagerSignoff(prev => ({
-                ...prev,
-                signedOff: true,
-                signedOffAt: new Date().toISOString(),
-            }));
-            completePhase('SIGNOFF');
+            setManagerSignoff(prev => ({ ...prev, signedOff: true, signedOffAt: new Date().toISOString() }));
         }, 2000);
     };
 
-    const handleAddFriction = () => {
-        if (frictionInput.trim()) {
-            setFeedback(prev => ({
-                ...prev,
-                frictionPoints: [...(prev.frictionPoints || []), frictionInput.trim()]
-            }));
-            setFrictionInput('');
-        }
-    };
-
-    const handleAddHighlight = () => {
-        if (highlightInput.trim()) {
-            setFeedback(prev => ({
-                ...prev,
-                highlights: [...(prev.highlights || []), highlightInput.trim()]
-            }));
-            setHighlightInput('');
-        }
-    };
-
-    const handleSubmitFeedback = () => {
-        completePhase('FEEDBACK');
-    };
-
-    const handleGraduation = () => {
-        const interval = setInterval(() => {
-            setThemeTransitionProgress(prev => {
-                if (prev >= 100) {
-                    clearInterval(interval);
-                    setTimeout(onGraduate, 500);
-                    return 100;
-                }
-                return prev + 2;
-            });
-        }, 20);
-    };
-
-    const canSubmitFeedback = feedback.overallSatisfaction && feedback.confidenceLevel;
-
-    // Renderers
     const renderOverviewPhase = () => (
-        <div className="space-y-6 animate-fade-in">
-            <div className="bg-neutral-50 rounded-2xl p-6 border border-neutral-100">
-                <h4 className="font-bold text-neutral-900 mb-4">You've reached the finish line!</h4>
-                <div className="space-y-4">
-                    {[1, 2, 3, 4].map(day => (
-                        <div key={day} className="flex items-center gap-3">
-                            <CheckCircle2 className="w-5 h-5 text-emerald-500" />
-                            <span className="text-sm text-neutral-600 font-medium">Day {day} Completed</span>
+        <div className="space-y-12 animate-fade-in">
+            <div className="text-center mb-8">
+                <div className="w-24 h-24 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-6 border border-emerald-100 shadow-inner">
+                    <Rocket className="w-12 h-12 text-emerald-600" />
+                </div>
+                <h2 className="text-4xl font-bold text-neutral-900 mb-2 tracking-tight">Ready for <span className="text-emerald-600">Liftoff</span>?</h2>
+                <p className="text-lg text-neutral-500 max-w-lg mx-auto leading-relaxed">
+                    You've installed the OS. You've built the network. Now, you own the outcome.
+                </p>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                {completionStatuses.map((status) => {
+                    const isFullyComplete = status.itemsCompleted === status.itemsTotal;
+                    return (
+                        <div key={status.day} className={`relative bg-white rounded-2xl border p-5 text-center transition-all ${isFullyComplete ? 'border-emerald-100 shadow-sm' : 'border-neutral-100'}`}>
+                            <div className={`w-12 h-12 rounded-2xl mx-auto mb-4 flex items-center justify-center border ${isFullyComplete ? 'bg-emerald-500 border-emerald-400 text-white' : 'bg-neutral-50 border-neutral-100 text-neutral-400'}`}>
+                                {isFullyComplete ? <Check className="w-6 h-6" /> : <span className="text-sm font-bold">{status.day}</span>}
+                            </div>
+                            <p className="text-xs font-bold text-neutral-900 uppercase tracking-wider mb-1">Day 0{status.day}</p>
+                            <p className="text-xs text-neutral-400 font-medium truncate">{status.dayTitle}</p>
                         </div>
-                    ))}
-                    <div className="flex items-center gap-3">
-                        <div className="w-5 h-5 rounded-full border-2 border-brand-red flex items-center justify-center">
-                            <div className="w-2 h-2 bg-brand-red rounded-full animate-pulse" />
-                        </div>
-                        <span className="text-sm text-neutral-900 font-bold">Day 5: Final Review (In Progress)</span>
+                    );
+                })}
+            </div>
+
+            <div className="flex justify-center">
+                <button
+                    onClick={() => setPhase('PLEDGE')}
+                    className="px-8 py-4 bg-neutral-900 hover:bg-black text-white font-bold text-sm uppercase tracking-wider rounded-xl transition-all shadow-lg hover:-translate-y-1"
+                >
+                    Begin Launch Sequence
+                </button>
+            </div>
+        </div>
+    );
+
+    const renderPledgePhase = () => (
+        <div className="space-y-8 animate-fade-in">
+            <div className="max-w-2xl">
+                <h2 className="text-3xl font-bold text-neutral-900 mb-4 tracking-tight">The Impact Pledge</h2>
+                <p className="text-lg text-neutral-500 leading-relaxed">
+                    We don't do "probation periods." We do Impact periods.
+                    Commit to your first 30 days.
+                </p>
+            </div>
+
+            <div className="bg-white border-2 border-neutral-200 rounded-3xl p-8 md:p-12 shadow-sm relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-neutral-50 rounded-bl-full" />
+
+                <div className="relative z-10 space-y-6">
+                    <h3 className="font-serif text-3xl text-neutral-900 italic">"I, {user.name}..."</h3>
+                    <div className="space-y-4 text-lg text-neutral-600 leading-relaxed">
+                        <p>...hereby acknowledge that I have been given the tools, the trust, and the network to succeed.</p>
+                        <p>I understand that at [Company], <strong className="text-neutral-900">waiting for permission is a bug, not a feature.</strong></p>
+                        <p>In my first 30 days, I commit to shipping one meaningful improvement to our product or process.</p>
+                    </div>
+
+                    <div className="pt-8 flex items-center gap-6">
+                        <button
+                            onClick={() => setPledgeSigned(true)}
+                            disabled={pledgeSigned}
+                            className={`
+                                px-8 py-4 rounded-xl font-bold text-sm uppercase tracking-wider transition-all flex items-center gap-2
+                                ${pledgeSigned
+                                    ? 'bg-emerald-500 text-white cursor-default'
+                                    : 'bg-neutral-900 text-white hover:bg-black hover:scale-105'}
+                            `}
+                        >
+                            {pledgeSigned ? <Check className="w-5 h-5" /> : <FileText className="w-5 h-5" />}
+                            {pledgeSigned ? 'Signed & Committed' : 'Sign Pledge'}
+                        </button>
+                        {pledgeSigned && <span className="text-sm font-bold text-emerald-600 animate-fade-in">Recorded on blockchain (mock)</span>}
                     </div>
                 </div>
             </div>
 
-            <button onClick={() => completePhase('OVERVIEW')} className="w-full btn-primary py-4">
-                Confirm Milestones
-            </button>
+            {pledgeSigned && (
+                <div className="flex justify-end pt-4">
+                    <button onClick={() => setPhase('SIGNOFF')} className="text-neutral-500 hover:text-neutral-900 font-bold text-sm flex items-center gap-2 group">
+                        Next: Manager Approval <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                </div>
+            )}
         </div>
     );
 
     const renderSignoffPhase = () => (
-        <div className="space-y-6 animate-fade-in">
-            {!managerSignoff.signedOff ? (
-                <div className="text-center py-8">
-                    {signoffRequested ? (
-                        <div className="flex flex-col items-center gap-4">
-                            <div className="w-16 h-16 rounded-full border-4 border-amber-500 border-t-transparent animate-spin" />
-                            <p className="font-bold text-neutral-900">Requesting Approval...</p>
-                        </div>
-                    ) : (
-                        <div className="space-y-6">
-                            <p className="text-neutral-500 text-sm">Request final approval from your Manager to complete your transition.</p>
-                            <button onClick={requestSignoff} className="btn-primary py-4 px-8 w-full">
-                                Request Approval
-                            </button>
-                        </div>
-                    )}
-                </div>
-            ) : (
-                <div className="bg-emerald-50 rounded-2xl p-6 border border-emerald-100 flex items-center gap-4">
-                    <CheckCircle2 className="w-10 h-10 text-emerald-500" />
-                    <div>
-                        <h4 className="font-bold text-neutral-900">Approval Complete</h4>
-                        <p className="text-xs text-neutral-600">Authorized by {managerSignoff.managerName}</p>
+        <div className="space-y-8 animate-fade-in">
+            <div className="max-w-2xl">
+                <h2 className="text-3xl font-bold text-neutral-900 mb-4 tracking-tight">Clear for Takeoff</h2>
+                <p className="text-lg text-neutral-500 leading-relaxed">
+                    Get the final green light from your lead.
+                </p>
+            </div>
+
+            <div className="bg-neutral-50 rounded-3xl p-8 border border-neutral-200">
+                <div className="flex items-start gap-6">
+                    <div className="w-16 h-16 rounded-2xl bg-white border border-neutral-200 flex items-center justify-center text-2xl shadow-sm">
+                        👩‍💼
                     </div>
+                    <div className="flex-1">
+                        <h3 className="text-xl font-bold text-neutral-900 mb-2">{managerSignoff.managerName}</h3>
+                        <p className="text-neutral-500 font-medium mb-6">Engineering Lead</p>
+
+                        {!managerSignoff.signedOff ? (
+                            <div className="bg-white p-6 rounded-2xl border border-neutral-200 shadow-sm">
+                                <p className="text-neutral-600 mb-6">"Hey! Just waiting for your signal to approve your transition to the main roster."</p>
+                                <button
+                                    onClick={requestSignoff}
+                                    disabled={signoffRequested}
+                                    className={`
+                                        w-full py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2
+                                        ${signoffRequested ? 'bg-neutral-100 text-neutral-400' : 'bg-neutral-900 text-white hover:bg-black'}
+                                    `}
+                                >
+                                    {signoffRequested ? (
+                                        <>
+                                            <Clock className="w-4 h-4 animate-spin" /> Requesting...
+                                        </>
+                                    ) : (
+                                        'Request Green Light'
+                                    )}
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="bg-emerald-50 p-6 rounded-2xl border border-emerald-100 animate-fade-in">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <Check className="w-6 h-6 text-emerald-600" />
+                                    <span className="font-bold text-emerald-800">APPROVED FOR LAUNCH</span>
+                                </div>
+                                <p className="text-emerald-900/80 italic">"{managerSignoff.welcomeMessage}"</p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            {managerSignoff.signedOff && (
+                <div className="flex justify-end pt-4">
+                    <button onClick={() => setPhase('FEEDBACK')} className="text-neutral-500 hover:text-neutral-900 font-bold text-sm flex items-center gap-2 group">
+                        Next: Feedback <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </button>
                 </div>
             )}
         </div>
@@ -196,183 +249,126 @@ const Day5Graduation: React.FC<Day5GraduationProps> = ({ user, onGraduate }) => 
 
     const renderFeedbackPhase = () => (
         <div className="space-y-8 animate-fade-in">
-            <div className="space-y-4">
-                <label className="text-sm font-bold text-neutral-900">How would you rate your onboarding experience?</label>
-                <div className="flex justify-between gap-2">
-                    {[1, 2, 3, 4, 5].map(rating => (
+            <div className="max-w-2xl">
+                <h2 className="text-3xl font-bold text-neutral-900 mb-4 tracking-tight">One Last Thing...</h2>
+                <p className="text-lg text-neutral-500 leading-relaxed">
+                    We iterate on everything. Including this onboarding.
+                    Be brutally honest.
+                </p>
+            </div>
+
+            <div className="bg-white rounded-3xl border border-neutral-200 p-8 shadow-sm">
+                <h3 className="font-bold text-neutral-900 mb-6">How was the "Culture OS" experience?</h3>
+                <div className="flex gap-4 mb-8">
+                    {[1, 2, 3, 4, 5].map((rating) => (
                         <button
                             key={rating}
-                            onClick={() => setFeedback(prev => ({ ...prev, overallSatisfaction: rating as any }))}
-                            className={`flex-1 py-3 rounded-xl border font-bold transition-all
+                            onClick={() => setFeedback(prev => ({ ...prev, overallSatisfaction: rating }))}
+                            className={`
+                                w-12 h-12 rounded-xl text-lg font-bold transition-all
                                 ${feedback.overallSatisfaction === rating
-                                    ? 'bg-neutral-900 text-white border-neutral-900'
-                                    : 'bg-white text-neutral-500 border-neutral-200 hover:border-brand-red/30'}
+                                    ? 'bg-neutral-900 text-white scale-110 shadow-lg'
+                                    : 'bg-neutral-50 text-neutral-400 hover:bg-neutral-100'}
                             `}
                         >
                             {rating}
                         </button>
                     ))}
                 </div>
-            </div>
 
-            <div className="space-y-4">
-                <label className="text-sm font-bold text-neutral-900">How confident do you feel starting your role?</label>
-                <div className="flex justify-between gap-2">
-                    {[1, 2, 3, 4, 5].map(rating => (
-                        <button
-                            key={rating}
-                            onClick={() => setFeedback(prev => ({ ...prev, confidenceLevel: rating as any }))}
-                            className={`flex-1 py-3 rounded-xl border font-bold transition-all
-                                ${feedback.confidenceLevel === rating
-                                    ? 'bg-brand-red text-white border-brand-red'
-                                    : 'bg-white text-neutral-500 border-neutral-200 hover:border-brand-red/30'}
-                            `}
-                        >
-                            {rating}
-                        </button>
-                    ))}
-                </div>
+                <button
+                    onClick={() => setPhase('GRADUATION')}
+                    disabled={!feedback.overallSatisfaction}
+                    className={`
+                        w-full py-4 rounded-xl font-bold text-sm uppercase tracking-wider transition-all
+                        ${feedback.overallSatisfaction
+                            ? 'bg-emerald-500 text-white hover:bg-emerald-600 shadow-lg hover:-translate-y-1'
+                            : 'bg-neutral-100 text-neutral-300 cursor-not-allowed'}
+                    `}
+                >
+                    Submit & Launch
+                </button>
             </div>
-
-            <button
-                onClick={handleSubmitFeedback}
-                disabled={!canSubmitFeedback}
-                className="w-full btn-primary py-4"
-            >
-                Submit Feedback
-            </button>
         </div>
     );
 
     const renderGraduationPhase = () => (
-        <div className="text-center py-8 space-y-8 animate-fade-in">
-            <div className="relative inline-block">
-                <Trophy className="w-24 h-24 text-brand-red mx-auto animate-bounce-subtle" />
-                <Sparkles className="w-10 h-10 text-amber-400 absolute -top-2 -right-2 animate-spin-slow" />
+        <div className="text-center animate-fade-in py-12">
+            <div className="w-32 h-32 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-8 animate-bounce">
+                <Rocket className="w-16 h-16 text-emerald-600" />
             </div>
-
-            <div>
-                <h2 className="text-3xl font-black text-neutral-900 mb-2">You're Ready, {user.name}!</h2>
-                <p className="text-neutral-500 max-w-sm mx-auto">You have successfully completed the onboarding. You are now ready to start.</p>
-            </div>
-
-            {themeTransitionProgress > 0 ? (
-                <div className="space-y-2">
-                    <div className="h-2 bg-neutral-100 rounded-full overflow-hidden">
-                        <div
-                            className="h-full bg-brand-red transition-all duration-100"
-                            style={{ width: `${themeTransitionProgress}%` }}
-                        />
-                    </div>
-                    <p className="text-xs font-bold text-neutral-400 uppercase tracking-widest">Initializing Dashboard...</p>
-                </div>
-            ) : (
-                <button
-                    onClick={handleGraduation}
-                    className="w-full btn-primary py-4 text-xs font-black uppercase tracking-[0.2em]"
-                >
-                    Launch Dashboard <Rocket className="w-4 h-4 ml-2" />
-                </button>
-            )}
+            <h2 className="text-5xl font-bold text-neutral-900 mb-6 tracking-tight">You are Live.</h2>
+            <p className="text-xl text-neutral-500 max-w-lg mx-auto leading-relaxed mb-12">
+                Your sandbox access is revoked. Your production keys are active.
+                Go build something amazing.
+            </p>
+            <button
+                onClick={() => setPhase('TRANSITION')}
+                className="px-12 py-5 bg-black hover:bg-neutral-900 text-white font-bold text-lg uppercase tracking-wider rounded-2xl shadow-xl transition-all hover:scale-105"
+            >
+                Enter Dashboard
+            </button>
         </div>
     );
 
-    // Feed Data
-    const feedCards: OnboardingCard[] = [
-        {
-            id: 'OVERVIEW',
-            title: 'Final Review',
-            description: 'Review your progress.',
-            icon: <ClipboardList className="w-5 h-5" />,
-            status: completedPhases.includes('OVERVIEW') ? 'COMPLETED' : 'AVAILABLE',
-            type: 'ACTION',
-            progress: completedPhases.includes('OVERVIEW') ? 100 : 0,
-            estimatedTime: '5 min',
-            onAction: () => setActivePhase('OVERVIEW'),
-            actionLabel: 'Review',
-        },
-        {
-            id: 'SIGNOFF',
-            title: 'Manager Approval',
-            description: 'Get approval to launch.',
-            icon: <Check className="w-5 h-5" />,
-            status: completedPhases.includes('SIGNOFF') ? 'COMPLETED' : 'AVAILABLE',
-            type: 'ACTION',
-            progress: managerSignoff.signedOff ? 100 : 0,
-            estimatedTime: '2 min',
-            onAction: () => setActivePhase('SIGNOFF'),
-            actionLabel: 'Request Approval',
-        },
-        {
-            id: 'FEEDBACK',
-            title: 'Feedback',
-            description: 'Share your thoughts.',
-            icon: <MessageSquare className="w-5 h-5" />,
-            status: completedPhases.includes('FEEDBACK') ? 'COMPLETED' : 'AVAILABLE',
-            type: 'ACTION',
-            progress: completedPhases.includes('FEEDBACK') ? 100 : 0,
-            estimatedTime: '3 min',
-            onAction: () => setActivePhase('FEEDBACK'),
-            actionLabel: 'Give Feedback',
-        },
-        {
-            id: 'GRADUATION',
-            title: 'Launch',
-            description: 'Start your journey.',
-            icon: <Trophy className="w-5 h-5" />,
-            status: (completedPhases.includes('OVERVIEW') && managerSignoff.signedOff && completedPhases.includes('FEEDBACK')) ? 'AVAILABLE' : 'LOCKED',
-            type: 'CELEBRATION',
-            progress: 0,
-            estimatedTime: '1 min',
-            onAction: () => setActivePhase('GRADUATION'),
-            actionLabel: 'Launch',
-        }
-    ];
-
-    if (activePhase) {
-        let content = null;
-        let title = '';
-        switch (activePhase) {
-            case 'OVERVIEW': title = 'Final Review'; content = renderOverviewPhase(); break;
-            case 'SIGNOFF': title = 'Manager Approval'; content = renderSignoffPhase(); break;
-            case 'FEEDBACK': title = 'Feedback'; content = renderFeedbackPhase(); break;
-            case 'GRADUATION': title = 'Launch'; content = renderGraduationPhase(); break;
-        }
-
-        return (
-            <div className="animate-fade-in">
-                {activePhase !== 'GRADUATION' && (
-                    <button
-                        onClick={() => setActivePhase(null)}
-                        className="flex items-center gap-2 text-neutral-500 hover:text-neutral-900 mb-6 font-medium text-sm transition-colors"
-                    >
-                        <ArrowLeft className="w-4 h-4" /> Back to Overview
-                    </button>
-                )}
-
-                <h2 className="text-3xl font-black text-neutral-900 mb-6">{title}</h2>
-                <div className="bg-white rounded-3xl border border-neutral-100 shadow-xl shadow-neutral-100/50 p-8">
-                    {content}
+    const renderTransitionPhase = () => (
+        <div className="absolute inset-0 z-50 bg-black flex items-center justify-center">
+            <div className="text-center">
+                <div className="w-24 h-2 rounded-full bg-neutral-800 overflow-hidden mb-8">
+                    <div
+                        className="h-full bg-white transition-all duration-75 ease-linear"
+                        style={{ width: `${themeTransitionProgress}%` }}
+                    />
                 </div>
+                <h2 className="text-white text-2xl font-bold tracking-tight animate-pulse">Initializing Workspace...</h2>
             </div>
-        );
-    }
+        </div>
+    );
+
+    if (phase === 'TRANSITION') return renderTransitionPhase();
 
     return (
-        <div className="max-w-3xl mx-auto space-y-8 animate-fade-in">
-            <div className="text-center mb-8">
-                <h1 className="text-3xl font-black text-neutral-900 tracking-tight mb-2">
-                    Ready to Launch
-                </h1>
-                <p className="text-neutral-500">
-                    You're ready. Let's make it official.
-                </p>
+        <div className="bg-white rounded-3xl shadow-sm border border-neutral-200 overflow-hidden min-h-[600px] flex flex-col md:flex-row">
+            {/* Sidebar Navigation */}
+            <div className="w-full md:w-64 bg-neutral-50 border-r border-neutral-200 p-6 flex flex-col">
+                <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-wider mb-6">Launch Sequence</h3>
+                <div className="space-y-2">
+                    {[
+                        { id: 'OVERVIEW', label: 'Status Check' },
+                        { id: 'PLEDGE', label: 'Impact Pledge' },
+                        { id: 'SIGNOFF', label: 'Clearance' },
+                        { id: 'FEEDBACK', label: 'Feedback' },
+                        { id: 'GRADUATION', label: 'Liftoff' },
+                    ].map((step, i) => {
+                        const isActive = phase === step.id;
+                        const isCompleted = ['OVERVIEW', 'PLEDGE', 'SIGNOFF', 'FEEDBACK', 'GRADUATION'].indexOf(phase) > i;
+
+                        return (
+                            <button
+                                key={step.id}
+                                disabled={!isCompleted && !isActive}
+                                onClick={() => isCompleted && setPhase(step.id as any)}
+                                className={`
+                                    w-full text-left px-4 py-3 rounded-xl text-sm font-bold transition-all flex items-center justify-between
+                                    ${isActive ? 'bg-white shadow-sm text-emerald-600 ring-1 ring-emerald-100' : isCompleted ? 'text-emerald-600' : 'text-neutral-400'}
+                                `}
+                            >
+                                {step.label}
+                                {isCompleted && <Check className="w-4 h-4" />}
+                            </button>
+                        );
+                    })}
+                </div>
             </div>
 
-            <OnboardingFeed
-                cards={feedCards}
-                onCardAction={(id) => setActivePhase(id as Phase)}
-            />
+            {/* Main Content */}
+            <div className="flex-1 p-8 md:p-12 flex flex-col justify-center">
+                {phase === 'OVERVIEW' && renderOverviewPhase()}
+                {phase === 'PLEDGE' && renderPledgePhase()}
+                {phase === 'SIGNOFF' && renderSignoffPhase()}
+                {phase === 'FEEDBACK' && renderFeedbackPhase()}
+                {phase === 'GRADUATION' && renderGraduationPhase()}
+            </div>
         </div>
     );
 };

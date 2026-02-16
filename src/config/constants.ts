@@ -31,15 +31,15 @@ export const MOCK_USER: UserProfile = {
   startDate: '2024-01-22',
   manager: 'Sarah Chen',
   avatar: undefined,
-  onboardingDay: 5,
-  onboardingComplete: true,
+  onboardingDay: 1,
+  onboardingComplete: false,
   dayProgress: {
     0: { day: 0, completed: true, tasks: [] },
-    1: { day: 1, completed: true, tasks: [] },
-    2: { day: 2, completed: true, tasks: [] },
-    3: { day: 3, completed: true, tasks: [] },
-    4: { day: 4, completed: true, tasks: [] },
-    5: { day: 5, completed: true, tasks: [] },
+    1: { day: 1, completed: false, tasks: [] },
+    2: { day: 2, completed: false, tasks: [] },
+    3: { day: 3, completed: false, tasks: [] },
+    4: { day: 4, completed: false, tasks: [] },
+    5: { day: 5, completed: false, tasks: [] },
   },
   roleCategory: 'DESK',
   role: 'EMPLOYEE',
@@ -51,11 +51,7 @@ export const MOCK_USER: UserProfile = {
 export const GREEN_LIGHT_CHECKS: GreenLightCheck[] = [
   {
     id: 'hw-laptop',
-<<<<<<< HEAD:src/config/constants.ts
-    label: 'Verify Laptop',
-=======
     label: 'Laptop',
->>>>>>> new:constants.ts
     category: 'HARDWARE',
     status: 'PASS',
     details: 'MacBook Pro 14" - Ready',
@@ -65,11 +61,7 @@ export const GREEN_LIGHT_CHECKS: GreenLightCheck[] = [
 
   {
     id: 'hw-monitor',
-<<<<<<< HEAD:src/config/constants.ts
-    label: 'Setup Monitor',
-=======
     label: 'Monitor',
->>>>>>> new:constants.ts
     category: 'HARDWARE',
     status: 'PASS',
     details: 'Dell 27" 4K - Shipped',
@@ -79,11 +71,7 @@ export const GREEN_LIGHT_CHECKS: GreenLightCheck[] = [
 
   {
     id: 'sw-email',
-<<<<<<< HEAD:src/config/constants.ts
-    label: 'Activate Email',
-=======
     label: 'Email',
->>>>>>> new:constants.ts
     category: 'SOFTWARE',
     status: 'PASS',
     details: 'Active',
@@ -92,11 +80,7 @@ export const GREEN_LIGHT_CHECKS: GreenLightCheck[] = [
   },
   {
     id: 'sw-slack',
-<<<<<<< HEAD:src/config/constants.ts
-    label: 'Join Slack',
-=======
     label: 'Slack',
->>>>>>> new:constants.ts
     category: 'SOFTWARE',
     status: 'PASS',
     details: 'Channels added',
@@ -105,11 +89,7 @@ export const GREEN_LIGHT_CHECKS: GreenLightCheck[] = [
   },
   {
     id: 'sw-jira',
-<<<<<<< HEAD:src/config/constants.ts
-    label: 'Access Jira',
-=======
     label: 'Jira',
->>>>>>> new:constants.ts
     category: 'SOFTWARE',
     status: 'CHECKING',
     details: 'Setting up...',
@@ -118,11 +98,7 @@ export const GREEN_LIGHT_CHECKS: GreenLightCheck[] = [
   },
   {
     id: 'fac-badge',
-<<<<<<< HEAD:src/config/constants.ts
-    label: 'Collect Badge',
-=======
     label: 'ID Badge',
->>>>>>> new:constants.ts
     category: 'FACILITY',
     status: 'PASS',
     details: 'Ready at Security',
@@ -130,11 +106,7 @@ export const GREEN_LIGHT_CHECKS: GreenLightCheck[] = [
   },
   {
     id: 'hw-safety-kit',
-<<<<<<< HEAD:src/config/constants.ts
-    label: 'Check Safety Kit',
-=======
     label: 'Safety Kit',
->>>>>>> new:constants.ts
     category: 'HARDWARE',
     status: 'PASS',
     details: 'In Locker 42',
@@ -143,11 +115,7 @@ export const GREEN_LIGHT_CHECKS: GreenLightCheck[] = [
   },
   {
     id: 'hw-tablet-pro',
-<<<<<<< HEAD:src/config/constants.ts
-    label: 'Pickup Tablet',
-=======
     label: 'Tablet',
->>>>>>> new:constants.ts
     category: 'HARDWARE',
     status: 'PASS',
     details: 'iPad Pro - Ready',
@@ -156,11 +124,7 @@ export const GREEN_LIGHT_CHECKS: GreenLightCheck[] = [
   },
   {
     id: 'hw-badge-rfid',
-<<<<<<< HEAD:src/config/constants.ts
-    label: 'Test RFID Access',
-=======
     label: 'RFID Badge',
->>>>>>> new:constants.ts
     category: 'FACILITY',
     status: 'PASS',
     details: 'Active',
@@ -169,11 +133,7 @@ export const GREEN_LIGHT_CHECKS: GreenLightCheck[] = [
   },
   {
     id: 'hw-stipend',
-<<<<<<< HEAD:src/config/constants.ts
-    label: 'Claim Stipend',
-=======
     label: 'Wich Stipend',
->>>>>>> new:constants.ts
     category: 'HARDWARE',
     status: 'PASS',
     details: '$500 credit',
@@ -184,11 +144,7 @@ export const GREEN_LIGHT_CHECKS: GreenLightCheck[] = [
 
   {
     id: 'fac-parking',
-<<<<<<< HEAD:src/config/constants.ts
-    label: 'Confirm Parking',
-=======
     label: 'Parking',
->>>>>>> new:constants.ts
     category: 'FACILITY',
     status: 'PASS',
     details: 'Spot #B-102',
@@ -2283,7 +2239,7 @@ import {
   WhisperNudge,
   BountyGig,
   LessonLearned,
-} from './types';
+} from '@/types';
 
 // --- STREAK DATA ---
 export const MOCK_STREAK_DATA: StreakData = {

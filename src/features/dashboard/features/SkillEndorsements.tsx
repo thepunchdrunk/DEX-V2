@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ThumbsUp, User, MessageSquare, TrendingUp, Sparkles, Plus } from 'lucide-react';
-import { SkillEndorsement } from '../../../types';
-import { MOCK_ENDORSEMENTS } from '../../../constants';
+import { SkillEndorsement } from '@/types';
+import { MOCK_ENDORSEMENTS } from '@/config/constants';
 
 interface SkillEndorsementsProps {
     endorsements?: SkillEndorsement[];

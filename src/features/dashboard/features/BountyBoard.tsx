@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Crosshair, Zap, Clock, Tag, Trophy, ChevronRight, Filter, Star } from 'lucide-react';
-import { BountyGig, BountyDifficulty } from '../../../types';
-import { MOCK_BOUNTY_GIGS } from '../../../constants';
+import { BountyGig, BountyDifficulty } from '@/types';
+import { MOCK_BOUNTY_GIGS } from '@/config/constants';
 
 interface BountyBoardProps {
     bounties?: BountyGig[];

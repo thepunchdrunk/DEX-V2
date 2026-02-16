@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { MessageCircle, ThumbsUp, Tag, AlertTriangle, PenTool, ChevronDown, ChevronUp, Plus } from 'lucide-react';
-import { LessonLearned } from '../../../types';
-import { MOCK_LESSONS_LEARNED } from '../../../constants';
+import { LessonLearned } from '@/types';
+import { MOCK_LESSONS_LEARNED } from '@/config/constants';
 
 interface LessonsLearnedProps {
     lessons?: LessonLearned[];

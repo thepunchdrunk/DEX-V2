@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Award, Lock, ChevronRight, Star, Filter } from 'lucide-react';
-import { Badge, BadgeCategory } from '../../../types';
-import { MOCK_BADGES } from '../../../constants';
+import { Badge, BadgeCategory } from '@/types';
+import { MOCK_BADGES } from '@/config/constants';
 
 interface BadgeShowcaseProps {
     badges?: Badge[];

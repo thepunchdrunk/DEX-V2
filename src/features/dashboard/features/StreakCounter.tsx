@@ -1,7 +1,7 @@
 import React from 'react';
 import { Flame, TrendingUp, AlertTriangle, Award } from 'lucide-react';
-import { StreakData } from '../../../types';
-import { MOCK_STREAK_DATA } from '../../../constants';
+import { StreakData } from '@/types';
+import { MOCK_STREAK_DATA } from '@/config/constants';
 
 interface StreakCounterProps {
     streak?: StreakData;

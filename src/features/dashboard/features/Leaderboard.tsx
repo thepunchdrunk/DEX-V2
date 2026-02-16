@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Trophy, TrendingUp, TrendingDown, Minus, Flame, BookOpen, Activity, Crown } from 'lucide-react';
-import { LeaderboardEntry } from '../../../types';
-import { MOCK_LEADERBOARD } from '../../../constants';
+import { LeaderboardEntry } from '@/types';
+import { MOCK_LEADERBOARD } from '@/config/constants';
 
 interface LeaderboardProps {
     entries?: LeaderboardEntry[];

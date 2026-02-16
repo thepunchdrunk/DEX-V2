@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Bell, Check, Circle, Sparkles, ArrowRight, ChevronRight, Coffee, Brain, Heart, TrendingUp, Zap } from 'lucide-react';
-import { WhisperNudge } from '../../../types';
-import { MOCK_WHISPER_NUDGES } from '../../../constants';
+import { WhisperNudge } from '@/types';
+import { MOCK_WHISPER_NUDGES } from '@/config/constants';
 
 interface WhisperCourseProps {
     nudges?: WhisperNudge[];

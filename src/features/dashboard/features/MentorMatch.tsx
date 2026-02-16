@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Users, Star, Clock, ArrowRight, Zap, RefreshCw, MessageSquare, ChevronRight } from 'lucide-react';
-import { MentorMatch as MentorMatchType } from '../../../types';
-import { MOCK_MENTOR_MATCHES } from '../../../constants';
+import { MentorMatch as MentorMatchType } from '@/types';
+import { MOCK_MENTOR_MATCHES } from '@/config/constants';
 
 interface MentorMatchProps {
     matches?: MentorMatchType[];
