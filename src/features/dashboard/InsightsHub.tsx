@@ -1,26 +1,32 @@
 import React, { useState } from 'react';
 import {
-    Calendar,
-    Users,
-    Lightbulb,
     Gamepad2,
-    Target,
-    Shield,
-    Map,
+    Trophy,
+    Users,
+    Crosshair,
+    AlertTriangle,
+    Clock,
     ChevronRight,
     ChevronLeft,
 } from 'lucide-react';
-import { MeetingIntelligence, PeerPractice, EnhancedSimulator, DecisionAssist, FocusGuard, CareerHorizon } from './features';
+import {
+    EnhancedSimulator,
+    Leaderboard,
+    MentorMatch,
+    BountyBoard,
+    LessonsLearned,
+    OfficeHours,
+} from './features';
 
-type InsightsTab = 'MEETINGS' | 'PEERS' | 'SIMULATOR' | 'DECISIONS' | 'FOCUS' | 'CAREER';
+type ToolId = 'SIMULATOR' | 'BOUNTIES' | 'MENTORS' | 'LEADERBOARD' | 'LESSONS' | 'OFFICE_HOURS';
 
 interface InsightsHubProps {
     className?: string;
 }
 
-const TOOL_CARDS = [
+const TOOLKIT_CARDS = [
     {
-        id: 'SIMULATOR' as InsightsTab,
+        id: 'SIMULATOR' as ToolId,
         icon: Gamepad2,
         title: 'Simulator',
         description: 'Practice high-stakes scenarios in a safe environment.',
@@ -30,53 +36,72 @@ const TOOL_CARDS = [
         hoverBorder: 'hover:border-brand-red/30',
     },
     {
-        id: 'DECISIONS' as InsightsTab,
-        icon: Target,
-        title: 'Decision Forge',
-        description: 'Frameworks for making complex, high-impact choices.',
-        action: 'Open',
-        accentColor: 'text-purple-600',
-        iconBg: 'bg-gradient-to-br from-indigo-400 to-purple-600',
-        hoverBorder: 'hover:border-purple-300',
+        id: 'BOUNTIES' as ToolId,
+        icon: Crosshair,
+        title: 'Bounty Board',
+        description: 'Earn points by completing cross-team projects.',
+        action: 'Claim',
+        accentColor: 'text-orange-600',
+        iconBg: 'bg-gradient-to-br from-orange-400 to-red-500',
+        hoverBorder: 'hover:border-orange-300',
     },
     {
-        id: 'PEERS' as InsightsTab,
+        id: 'MENTORS' as ToolId,
         icon: Users,
-        title: 'Peer Practices',
-        description: 'Discover what high-performers are doing differently.',
-        action: 'Explore',
-        accentColor: 'text-violet-600',
-        iconBg: 'bg-gradient-to-br from-violet-400 to-purple-600',
-        hoverBorder: 'hover:border-violet-300',
+        title: 'Mentor Match',
+        description: 'AI-matched mentors based on your skill gaps & goals.',
+        action: 'Discover',
+        accentColor: 'text-blue-600',
+        iconBg: 'bg-gradient-to-br from-blue-500 to-indigo-600',
+        hoverBorder: 'hover:border-blue-300',
     },
     {
-        id: 'CAREER' as InsightsTab,
-        icon: Map,
-        title: 'Career Horizon',
-        description: 'Market trends & career pathing insights.',
+        id: 'LEADERBOARD' as ToolId,
+        icon: Trophy,
+        title: 'Leaderboard',
+        description: 'Learning × Performance impact rankings.',
         action: 'View',
-        accentColor: 'text-purple-600',
-        iconBg: 'bg-purple-600',
-        hoverBorder: 'hover:border-purple-300',
+        accentColor: 'text-indigo-600',
+        iconBg: 'bg-gradient-to-br from-indigo-500 to-purple-600',
+        hoverBorder: 'hover:border-indigo-300',
+    },
+    {
+        id: 'LESSONS' as ToolId,
+        icon: AlertTriangle,
+        title: 'Lessons Learned',
+        description: 'Real failure stories that made us stronger.',
+        action: 'Read',
+        accentColor: 'text-rose-600',
+        iconBg: 'bg-gradient-to-br from-rose-400 to-pink-500',
+        hoverBorder: 'hover:border-rose-300',
+    },
+    {
+        id: 'OFFICE_HOURS' as ToolId,
+        icon: Clock,
+        title: 'Office Hours',
+        description: 'Drop-in sessions with domain experts.',
+        action: 'Browse',
+        accentColor: 'text-teal-600',
+        iconBg: 'bg-gradient-to-br from-teal-400 to-cyan-500',
+        hoverBorder: 'hover:border-teal-300',
     },
 ];
 
 const InsightsHub: React.FC<InsightsHubProps> = ({ className = '' }) => {
-    const [activeTool, setActiveTool] = useState<InsightsTab | null>(null);
+    const [activeTool, setActiveTool] = useState<ToolId | null>(null);
 
-    // If a tool is open, show full view with back button
+    // Full-view mode with back navigation
     if (activeTool) {
-        const activeCard = TOOL_CARDS.find(c => c.id === activeTool);
+        const activeCard = TOOLKIT_CARDS.find(c => c.id === activeTool);
         return (
             <div className={`space-y-6 ${className}`}>
-                {/* Breadcrumb navigation */}
                 <div className="flex items-center gap-2 mb-4">
                     <button
                         onClick={() => setActiveTool(null)}
                         className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 transition-all text-sm font-medium active:scale-95"
                     >
                         <ChevronLeft className="w-4 h-4" />
-                        Back to Radar
+                        Back to Toolkit
                     </button>
                     {activeCard && (
                         <>
@@ -87,43 +112,28 @@ const InsightsHub: React.FC<InsightsHubProps> = ({ className = '' }) => {
                 </div>
 
                 <div className="bg-neutral-50 rounded-2xl p-4 md:p-6 border border-neutral-200 min-h-[600px] page-transition">
-                    {activeTool === 'MEETINGS' && <MeetingIntelligence />}
-                    {activeTool === 'PEERS' && <PeerPractice />}
                     {activeTool === 'SIMULATOR' && <EnhancedSimulator />}
-                    {activeTool === 'DECISIONS' && <DecisionAssist />}
-                    {activeTool === 'FOCUS' && <FocusGuard />}
-                    {activeTool === 'CAREER' && <CareerHorizon />}
+                    {activeTool === 'BOUNTIES' && <BountyBoard />}
+                    {activeTool === 'MENTORS' && <MentorMatch />}
+                    {activeTool === 'LEADERBOARD' && <Leaderboard />}
+                    {activeTool === 'LESSONS' && <LessonsLearned />}
+                    {activeTool === 'OFFICE_HOURS' && <OfficeHours />}
                 </div>
             </div>
         );
     }
 
-    // Default: Radar & Toolkit Dashboard
+    // Default: Curated Toolkit
     return (
-        <div className={`space-y-8 ${className}`}>
-
-            {/* 1. CONTEXT RADAR (Passive Analytics) */}
+        <div className={`space-y-6 ${className}`}>
             <section className="animate-fade-in">
                 <div className="flex items-center gap-2 mb-5">
-                    <h2 className="text-xl font-bold text-black">My Radar</h2>
-                    <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 font-medium">Live Signals</span>
+                    <h2 className="text-xl font-bold text-black">Your Toolkit</h2>
+                    <span className="text-xs px-2.5 py-1 rounded-full bg-neutral-100 text-neutral-600 border border-neutral-200 font-medium">6 tools</span>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <MeetingIntelligence viewMode="WIDGET" className="cursor-pointer card-interactive" onClick={() => setActiveTool('MEETINGS')} />
-                    <FocusGuard viewMode="WIDGET" className="cursor-pointer card-interactive" onClick={() => setActiveTool('FOCUS')} />
-                </div>
-            </section>
-
-            {/* 2. MY TOOLS (Active Tools) */}
-            <section className="animate-fade-in" style={{ animationDelay: '100ms' }}>
-                <div className="flex items-center gap-2 mb-5">
-                    <h2 className="text-xl font-bold text-black">My Tools</h2>
-                    <span className="text-xs px-2.5 py-1 rounded-full bg-purple-50 text-purple-600 border border-purple-200 font-medium">On-Demand</span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                    {TOOL_CARDS.map((tool, index) => (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    {TOOLKIT_CARDS.map((tool, index) => (
                         <button
                             key={tool.id}
                             onClick={() => setActiveTool(tool.id)}

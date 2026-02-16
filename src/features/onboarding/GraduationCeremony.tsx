@@ -87,7 +87,7 @@ const GraduationCeremony: React.FC<GraduationCeremonyProps> = ({
                 {/* Reveal Phase */}
                 {phase === 'REVEAL' && (
                     <div className="animate-scale-in">
-                        <div className="w-32 h-32 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-amber-500/30">
+                        <div className="w-32 h-32 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center mx-auto mb-6 shadow-lg">
                             <Trophy className="w-16 h-16 text-white" />
                         </div>
                         <h1 className="text-4xl font-bold text-white mb-4">
@@ -103,7 +103,7 @@ const GraduationCeremony: React.FC<GraduationCeremonyProps> = ({
                 {phase === 'STATS' && (
                     <div className="animate-fade-in">
                         {/* Trophy */}
-                        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-amber-500/20">
+                        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center mx-auto mb-6 shadow-sm">
                             <Trophy className="w-12 h-12 text-white" />
                         </div>
 

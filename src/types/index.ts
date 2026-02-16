@@ -1114,3 +1114,148 @@ export interface OrgShockEvent {
   timestamp: string;
   reducedNoiseMode?: boolean;
 }
+
+// ============================================================================
+// ELITE LEARNING FEATURES
+// ============================================================================
+
+// Streak Mechanic
+export interface StreakData {
+  currentStreak: number;
+  bestStreak: number;
+  lastActivityDate: string;
+  isAtRisk: boolean;  // true if no activity today and streak > 0
+  milestones: number[]; // e.g., [7, 30, 100]
+  totalActiveDays: number;
+}
+
+// Badge System
+export type BadgeTier = 'BRONZE' | 'SILVER' | 'GOLD' | 'PLATINUM';
+export type BadgeCategory = 'ONBOARDING' | 'MASTERY' | 'COMMUNITY' | 'STREAK' | 'SIMULATOR' | 'LEADERSHIP' | 'EASTER_EGG';
+
+export interface Badge {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  category: BadgeCategory;
+  tier: BadgeTier;
+  criteria: string;
+  unlockedAt?: string;
+  isUnlocked: boolean;
+  progress?: number; // 0-100 for partially earned
+  maxProgress?: number;
+}
+
+// KPI-Linked Leaderboard
+export interface LeaderboardEntry {
+  id: string;
+  name: string;
+  avatar?: string;
+  department: string;
+  learningScore: number; // 0-100
+  performanceScore: number; // 0-100
+  combinedScore: number; // weighted average
+  rank: number;
+  badges: Badge[];
+  streak: number;
+  change: 'UP' | 'DOWN' | 'SAME';
+  changeAmount: number;
+}
+
+// Peer Skill Endorsements
+export interface SkillEndorsement {
+  id: string;
+  skillId: string;
+  skillName: string;
+  endorserId: string;
+  endorserName: string;
+  endorserTitle: string;
+  message?: string;
+  endorsedAt: string;
+}
+
+// Algorithmic Mentor Matching
+export interface MentorMatch {
+  id: string;
+  name: string;
+  title: string;
+  department: string;
+  avatar?: string;
+  matchScore: number; // 0-100
+  sharedSkills: string[];
+  mentorStrengths: string[];
+  availability: 'HIGH' | 'MEDIUM' | 'LOW';
+  mentorType: 'TRADITIONAL' | 'REVERSE' | 'FLASH';
+  bio: string;
+  yearsExperience: number;
+  menteeCount: number;
+}
+
+// Digital Office Hours
+export interface OfficeHoursSlot {
+  id: string;
+  expertName: string;
+  expertTitle: string;
+  expertDepartment: string;
+  topic: string;
+  topicTags: string[];
+  dateTime: string;
+  duration: number; // minutes
+  capacity: number;
+  registeredCount: number;
+  isRegistered: boolean;
+  meetingLink?: string;
+  description: string;
+}
+
+// Whisper Course Drip
+export interface WhisperNudge {
+  id: string;
+  weekNumber: number;
+  dayInWeek: number;
+  title: string;
+  message: string;
+  microAction: string;
+  category: 'NETWORKING' | 'PRODUCTIVITY' | 'CULTURE' | 'GROWTH' | 'WELLBEING';
+  completed: boolean;
+  completedAt?: string;
+  scheduledFor: string;
+}
+
+// Bounty Board (Internal Gigs)
+export type BountyStatus = 'OPEN' | 'CLAIMED' | 'IN_PROGRESS' | 'COMPLETED' | 'EXPIRED';
+export type BountyDifficulty = 'STARTER' | 'INTERMEDIATE' | 'ADVANCED' | 'EXPERT';
+
+export interface BountyGig {
+  id: string;
+  title: string;
+  description: string;
+  requiredSkills: string[];
+  points: number;
+  difficulty: BountyDifficulty;
+  status: BountyStatus;
+  postedBy: string;
+  postedByDepartment: string;
+  deadline: string;
+  estimatedHours: number;
+  claimedBy?: string;
+  completedAt?: string;
+  skillsGained: string[];
+}
+
+// Lessons Learned (Failure Forum)
+export interface LessonLearned {
+  id: string;
+  authorName: string;
+  authorTitle: string;
+  authorDepartment: string;
+  title: string;
+  story: string;
+  takeaway: string;
+  tags: string[];
+  upvotes: number;
+  isUpvoted: boolean;
+  postedAt: string;
+  category: 'TECHNICAL' | 'PROCESS' | 'COMMUNICATION' | 'LEADERSHIP' | 'PROJECT';
+}

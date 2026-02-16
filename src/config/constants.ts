@@ -31,15 +31,15 @@ export const MOCK_USER: UserProfile = {
   startDate: '2024-01-22',
   manager: 'Sarah Chen',
   avatar: undefined,
-  onboardingDay: 1,
-  onboardingComplete: false,
+  onboardingDay: 5,
+  onboardingComplete: true,
   dayProgress: {
-    0: { day: 0, completed: false, tasks: [] },
-    1: { day: 1, completed: false, tasks: [] },
-    2: { day: 2, completed: false, tasks: [] },
-    3: { day: 3, completed: false, tasks: [] },
-    4: { day: 4, completed: false, tasks: [] },
-    5: { day: 5, completed: false, tasks: [] },
+    0: { day: 0, completed: true, tasks: [] },
+    1: { day: 1, completed: true, tasks: [] },
+    2: { day: 2, completed: true, tasks: [] },
+    3: { day: 3, completed: true, tasks: [] },
+    4: { day: 4, completed: true, tasks: [] },
+    5: { day: 5, completed: true, tasks: [] },
   },
   roleCategory: 'DESK',
   role: 'EMPLOYEE',
@@ -51,92 +51,132 @@ export const MOCK_USER: UserProfile = {
 export const GREEN_LIGHT_CHECKS: GreenLightCheck[] = [
   {
     id: 'hw-laptop',
+<<<<<<< HEAD:src/config/constants.ts
     label: 'Verify Laptop',
+=======
+    label: 'Laptop',
+>>>>>>> new:constants.ts
     category: 'HARDWARE',
     status: 'PASS',
-    details: 'MacBook Pro 14" - Ready for pickup at IT Desk',
+    details: 'MacBook Pro 14" - Ready',
     icon: '💻',
     roleCategories: ['DESK', 'REMOTE'],
   },
 
   {
     id: 'hw-monitor',
+<<<<<<< HEAD:src/config/constants.ts
     label: 'Setup Monitor',
+=======
+    label: 'Monitor',
+>>>>>>> new:constants.ts
     category: 'HARDWARE',
     status: 'PASS',
-    details: 'Dell 27" 4K - Shipped to your desk',
+    details: 'Dell 27" 4K - Shipped',
     icon: '🖥️',
     roleCategories: ['DESK', 'REMOTE'],
   },
 
   {
     id: 'sw-email',
+<<<<<<< HEAD:src/config/constants.ts
     label: 'Activate Email',
+=======
+    label: 'Email',
+>>>>>>> new:constants.ts
     category: 'SOFTWARE',
     status: 'PASS',
-    details: 'alex.thompson@company.com activated',
+    details: 'Active',
     icon: '📧',
     roleCategories: ['DESK', 'REMOTE', 'FRONTLINE'],
   },
   {
     id: 'sw-slack',
+<<<<<<< HEAD:src/config/constants.ts
     label: 'Join Slack',
+=======
+    label: 'Slack',
+>>>>>>> new:constants.ts
     category: 'SOFTWARE',
     status: 'PASS',
-    details: 'Added to #engineering, #qa-team channels',
+    details: 'Channels added',
     icon: '💬',
     roleCategories: ['DESK', 'REMOTE'],
   },
   {
     id: 'sw-jira',
+<<<<<<< HEAD:src/config/constants.ts
     label: 'Access Jira',
+=======
+    label: 'Jira',
+>>>>>>> new:constants.ts
     category: 'SOFTWARE',
     status: 'CHECKING',
-    details: 'Provisioning in progress...',
+    details: 'Setting up...',
     icon: '📋',
     roleCategories: ['DESK', 'REMOTE'],
   },
   {
     id: 'fac-badge',
+<<<<<<< HEAD:src/config/constants.ts
     label: 'Collect Badge',
+=======
+    label: 'ID Badge',
+>>>>>>> new:constants.ts
     category: 'FACILITY',
     status: 'PASS',
-    details: 'Badge #A3847 - Collect from Security',
+    details: 'Ready at Security',
     icon: '🪪',
   },
   {
     id: 'hw-safety-kit',
+<<<<<<< HEAD:src/config/constants.ts
     label: 'Check Safety Kit',
+=======
+    label: 'Safety Kit',
+>>>>>>> new:constants.ts
     category: 'HARDWARE',
     status: 'PASS',
-    details: 'Steel-toe boots & hi-vis vest at Locker 42',
+    details: 'In Locker 42',
     icon: '🦺',
     roleCategories: ['FRONTLINE'],
   },
   {
     id: 'hw-tablet-pro',
+<<<<<<< HEAD:src/config/constants.ts
     label: 'Pickup Tablet',
+=======
+    label: 'Tablet',
+>>>>>>> new:constants.ts
     category: 'HARDWARE',
     status: 'PASS',
-    details: 'iPad Pro with rugged case - Ready at Floor 2 Hub',
+    details: 'iPad Pro - Ready',
     icon: '📱',
     roleCategories: ['FRONTLINE'],
   },
   {
     id: 'hw-badge-rfid',
+<<<<<<< HEAD:src/config/constants.ts
     label: 'Test RFID Access',
+=======
+    label: 'RFID Badge',
+>>>>>>> new:constants.ts
     category: 'FACILITY',
     status: 'PASS',
-    details: 'All-zone access enabled',
+    details: 'Active',
     icon: '🆔',
     roleCategories: ['FRONTLINE', 'HYBRID'],
   },
   {
     id: 'hw-stipend',
+<<<<<<< HEAD:src/config/constants.ts
     label: 'Claim Stipend',
+=======
+    label: 'Wich Stipend',
+>>>>>>> new:constants.ts
     category: 'HARDWARE',
     status: 'PASS',
-    details: '$500 credit applied to your portal',
+    details: '$500 credit',
     icon: '💰',
     roleCategories: ['REMOTE'],
   },
@@ -144,10 +184,14 @@ export const GREEN_LIGHT_CHECKS: GreenLightCheck[] = [
 
   {
     id: 'fac-parking',
+<<<<<<< HEAD:src/config/constants.ts
     label: 'Confirm Parking',
+=======
+    label: 'Parking',
+>>>>>>> new:constants.ts
     category: 'FACILITY',
     status: 'PASS',
-    details: 'Spot #B-102 assigned',
+    details: 'Spot #B-102',
     icon: '🅿️',
   },
 ];
@@ -158,71 +202,70 @@ export const GREEN_LIGHT_CHECKS: GreenLightCheck[] = [
 export const MICRO_SCENARIOS: MicroScenario[] = [
   {
     id: 'scenario-1',
-    title: 'Speed vs. Perfection',
+    title: 'Speed vs. Quality',
     description:
-      "You're working on a feature that's 90% complete. The PM asks if it can ship today. There's a minor edge case bug.",
+      "A feature is 90% done but has a small bug. The deadline is today.",
     culturalDimension: 'SPEED_VS_PERFECTION',
     choices: [
       {
         id: 'choice-1a',
-        text: 'Ship it now, fix the bug in a patch release',
+        text: 'Ship it, fix it later.',
         isRecommended: true,
         feedback:
-          "Great instinct! At our company, we value shipping fast and iterating. Document the known issue and schedule the fix.",
+          "Right call. We value shipping fast. Just log the bug.",
       },
       {
         id: 'choice-1b',
-        text: 'Delay the release until the bug is fixed',
+        text: 'Wait until it\'s perfect.',
         isRecommended: false,
         feedback:
-          "We appreciate thoroughness, but our culture favors speed with transparency. Consider shipping with a known issues note.",
+          "We prefer speed over perfection. Ship it with a note.",
       },
     ],
   },
-
   {
     id: 'scenario-2',
-    title: 'Meeting Culture',
+    title: 'Reaching Out',
     description:
-      "You have a question for a senior director. Their calendar shows back-to-back meetings for the next 3 days.",
+      "You need to ask a Director a question, but they seem busy.",
     culturalDimension: 'HIERARCHY_VS_FLAT',
     choices: [
       {
         id: 'choice-2a',
-        text: 'Send a Slack DM directly to them',
+        text: 'Just message them.',
         isRecommended: true,
         feedback:
-          "Yes! We have a flat culture. Everyone is approachable, regardless of title. A brief, clear DM is always welcome.",
+          "Exactly. We're a flat organization. anyone can talk to anyone.",
       },
       {
         id: 'choice-2b',
-        text: 'Ask your manager to escalate',
+        text: 'Ask your manager first.',
         isRecommended: false,
         feedback:
-          "Not wrong, but unnecessary. Our culture encourages direct communication. Don't hesitate to reach out directly.",
+          "No need for that. Just reach out directly!",
       },
     ],
   },
   {
     id: 'scenario-3',
-    title: 'Dress Code Dilemma',
+    title: 'First Day Outfit',
     description:
-      "It's your first in-office day. You're unsure what to wear.",
+      "Not sure what to wear to the office?",
     culturalDimension: 'FORMAL_VS_CASUAL',
     choices: [
       {
         id: 'choice-3a',
-        text: 'Business casual (button-down, slacks)',
+        text: 'Suit and tie.',
         isRecommended: false,
         feedback:
-          "Not wrong, but most people dress more casually. You might feel overdressed!",
+          "You'll feel overdressed. We're pretty casual.",
       },
       {
         id: 'choice-3b',
-        text: 'Smart casual (nice jeans, clean sneakers)',
+        text: 'Jeans and a nice top.',
         isRecommended: true,
         feedback:
-          "Perfect! Our office is relaxed. Jeans and sneakers are totally fine. Just be presentable for client meetings.",
+          "Perfect. Comfortable but presentable.",
       },
     ],
   },
@@ -235,40 +278,40 @@ export const UNWRITTEN_RULES: UnwrittenRule[] = [
   {
     id: 'ur-1',
     category: 'COMMUNICATION',
-    question: 'Should I use Slack or Email?',
-    answer: 'For quick questions, use Slack. For formal requests or external communication, use Email.',
+    question: 'Slack vs. Email?',
+    answer: 'Slack for quick chat. Email for official stuff.',
     confidence: 'HIGH',
     keywords: ['slack', 'email', 'communication', 'message', 'chat'],
   },
   {
     id: 'ur-2',
     category: 'MEETINGS',
-    question: 'Are meetings mandatory?',
-    answer: 'Unless marked optional, try to attend. If you have a conflict, let the organizer know.',
+    question: 'Do I have to go to meetings?',
+    answer: 'Try to, unless they are optional.',
     confidence: 'MEDIUM',
     keywords: ['meeting', 'attendance', 'mandatory', 'optional', 'calendar'],
   },
   {
     id: 'ur-3',
     category: 'WORK_LIFE',
-    question: 'What actally are the working hours?',
-    answer: 'Core hours are 10am-3pm. Most people work 9-5 or 8-4, but flexibility is supported.',
+    question: 'Working hours?',
+    answer: 'Usually 10am-3pm are core hours. Flexible otherwise.',
     confidence: 'HIGH',
     keywords: ['hours', 'working hours', 'schedule', 'time', 'start', 'end'],
   },
   {
     id: 'ur-4',
     category: 'DRESS_CODE',
-    question: 'What is the dress code?',
-    answer: 'Smart casual is the norm. Jeans and t-shirts are fine for daily work. Business casual for client meetings.',
+    question: 'What to wear?',
+    answer: 'Casual is fine. Dress up for clients.',
     confidence: 'HIGH',
     keywords: ['dress', 'clothes', 'wear', 'attire', 'clothing'],
   },
   {
     id: 'ur-5',
     category: 'REMOTE',
-    question: 'Can I work from home?',
-    answer: 'We have a hybrid policy. Most teams are in the office 3 days a week (Tu/We/Th usually). Check with your manager.',
+    question: 'Can I WFH?',
+    answer: 'Yes, we are hybrid. Usually 3 days in office.',
     confidence: 'HIGH',
     keywords: ['remote', 'home', 'wfh', 'hybrid', 'office'],
   },
@@ -285,9 +328,9 @@ export const CRITICAL_PARTNERS: CriticalPartner[] = [
     department: 'Engineering',
     relationshipType: 'CROSS_FUNCTIONAL',
     reason:
-      "Marcus leads the API team you'll be testing. Early alignment will save debugging time.",
+      "Marcus leads the API team. Good to know for testing.",
     icebreakerDraft:
-      "Hi Marcus! I'm Alex, the new Senior QA joining the team. I'd love to grab 15 min to understand the API testing landscape. Coffee this week?",
+      "Hi Marcus! I'm Alex, new in QA. Would love to chat about the API. Coffee?",
     platform: 'SLACK',
     connected: false,
     roleCategories: ['DESK', 'REMOTE', 'HYBRID'],
@@ -299,9 +342,9 @@ export const CRITICAL_PARTNERS: CriticalPartner[] = [
     department: 'Product',
     relationshipType: 'STAKEHOLDER',
     reason:
-      'Priya owns the roadmap for your product area. Understanding her priorities will help you prioritize test coverage.',
+      'Priya owns the roadmap. Helps with priorities.',
     icebreakerDraft:
-      "Hi Priya! I'm Alex, just joined as Senior QA. Would love to understand the product priorities to align my testing strategy. Free for a quick intro?",
+      "Hi Priya! Alex here (QA). Want to sync on the roadmap? Free for a quick intro?",
     platform: 'TEAMS',
     connected: false,
     roleCategories: ['DESK', 'REMOTE', 'HYBRID'],
@@ -313,9 +356,9 @@ export const CRITICAL_PARTNERS: CriticalPartner[] = [
     department: 'Platform',
     relationshipType: 'CROSS_FUNCTIONAL',
     reason:
-      'Jordan manages CI/CD pipelines. Knowing them will help when test automation needs infrastructure support.',
+      'Jordan handles the pipelines. Key contact for automation.',
     icebreakerDraft:
-      "Hey Jordan! New Senior QA here. I'll be setting up test automation and would love to sync on CI/CD best practices. Quick chat?",
+      "Hey Jordan! New QA here. Setting up automation, would love to sync. Chat soon?",
     platform: 'SLACK',
     connected: false,
     roleCategories: ['DESK', 'REMOTE', 'HYBRID'],
@@ -327,9 +370,9 @@ export const CRITICAL_PARTNERS: CriticalPartner[] = [
     department: 'Engineering',
     relationshipType: 'MENTOR',
     reason:
-      "Emily is the most senior QA on the team. She can help you navigate processes and unwritten testing standards.",
+      "Emily is a pro here. Great mentor figure.",
     icebreakerDraft:
-      "Hi Emily! I'm Alex, just starting as Senior QA. I'd love to learn from your experience here. Would you be open to a mentoring coffee chat?",
+      "Hi Emily! I'm Alex. Would love to learn from you. Mentoring chat?",
     platform: 'SLACK',
     connected: false,
     roleCategories: ['DESK', 'REMOTE', 'HYBRID'],
@@ -341,9 +384,9 @@ export const CRITICAL_PARTNERS: CriticalPartner[] = [
     department: 'Security',
     relationshipType: 'CROSS_FUNCTIONAL',
     reason:
-      "Security testing is increasingly important. David can guide you on compliance requirements and security test patterns.",
+      "Security is huge. David knows the drills.",
     icebreakerDraft:
-      "Hi David! New Senior QA joining. Security testing is a growth area for me. Would appreciate learning about our security testing practices. Free this week?",
+      "Hi David! New QA. Want to learn about security checks. Free this week?",
     platform: 'TEAMS',
     connected: false,
     roleCategories: ['DESK', 'REMOTE', 'HYBRID'],
@@ -1351,7 +1394,7 @@ export const WORK_TOOLS: WorkTool[] = [
     name: 'Jira',
     icon: '📋',
     category: 'CORE',
-    purpose: 'Track bugs, features, and sprint work',
+    purpose: 'Manage tasks & bugs',
     upstreamTools: [],
     downstreamTools: ['tool-github', 'tool-slack'],
     walkthroughCompleted: false,
@@ -1367,7 +1410,7 @@ export const WORK_TOOLS: WorkTool[] = [
     name: 'GitHub',
     icon: '💻',
     category: 'CORE',
-    purpose: 'Code repository, pull requests, and CI/CD',
+    purpose: 'Code & PRs',
     upstreamTools: ['tool-jira'],
     downstreamTools: ['tool-slack'],
     walkthroughCompleted: false,
@@ -1383,7 +1426,7 @@ export const WORK_TOOLS: WorkTool[] = [
     name: 'Slack',
     icon: '💬',
     category: 'CORE',
-    purpose: 'Team communication and notifications',
+    purpose: 'Team chat & updates',
     upstreamTools: ['tool-jira', 'tool-github'],
     downstreamTools: [],
     walkthroughCompleted: false,
@@ -1398,7 +1441,7 @@ export const WORK_TOOLS: WorkTool[] = [
     name: 'Confluence',
     icon: '📖',
     category: 'SUPPORTING',
-    purpose: 'Documentation, wikis, and knowledge base',
+    purpose: 'Team docs',
     upstreamTools: [],
     downstreamTools: ['tool-jira'],
     walkthroughCompleted: false,
@@ -1415,7 +1458,7 @@ export const WORK_TOOLS: WorkTool[] = [
     name: 'Figma',
     icon: '🎨',
     category: 'SUPPORTING',
-    purpose: 'View designs and prototypes',
+    purpose: 'Design files',
     upstreamTools: [],
     downstreamTools: ['tool-jira'],
     walkthroughCompleted: false,
@@ -2225,3 +2268,474 @@ export const HORIZON_CONFIG: Record<TimeHorizon, { label: string; description: s
     color: '#8B5CF6',
   },
 };
+
+// ============================================================================
+// ELITE LEARNING FEATURES — MOCK DATA
+// ============================================================================
+
+import {
+  StreakData,
+  Badge,
+  LeaderboardEntry,
+  SkillEndorsement,
+  MentorMatch,
+  OfficeHoursSlot,
+  WhisperNudge,
+  BountyGig,
+  LessonLearned,
+} from './types';
+
+// --- STREAK DATA ---
+export const MOCK_STREAK_DATA: StreakData = {
+  currentStreak: 12,
+  bestStreak: 28,
+  lastActivityDate: new Date().toISOString(),
+  isAtRisk: false,
+  milestones: [7, 30, 100],
+  totalActiveDays: 47,
+};
+
+// --- BADGES ---
+export const MOCK_BADGES: Badge[] = [
+  {
+    id: 'badge-onboard',
+    name: 'Onboarding Hero',
+    description: 'Completed the entire 5-day onboarding quest',
+    icon: '🎓',
+    category: 'ONBOARDING',
+    tier: 'GOLD',
+    criteria: 'Complete all 5 onboarding days',
+    unlockedAt: '2026-01-27T10:00:00Z',
+    isUnlocked: true,
+  },
+  {
+    id: 'badge-streak-7',
+    name: 'Week Warrior',
+    description: '7-day learning streak',
+    icon: '🔥',
+    category: 'STREAK',
+    tier: 'BRONZE',
+    criteria: 'Maintain a 7-day streak',
+    unlockedAt: '2026-01-29T10:00:00Z',
+    isUnlocked: true,
+  },
+  {
+    id: 'badge-sim-champ',
+    name: 'Simulator Champion',
+    description: 'Scored 90%+ on 3 different simulators',
+    icon: '🎮',
+    category: 'SIMULATOR',
+    tier: 'SILVER',
+    criteria: 'Score 90%+ on 3 simulators',
+    unlockedAt: '2026-02-03T10:00:00Z',
+    isUnlocked: true,
+  },
+  {
+    id: 'badge-culture-nav',
+    name: 'Culture Navigator',
+    description: 'Answered all culture scenarios correctly',
+    icon: '🧭',
+    category: 'ONBOARDING',
+    tier: 'SILVER',
+    criteria: 'Perfect score on Day 2 culture scenarios',
+    unlockedAt: '2026-01-24T10:00:00Z',
+    isUnlocked: true,
+  },
+  {
+    id: 'badge-connector',
+    name: 'Super Connector',
+    description: 'Sent intros to all 5 Critical Partners',
+    icon: '🤝',
+    category: 'COMMUNITY',
+    tier: 'BRONZE',
+    criteria: 'Connect with all Critical 5 partners',
+    unlockedAt: '2026-01-25T10:00:00Z',
+    isUnlocked: true,
+  },
+  {
+    id: 'badge-streak-30',
+    name: 'Monthly Master',
+    description: '30-day learning streak',
+    icon: '💎',
+    category: 'STREAK',
+    tier: 'GOLD',
+    criteria: 'Maintain a 30-day streak',
+    isUnlocked: false,
+    progress: 12,
+    maxProgress: 30,
+  },
+  {
+    id: 'badge-mentor',
+    name: 'Knowledge Sharer',
+    description: 'Taught 3+ peer sessions',
+    icon: '🎤',
+    category: 'COMMUNITY',
+    tier: 'SILVER',
+    criteria: 'Deliver 3 peer teaching sessions',
+    isUnlocked: false,
+    progress: 1,
+    maxProgress: 3,
+  },
+  {
+    id: 'badge-mastery',
+    name: 'Skill Master',
+    description: 'Reached Mastered level on 5 skills',
+    icon: '🌳',
+    category: 'MASTERY',
+    tier: 'PLATINUM',
+    criteria: 'Master 5 skills in Skill Tree',
+    isUnlocked: false,
+    progress: 3,
+    maxProgress: 5,
+  },
+  {
+    id: 'badge-bounty',
+    name: 'Bounty Hunter',
+    description: 'Completed first internal gig',
+    icon: '🎯',
+    category: 'COMMUNITY',
+    tier: 'BRONZE',
+    criteria: 'Complete 1 bounty gig',
+    isUnlocked: false,
+    progress: 0,
+    maxProgress: 1,
+  },
+  {
+    id: 'badge-leader',
+    name: 'Rising Star',
+    description: 'Reached Top 10 on leaderboard',
+    icon: '⭐',
+    category: 'LEADERSHIP',
+    tier: 'GOLD',
+    criteria: 'Rank in Top 10 on the leaderboard',
+    isUnlocked: false,
+    progress: 0,
+    maxProgress: 1,
+  },
+  // --- EASTER EGG / HIDDEN ACHIEVEMENTS ---
+  {
+    id: 'badge-night-owl',
+    name: '???',
+    description: 'This achievement is hidden. Keep exploring to discover it!',
+    icon: '🥚',
+    category: 'EASTER_EGG',
+    tier: 'GOLD',
+    criteria: 'Used DEX after 10 PM',
+    isUnlocked: false,
+    progress: 0,
+    maxProgress: 1,
+  },
+  {
+    id: 'badge-speed-demon',
+    name: '???',
+    description: 'This achievement is hidden. Keep exploring to discover it!',
+    icon: '🥚',
+    category: 'EASTER_EGG',
+    tier: 'SILVER',
+    criteria: 'Completed 3 daily cards in under 2 minutes',
+    isUnlocked: false,
+    progress: 0,
+    maxProgress: 1,
+  },
+  {
+    id: 'badge-social-butterfly',
+    name: '???',
+    description: 'This achievement is hidden. Keep exploring to discover it!',
+    icon: '🥚',
+    category: 'EASTER_EGG',
+    tier: 'GOLD',
+    criteria: 'Endorsed 5 different peers',
+    isUnlocked: false,
+    progress: 2,
+    maxProgress: 5,
+  },
+  {
+    id: 'badge-completionist',
+    name: '???',
+    description: 'This achievement is hidden. Keep exploring to discover it!',
+    icon: '🥚',
+    category: 'EASTER_EGG',
+    tier: 'PLATINUM',
+    criteria: 'Visited every tab in one session',
+    isUnlocked: false,
+    progress: 0,
+    maxProgress: 1,
+  },
+];
+
+// --- LEADERBOARD ---
+export const MOCK_LEADERBOARD: LeaderboardEntry[] = [
+  { id: 'lb-1', name: 'Sophia Martinez', department: 'Engineering', learningScore: 95, performanceScore: 92, combinedScore: 94, rank: 1, badges: [], streak: 34, change: 'SAME', changeAmount: 0 },
+  { id: 'lb-2', name: 'James Wilson', department: 'Product', learningScore: 88, performanceScore: 94, combinedScore: 91, rank: 2, badges: [], streak: 21, change: 'UP', changeAmount: 2 },
+  { id: 'lb-3', name: 'Aisha Patel', department: 'Engineering', learningScore: 91, performanceScore: 87, combinedScore: 89, rank: 3, badges: [], streak: 18, change: 'DOWN', changeAmount: 1 },
+  { id: 'lb-4', name: 'Alex Thompson', department: 'Engineering', learningScore: 85, performanceScore: 88, combinedScore: 86, rank: 4, badges: [], streak: 12, change: 'UP', changeAmount: 3 },
+  { id: 'lb-5', name: 'Marcus Williams', department: 'Engineering', learningScore: 82, performanceScore: 89, combinedScore: 85, rank: 5, badges: [], streak: 15, change: 'DOWN', changeAmount: 2 },
+  { id: 'lb-6', name: 'Emily Chen', department: 'Engineering', learningScore: 87, performanceScore: 80, combinedScore: 84, rank: 6, badges: [], streak: 9, change: 'UP', changeAmount: 1 },
+  { id: 'lb-7', name: 'Raj Krishnan', department: 'Data Science', learningScore: 79, performanceScore: 86, combinedScore: 82, rank: 7, badges: [], streak: 7, change: 'SAME', changeAmount: 0 },
+  { id: 'lb-8', name: 'Lisa Park', department: 'Design', learningScore: 83, performanceScore: 78, combinedScore: 81, rank: 8, badges: [], streak: 5, change: 'DOWN', changeAmount: 3 },
+];
+
+// --- ENDORSEMENTS ---
+export const MOCK_ENDORSEMENTS: SkillEndorsement[] = [
+  { id: 'end-1', skillId: 'skill-automation', skillName: 'Test Automation', endorserId: 'u-2', endorserName: 'Emily Chen', endorserTitle: 'Staff QA Engineer', message: 'Alex wrote excellent automation for the checkout flow.', endorsedAt: '2026-02-08T14:00:00Z' },
+  { id: 'end-2', skillId: 'skill-playwright', skillName: 'Playwright', endorserId: 'u-3', endorserName: 'Marcus Williams', endorserTitle: 'Lead Developer', message: 'Great Playwright test suite for the API layer.', endorsedAt: '2026-02-06T10:00:00Z' },
+  { id: 'end-3', skillId: 'skill-communication', skillName: 'Communication', endorserId: 'u-4', endorserName: 'Priya Sharma', endorserTitle: 'Product Manager', message: 'Clear, concise bug reports that PMs actually understand!', endorsedAt: '2026-02-04T09:00:00Z' },
+  { id: 'end-4', skillId: 'skill-testing', skillName: 'Software Testing', endorserId: 'u-5', endorserName: 'Jordan Lee', endorserTitle: 'DevOps Engineer', message: 'Thorough testing approach caught critical edge cases.', endorsedAt: '2026-02-01T11:00:00Z' },
+  { id: 'end-5', skillId: 'skill-python', skillName: 'Python', endorserId: 'u-6', endorserName: 'David Park', endorserTitle: 'Security Lead', message: 'Built a solid security scanning script in Python.', endorsedAt: '2026-01-30T16:00:00Z' },
+];
+
+// --- MENTOR MATCHES ---
+export const MOCK_MENTOR_MATCHES: MentorMatch[] = [
+  {
+    id: 'mentor-1',
+    name: 'Dr. Rachel Torres',
+    title: 'Principal Engineer',
+    department: 'Platform',
+    matchScore: 94,
+    sharedSkills: ['Test Automation', 'Python', 'CI/CD'],
+    mentorStrengths: ['System Design', 'Career Growth', 'Technical Leadership'],
+    availability: 'HIGH',
+    mentorType: 'TRADITIONAL',
+    bio: '15 years in platform engineering. Passionate about helping engineers grow from IC to tech lead.',
+    yearsExperience: 15,
+    menteeCount: 3,
+  },
+  {
+    id: 'mentor-2',
+    name: 'Kevin Zhang',
+    title: 'Staff QA Architect',
+    department: 'Quality',
+    matchScore: 89,
+    sharedSkills: ['Software Testing', 'Playwright', 'Selenium'],
+    mentorStrengths: ['Test Strategy', 'Quality Culture', 'Automation Architecture'],
+    availability: 'MEDIUM',
+    mentorType: 'TRADITIONAL',
+    bio: 'Built the QA framework for 3 Fortune 500 companies. Advocate for shift-left testing.',
+    yearsExperience: 12,
+    menteeCount: 2,
+  },
+  {
+    id: 'mentor-3',
+    name: 'Zara Okonkwo',
+    title: 'Junior ML Engineer',
+    department: 'AI/ML',
+    matchScore: 76,
+    sharedSkills: ['Python'],
+    mentorStrengths: ['GenAI Tools', 'LLM Integration', 'AI-Assisted Testing'],
+    availability: 'HIGH',
+    mentorType: 'REVERSE',
+    bio: 'Gen Z digital native. Can show you how to use Copilot, Cursor, and LLMs to 10x your testing.',
+    yearsExperience: 2,
+    menteeCount: 0,
+  },
+];
+
+// --- OFFICE HOURS ---
+export const MOCK_OFFICE_HOURS: OfficeHoursSlot[] = [
+  {
+    id: 'oh-1',
+    expertName: 'Dr. Rachel Torres',
+    expertTitle: 'Principal Engineer',
+    expertDepartment: 'Platform',
+    topic: 'System Design Reviews',
+    topicTags: ['Architecture', 'Scalability', 'Design Patterns'],
+    dateTime: '2026-02-13T14:00:00Z',
+    duration: 60,
+    capacity: 8,
+    registeredCount: 5,
+    isRegistered: false,
+    description: 'Drop in with your architecture questions. Whiteboarding welcome.',
+  },
+  {
+    id: 'oh-2',
+    expertName: 'David Park',
+    expertTitle: 'Security Lead',
+    expertDepartment: 'Security',
+    topic: 'Security Testing 101',
+    topicTags: ['OWASP', 'Pen Testing', 'Secure Code'],
+    dateTime: '2026-02-14T10:00:00Z',
+    duration: 45,
+    capacity: 12,
+    registeredCount: 3,
+    isRegistered: false,
+    description: 'Learn the basics of security testing and how to integrate it into your workflow.',
+  },
+  {
+    id: 'oh-3',
+    expertName: 'Zara Okonkwo',
+    expertTitle: 'Junior ML Engineer',
+    expertDepartment: 'AI/ML',
+    topic: 'AI Tools for Developers',
+    topicTags: ['Copilot', 'LLMs', 'Prompt Engineering'],
+    dateTime: '2026-02-14T15:00:00Z',
+    duration: 30,
+    capacity: 20,
+    registeredCount: 14,
+    isRegistered: true,
+    description: 'Hands-on demo of AI coding assistants. Bring your laptop!',
+  },
+  {
+    id: 'oh-4',
+    expertName: 'Priya Sharma',
+    expertTitle: 'Product Manager',
+    expertDepartment: 'Product',
+    topic: 'Writing Better User Stories',
+    topicTags: ['Agile', 'Product', 'Communication'],
+    dateTime: '2026-02-15T11:00:00Z',
+    duration: 45,
+    capacity: 10,
+    registeredCount: 7,
+    isRegistered: false,
+    description: 'Tips for writing acceptance criteria that make QA engineers happy.',
+  },
+];
+
+// --- WHISPER NUDGES ---
+export const MOCK_WHISPER_NUDGES: WhisperNudge[] = [
+  {
+    id: 'wn-1', weekNumber: 1, dayInWeek: 1,
+    title: 'Your First Coffee Chat',
+    message: 'Research shows that employees who make 3+ connections in their first month are 2x more likely to stay.',
+    microAction: 'Invite one person from a different team to a 15-minute coffee chat today.',
+    category: 'NETWORKING', completed: true, completedAt: '2026-01-28T10:00:00Z',
+    scheduledFor: '2026-01-27T09:00:00Z',
+  },
+  {
+    id: 'wn-2', weekNumber: 1, dayInWeek: 3,
+    title: 'Share One Thing',
+    message: 'The best teams share knowledge openly. You probably already learned something others would benefit from.',
+    microAction: 'Post one useful tip or resource in your team\'s Slack channel.',
+    category: 'CULTURE', completed: true, completedAt: '2026-01-29T14:00:00Z',
+    scheduledFor: '2026-01-29T09:00:00Z',
+  },
+  {
+    id: 'wn-3', weekNumber: 2, dayInWeek: 1,
+    title: 'Ask "Why?" Three Times',
+    message: 'Curiosity is the engine of innovation. Today, dig deeper into something you accepted at face value.',
+    microAction: 'In your next meeting, ask one follow-up "why" question about a decision or process.',
+    category: 'GROWTH', completed: true, completedAt: '2026-02-03T11:00:00Z',
+    scheduledFor: '2026-02-03T09:00:00Z',
+  },
+  {
+    id: 'wn-4', weekNumber: 2, dayInWeek: 4,
+    title: 'Deep Work Block',
+    message: 'Your FocusGuard shows you average 6 context switches per hour. Let\'s fix that.',
+    microAction: 'Block 90 minutes on your calendar tomorrow as "Focus Time" with notifications off.',
+    category: 'PRODUCTIVITY', completed: false,
+    scheduledFor: '2026-02-06T09:00:00Z',
+  },
+  {
+    id: 'wn-5', weekNumber: 3, dayInWeek: 2,
+    title: 'Gratitude Boost',
+    message: 'Teams that practice recognition have 14% higher productivity. Small thanks go a long way.',
+    microAction: 'Send a quick thank-you message to someone who helped you this week.',
+    category: 'WELLBEING', completed: false,
+    scheduledFor: '2026-02-11T09:00:00Z',
+  },
+];
+
+// --- BOUNTY GIGS ---
+export const MOCK_BOUNTY_GIGS: BountyGig[] = [
+  {
+    id: 'bounty-1',
+    title: 'API Load Testing Suite',
+    description: 'Create a comprehensive k6 load testing suite for the payments API. Must cover peak traffic scenarios.',
+    requiredSkills: ['Performance Testing', 'JavaScript', 'API Testing'],
+    points: 500,
+    difficulty: 'INTERMEDIATE',
+    status: 'OPEN',
+    postedBy: 'Jordan Lee',
+    postedByDepartment: 'Platform',
+    deadline: '2026-02-28T23:59:00Z',
+    estimatedHours: 12,
+    skillsGained: ['k6', 'Performance Testing', 'Load Analysis'],
+  },
+  {
+    id: 'bounty-2',
+    title: 'Accessibility Audit: Mobile App',
+    description: 'Run a full WCAG 2.1 AA audit on the mobile app. Document findings and create tickets for remediation.',
+    requiredSkills: ['Accessibility', 'Mobile Testing', 'WCAG'],
+    points: 350,
+    difficulty: 'STARTER',
+    status: 'OPEN',
+    postedBy: 'Lisa Park',
+    postedByDepartment: 'Design',
+    deadline: '2026-03-15T23:59:00Z',
+    estimatedHours: 8,
+    skillsGained: ['Accessibility Testing', 'WCAG 2.1', 'Screen Reader Testing'],
+  },
+  {
+    id: 'bounty-3',
+    title: 'ML Model Validation Pipeline',
+    description: 'Build an automated validation pipeline for the recommendation engine. Must include bias detection.',
+    requiredSkills: ['Python', 'Machine Learning', 'Data Analysis'],
+    points: 750,
+    difficulty: 'ADVANCED',
+    status: 'OPEN',
+    postedBy: 'Zara Okonkwo',
+    postedByDepartment: 'AI/ML',
+    deadline: '2026-03-01T23:59:00Z',
+    estimatedHours: 20,
+    skillsGained: ['ML Testing', 'Bias Detection', 'Data Pipelines'],
+  },
+  {
+    id: 'bounty-4',
+    title: 'Internal Tech Talk: Playwright Tips',
+    description: 'Prepare and deliver a 30-minute tech talk on Playwright best practices for the engineering guild.',
+    requiredSkills: ['Playwright', 'Public Speaking', 'Test Automation'],
+    points: 200,
+    difficulty: 'STARTER',
+    status: 'OPEN',
+    postedBy: 'Emily Chen',
+    postedByDepartment: 'Engineering',
+    deadline: '2026-02-20T23:59:00Z',
+    estimatedHours: 4,
+    skillsGained: ['Public Speaking', 'Teaching', 'Knowledge Sharing'],
+  },
+];
+
+// --- LESSONS LEARNED ---
+export const MOCK_LESSONS_LEARNED: LessonLearned[] = [
+  {
+    id: 'lesson-1',
+    authorName: 'Sarah Chen',
+    authorTitle: 'Engineering Manager',
+    authorDepartment: 'Engineering',
+    title: 'The Deploy That Took Down Checkout',
+    story: 'We deployed a "minor CSS fix" on a Friday afternoon without running the full regression suite. The CSS change inadvertently broke the checkout button\'s z-index, making it unclickable on mobile. We lost approximately $47K in revenue over 3 hours before a customer tweet alerted us.',
+    takeaway: 'Never deploy without automated tests, especially on Fridays. We now have a "No-Deploy Friday" policy and added visual regression testing to our CI pipeline.',
+    tags: ['deployment', 'testing', 'CSS', 'mobile'],
+    upvotes: 42,
+    isUpvoted: false,
+    postedAt: '2026-02-01T10:00:00Z',
+    category: 'TECHNICAL',
+  },
+  {
+    id: 'lesson-2',
+    authorName: 'Raj Krishnan',
+    authorTitle: 'Senior Data Scientist',
+    authorDepartment: 'Data Science',
+    title: 'When the ML Model Was Accidentally Racist',
+    story: 'Our recommendation model was trained on historical hiring data that contained systemic bias. We didn\'t run a bias audit before launch. The model was recommending significantly fewer opportunities to certain demographic groups. It took an intern\'s side project to spot the pattern.',
+    takeaway: 'Always run bias detection on ML models before deployment. We now require a "Fairness Audit" sign-off for any model touching people decisions. And listen to your interns — fresh eyes catch what experienced eyes normalize.',
+    tags: ['ML', 'bias', 'ethics', 'hiring'],
+    upvotes: 67,
+    isUpvoted: true,
+    postedAt: '2026-01-28T14:00:00Z',
+    category: 'LEADERSHIP',
+  },
+  {
+    id: 'lesson-3',
+    authorName: 'Marcus Williams',
+    authorTitle: 'Lead Developer',
+    authorDepartment: 'Engineering',
+    title: 'The Microservice That Couldn\'t',
+    story: 'I championed splitting our monolith into microservices before we had the observability infrastructure to support it. Within 2 months, we had 12 services and zero ability to trace a request across them. Debugging took 3x longer. The team was frustrated and I had to own the decision publicly.',
+    takeaway: 'Invest in observability BEFORE you decompose. Distributed tracing, structured logging, and health dashboards should be Day 0, not "we\'ll add it later." Also: owning your mistakes publicly builds more trust than any success.',
+    tags: ['microservices', 'architecture', 'observability', 'leadership'],
+    upvotes: 38,
+    isUpvoted: false,
+    postedAt: '2026-01-25T09:00:00Z',
+    category: 'PROCESS',
+  },
+];
